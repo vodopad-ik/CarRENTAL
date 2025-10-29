@@ -1,0 +1,5 @@
+/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental.dir
+/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/edit_cache.dir
+/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/rebuild_cache.dir
+/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen_timestamp_deps.dir
+/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir

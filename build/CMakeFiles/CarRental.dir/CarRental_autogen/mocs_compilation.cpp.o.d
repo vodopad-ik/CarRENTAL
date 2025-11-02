@@ -117,8 +117,8 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/c++/13/pstl/glue_memory_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/CarCardWidget.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFrame \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h \
@@ -189,7 +189,6 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs.h \
@@ -342,6 +341,9 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qcursor.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextdocument.h \
@@ -349,12 +351,23 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QToolButton \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtoolbutton.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextcursor.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextoption.h \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_CustomCalendarWidget.cpp \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/CustomCalendarWidget.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QCalendarWidget \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcalendarwidget.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_LoginDialog.cpp \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/LoginDialog.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDialog \
@@ -369,11 +382,8 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_RentalDialog.cpp \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/RentalDialog.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateTimeEdit \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \

@@ -355,6 +355,8 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QCryptographicHash \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qcryptographichash.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLayout \
@@ -384,6 +386,10 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QRegularExpression \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQuery \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquery.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStyle \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout

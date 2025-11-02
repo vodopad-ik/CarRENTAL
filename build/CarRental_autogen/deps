@@ -6,6 +6,8 @@ CarRental_autogen/timestamp: \
 	/home/vladius/Desktop/apps/CarRENTAL/resources/resources.qrc \
 	/home/vladius/Desktop/apps/CarRENTAL/src/CarCardWidget.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/CarCardWidget.h \
+	/home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.cpp \
+	/home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/LoginDialog.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/LoginDialog.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.cpp \
@@ -300,6 +302,7 @@ CarRental_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
@@ -417,16 +420,20 @@ CarRental_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateTimeEdit \
+	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QCalendarWidget \
+	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDialog \
+	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFrame \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QScrollArea \
+	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QToolButton \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcalendarwidget.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
@@ -436,6 +443,7 @@ CarRental_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qscrollarea.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtoolbutton.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \

@@ -72,7 +72,7 @@ CarRental_autogen/timestamp: /usr/lib/qt6/libexec/moc
 CarRental_autogen/timestamp: /usr/lib/qt6/libexec/uic
 CarRental_autogen/timestamp: CMakeFiles/CarRental_autogen.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target CarRental"
-	/usr/bin/cmake -E cmake_autogen /home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir/AutogenInfo.json ""
+	/usr/bin/cmake -E cmake_autogen /home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir/AutogenInfo.json Debug
 	/usr/bin/cmake -E touch /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/timestamp
 
 CarRental_autogen: CMakeFiles/CarRental_autogen

@@ -4,6 +4,7 @@
 
 class QLineEdit;
 class QPushButton;
+class QLabel;
 
 class LoginDialog : public QDialog {
   Q_OBJECT
@@ -24,7 +25,10 @@ private slots:
 private:
   QLineEdit *nameEdit_;
   QLineEdit *phoneEdit_;
-  QLineEdit *emailEdit_;
+  QLineEdit *passwordEdit_;
+  QLineEdit *passwordRepeatEdit_;
+  QLabel *nameLabel_ = nullptr;
+  QLabel *passwordRepeatLabel_ = nullptr;
   QPushButton *loginBtn_;
   QPushButton *registerBtn_;
 

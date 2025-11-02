@@ -1,4 +1,5 @@
 #include "RentalDialog.h"
+#include "CustomCalendarWidget.h"
 #include "db/Database.h"
 #include "utils/CurrencyConverter.h"
 
@@ -27,17 +28,46 @@ RentalDialog::RentalDialog(const CarInfo &car, int customerId,
       "font-size: 18px; font-weight: bold; margin-bottom: 15px;");
   layout->addWidget(carLabel);
 
+  // Блок характеристик авто
+  QString specs;
+  if (!car_->engineType.isEmpty())
+    specs += QString("Тип двигателя: %1\n").arg(car_->engineType);
+  if (car_->engineCapacityL > 0.0)
+    specs += QString("Объем двигателя: %1 л\n")
+                 .arg(QString::number(car_->engineCapacityL, 'f', 1));
+  if (car_->powerHp > 0)
+    specs += QString("Мощность: %1 л.с.\n").arg(car_->powerHp);
+  if (car_->seats > 0)
+    specs += QString("Число мест: %1").arg(car_->seats);
+  if (!specs.isEmpty()) {
+    specsLabel_ = new QLabel(specs, this);
+    specsLabel_->setStyleSheet("color:#555; margin-bottom: 10px;");
+    layout->addWidget(specsLabel_);
+  }
+
   auto *formLayout = new QFormLayout();
 
-  startDateEdit_ = new QDateTimeEdit(QDateTime::currentDateTime(), this);
-  startDateEdit_->setMinimumDateTime(QDateTime::currentDateTime());
+  QDate maxDate =
+      QDate::currentDate().addYears(1); // Максимальная дата - через год
+
+  startDateEdit_ = new QDateEdit(QDate::currentDate(), this);
+  startDateEdit_->setMinimumDate(QDate::currentDate());
+  startDateEdit_->setMaximumDate(maxDate);
   startDateEdit_->setCalendarPopup(true);
+  startDateEdit_->setDisplayFormat("dd.MM.yyyy");
+  // Устанавливаем кастомный календарь для визуализации забронированных дат
+  auto *startCalendar = new CustomCalendarWidget(car_->id, this);
+  startDateEdit_->setCalendarWidget(startCalendar);
   formLayout->addRow("Дата начала:", startDateEdit_);
 
-  endDateEdit_ =
-      new QDateTimeEdit(QDateTime::currentDateTime().addSecs(3600), this);
-  endDateEdit_->setMinimumDateTime(QDateTime::currentDateTime().addSecs(3600));
+  endDateEdit_ = new QDateEdit(QDate::currentDate().addDays(1), this);
+  endDateEdit_->setMinimumDate(QDate::currentDate().addDays(1));
+  endDateEdit_->setMaximumDate(maxDate);
   endDateEdit_->setCalendarPopup(true);
+  endDateEdit_->setDisplayFormat("dd.MM.yyyy");
+  // Устанавливаем кастомный календарь для визуализации забронированных дат
+  auto *endCalendar = new CustomCalendarWidget(car_->id, this);
+  endDateEdit_->setCalendarWidget(endCalendar);
   formLayout->addRow("Дата окончания:", endDateEdit_);
 
   layout->addLayout(formLayout);
@@ -47,9 +77,9 @@ RentalDialog::RentalDialog(const CarInfo &car, int customerId,
       "font-size: 16px; font-weight: bold; color: #4CAF50;");
   layout->addWidget(totalPriceLabel_);
 
-  connect(startDateEdit_, &QDateTimeEdit::dateTimeChanged, this,
+  connect(startDateEdit_, &QDateEdit::dateChanged, this,
           &RentalDialog::updatePrice);
-  connect(endDateEdit_, &QDateTimeEdit::dateTimeChanged, this,
+  connect(endDateEdit_, &QDateEdit::dateChanged, this,
           &RentalDialog::updatePrice);
   updatePrice();
 
@@ -68,33 +98,60 @@ RentalDialog::RentalDialog(const CarInfo &car, int customerId,
 }
 
 void RentalDialog::updatePrice() {
-  QDateTime start = startDateEdit_->dateTime();
-  QDateTime end = endDateEdit_->dateTime();
+  QDate start = startDateEdit_->date();
+  QDate end = endDateEdit_->date();
+  QDate currentDate = QDate::currentDate();
+  QDate maxDate = currentDate.addYears(1); // Максимальная дата - через год
 
-  if (end < start) {
-    endDateEdit_->setDateTime(start.addSecs(3600));
-    end = start.addSecs(3600);
+  // Проверяем диапазон дат
+  if (start > maxDate) {
+    QMessageBox::warning(
+        this, "Предупреждение",
+        QString("Дата начала не может быть позже %1 (максимальный срок "
+                "бронирования - 1 год от текущей даты)")
+            .arg(maxDate.toString("dd.MM.yyyy")));
+    startDateEdit_->setDate(currentDate);
+    start = currentDate;
   }
 
-  qint64 hours = start.secsTo(end) / 3600;
-  if (hours <= 0)
-    hours = 1;
+  if (end > maxDate) {
+    QMessageBox::warning(
+        this, "Предупреждение",
+        QString("Дата окончания не может быть позже %1 (максимальный срок "
+                "бронирования - 1 год от текущей даты)")
+            .arg(maxDate.toString("dd.MM.yyyy")));
+    endDateEdit_->setDate(maxDate);
+    end = maxDate;
+  }
+
+  if (end < start) {
+    endDateEdit_->setDate(start.addDays(1));
+    end = start.addDays(1);
+  }
+
+  // Минимальный срок аренды - 1 день
+  int days = start.daysTo(end);
+  if (days <= 0)
+    days = 1;
 
   auto &converter = CurrencyConverter::instance();
   auto currency = CurrencyConverter::fromString(currentCurrency_);
-  double pricePerHour = converter.fromBase(car_->pricePerHour, currency);
-  double total = hours * pricePerHour;
+  double pricePerDay = converter.fromBase(car_->pricePerDay, currency);
+  double total = days * pricePerDay;
   QString symbol = converter.symbol(currency);
 
-  totalPriceLabel_->setText(QString("Итого: %1 %2 (%3 ч)")
+  QString dayText =
+      (days == 1) ? "день" : ((days >= 2 && days <= 4) ? "дня" : "дней");
+  totalPriceLabel_->setText(QString("Итого: %1 %2 (%3 %4)")
                                 .arg(total, 0, 'f', 2)
                                 .arg(symbol)
-                                .arg(hours));
+                                .arg(days)
+                                .arg(dayText));
 }
 
 void RentalDialog::onRent() {
-  QDateTime start = startDateEdit_->dateTime();
-  QDateTime end = endDateEdit_->dateTime();
+  QDate start = startDateEdit_->date();
+  QDate end = endDateEdit_->date();
 
   if (end <= start) {
     QMessageBox::warning(this, "Ошибка",
@@ -102,20 +159,24 @@ void RentalDialog::onRent() {
     return;
   }
 
-  if (!Database::instance().isCarAvailable(car_->id, start.date(),
-                                           end.date())) {
-    QMessageBox::warning(this, "Недоступно",
-                         "Этот автомобиль уже арендован на выбранные даты");
+  // Проверяем доступность с учетом количества экземпляров
+  int availableQty =
+      Database::instance().getAvailableQuantity(car_->id, start, end);
+  if (availableQty <= 0) {
+    QMessageBox::warning(
+        this, "Недоступно",
+        "Все экземпляры этого автомобиля уже забронированы на выбранные даты");
     return;
   }
 
-  qint64 hours = start.secsTo(end) / 3600;
-  if (hours <= 0)
-    hours = 1;
-  double total = hours * car_->pricePerHour;
+  // Минимальный срок аренды - 1 день
+  int days = start.daysTo(end);
+  if (days <= 0)
+    days = 1;
+  double total = days * car_->pricePerDay;
 
-  int rentalId = Database::instance().createRental(
-      car_->id, customerId_, start.date(), end.date(), total);
+  int rentalId = Database::instance().createRental(car_->id, customerId_, start,
+                                                   end, total);
   if (rentalId > 0) {
     QMessageBox::information(
         this, "Успешно",

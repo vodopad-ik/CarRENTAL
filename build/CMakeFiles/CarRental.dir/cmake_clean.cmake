@@ -8,6 +8,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o.d"
   "CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.o"
   "CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.o.d"
+  "CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o"
+  "CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o.d"
   "CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o"
   "CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o.d"
   "CMakeFiles/CarRental.dir/src/MainWindow.cpp.o"

@@ -1,9 +1,11 @@
 #pragma once
 
-#include <QDateTimeEdit>
+#include <QDateEdit>
 #include <QDialog>
 #include <QLabel>
 #include <QString>
+
+class CustomCalendarWidget;
 
 struct CarInfo;
 
@@ -23,7 +25,8 @@ private:
   CarInfo *car_;
   int customerId_;
   QString currentCurrency_;
-  QDateTimeEdit *startDateEdit_;
-  QDateTimeEdit *endDateEdit_;
+  QDateEdit *startDateEdit_;
+  QDateEdit *endDateEdit_;
   QLabel *totalPriceLabel_;
+  QLabel *specsLabel_ = nullptr;
 };

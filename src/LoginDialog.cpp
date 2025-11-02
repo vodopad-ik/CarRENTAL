@@ -1,13 +1,16 @@
 #include "LoginDialog.h"
 #include "db/Database.h"
 
+#include <QCryptographicHash>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QSqlQuery>
+#include <QStyle>
 #include <QVBoxLayout>
 
 LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
@@ -23,33 +26,106 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
   title->setAlignment(Qt::AlignCenter);
   layout->addWidget(title);
 
+  auto *welcome = new QLabel(
+      "Доброго времени суток, уважаемый пользователь!\n\nВыберите действие:",
+      this);
+  welcome->setStyleSheet(
+      "font-size: 16px; font-weight: normal; margin-bottom: 10px;");
+  welcome->setAlignment(Qt::AlignCenter);
+  layout->addWidget(welcome);
+
+  // Табовые кнопки
+  auto *tabsLayout = new QHBoxLayout();
+  QPushButton *tabLogin = new QPushButton("Войти", this);
+  QPushButton *tabRegister = new QPushButton("Зарегистрироваться", this);
+  tabLogin->setCheckable(true);
+  tabRegister->setCheckable(true);
+  tabLogin->setChecked(true);
+  // Единый стиль для таб-кнопок
+  const QString tabBtnStyle =
+      "QPushButton { font-size: 15px; padding: 10px 24px; border: 1px solid "
+      "#555; border-radius: 6px; }"
+      "QPushButton:hover { background: #3a3a3a; }"
+      "QPushButton:checked { background:rgb(0, 46, 115); color: white; "
+      "border-color: "
+      "#2d7ef7; }";
+  tabLogin->setStyleSheet(tabBtnStyle);
+  tabRegister->setStyleSheet(tabBtnStyle);
+  tabLogin->setIcon(style()->standardIcon(QStyle::SP_DialogOkButton));
+  tabRegister->setIcon(style()->standardIcon(QStyle::SP_DialogApplyButton));
+  tabLogin->setMinimumHeight(40);
+  tabRegister->setMinimumHeight(40);
+  tabsLayout->addWidget(tabLogin);
+  tabsLayout->addWidget(tabRegister);
+  layout->addLayout(tabsLayout);
+
+  // Сами поля формы
   auto *formLayout = new QFormLayout();
-
-  nameEdit_ = new QLineEdit(this);
-  nameEdit_->setPlaceholderText("Иван Иванов");
-  formLayout->addRow("Имя:", nameEdit_);
-
   phoneEdit_ = new QLineEdit(this);
-  phoneEdit_->setPlaceholderText("+7 (999) 123-45-67");
+  phoneEdit_->setPlaceholderText("+375xxxxxxxxx");
+  passwordEdit_ = new QLineEdit(this);
+  passwordEdit_->setEchoMode(QLineEdit::Password);
+  nameEdit_ = new QLineEdit(this);
+  nameEdit_->setPlaceholderText("Имя");
+  passwordRepeatEdit_ = new QLineEdit(this);
+  passwordRepeatEdit_->setEchoMode(QLineEdit::Password);
+  // Предсоздаём лейблы для рег. полей
+  nameLabel_ = new QLabel("Имя:", this);
+  passwordRepeatLabel_ = new QLabel("Повторите пароль:", this);
+
   formLayout->addRow("Телефон:", phoneEdit_);
-
-  emailEdit_ = new QLineEdit(this);
-  emailEdit_->setPlaceholderText("email@example.com");
-  formLayout->addRow("Email:", emailEdit_);
-
+  formLayout->addRow("Пароль:", passwordEdit_);
+  // Добавляем регистрационные строки сразу
+  formLayout->addRow(nameLabel_, nameEdit_);
+  formLayout->addRow(passwordRepeatLabel_, passwordRepeatEdit_);
   layout->addLayout(formLayout);
-
-  auto *btnLayout = new QHBoxLayout();
+  // Кнопка действия
   loginBtn_ = new QPushButton("Войти", this);
   registerBtn_ = new QPushButton("Зарегистрироваться", this);
+  loginBtn_->setIcon(style()->standardIcon(QStyle::SP_DialogOkButton));
+  registerBtn_->setIcon(style()->standardIcon(QStyle::SP_DialogApplyButton));
+  // Единый стиль для action-кнопок
+  const QString actionBtnStyle =
+      "QPushButton { padding: 12px 18px; font-size: 15px; border-radius: 8px; }"
+      "QPushButton:hover { filter: brightness(1.08); }"
+      "QPushButton:pressed { transform: translateY(1px); }";
+  loginBtn_->setStyleSheet(actionBtnStyle +
+                           "QPushButton { background:#2d7ef7; color:white; }");
+  registerBtn_->setStyleSheet(
+      actionBtnStyle + "QPushButton { background:#4CAF50; color:white; }");
+  loginBtn_->setMinimumHeight(44);
+  registerBtn_->setMinimumHeight(44);
+  layout->addWidget(loginBtn_);
+  layout->addWidget(registerBtn_);
+  // Изначально показываем режим входа
+  nameLabel_->setVisible(false);
+  nameEdit_->setVisible(false);
+  passwordRepeatLabel_->setVisible(false);
+  passwordRepeatEdit_->setVisible(false);
+  registerBtn_->setVisible(false);
 
-  loginBtn_->setStyleSheet("QPushButton { padding: 10px; font-size: 14px; }");
-  registerBtn_->setStyleSheet("QPushButton { padding: 10px; font-size: 14px; "
-                              "background-color: #4CAF50; color: white; }");
-
-  btnLayout->addWidget(loginBtn_);
-  btnLayout->addWidget(registerBtn_);
-  layout->addLayout(btnLayout);
+  auto setLoginMode = [=]() {
+    tabLogin->setChecked(true);
+    tabRegister->setChecked(false);
+    nameLabel_->setVisible(false);
+    nameEdit_->setVisible(false);
+    passwordRepeatLabel_->setVisible(false);
+    passwordRepeatEdit_->setVisible(false);
+    loginBtn_->setVisible(true);
+    registerBtn_->setVisible(false);
+  };
+  auto setRegisterMode = [=]() {
+    tabLogin->setChecked(false);
+    tabRegister->setChecked(true);
+    nameLabel_->setVisible(true);
+    nameEdit_->setVisible(true);
+    passwordRepeatLabel_->setVisible(true);
+    passwordRepeatEdit_->setVisible(true);
+    loginBtn_->setVisible(false);
+    registerBtn_->setVisible(true);
+  };
+  connect(tabLogin, &QPushButton::clicked, setLoginMode);
+  connect(tabRegister, &QPushButton::clicked, setRegisterMode);
 
   connect(loginBtn_, &QPushButton::clicked, this, &LoginDialog::onLogin);
   connect(registerBtn_, &QPushButton::clicked, this, &LoginDialog::onRegister);
@@ -59,43 +135,95 @@ LoginDialog::~LoginDialog() {}
 
 void LoginDialog::onLogin() {
   QString phone = phoneEdit_->text().trimmed();
+  QString password = passwordEdit_->text();
   if (phone.isEmpty()) {
     QMessageBox::warning(this, "Ошибка", "Введите телефон");
+    return;
+  }
+  // Валидация формата BY (+375xx xxx xx xx)
+  QRegularExpression re("^\\+375\\d{9}$");
+  if (!re.match(phone).hasMatch()) {
+    QMessageBox::warning(
+        this, "Ошибка",
+        "Телефон должен быть в формате +375xxxxxxxxx (11 цифр после +375)");
+    return;
+  }
+  if (password.isEmpty()) {
+    QMessageBox::warning(this, "Ошибка", "Введите пароль");
     return;
   }
 
   // Note: Database needs to expose db_ - we'll fix this
   // For now, use a workaround
   auto &db = Database::instance();
-  QSqlDatabase dbConn = QSqlDatabase::database("carrental");
-  QSqlQuery q(dbConn);
-  q.prepare("SELECT id, name, email FROM customers WHERE phone = ?");
-  q.addBindValue(phone);
-
-  if (q.exec() && q.next()) {
-    customerId_ = q.value(0).toInt();
-    name_ = q.value(1).toString();
+  QByteArray passHash =
+      QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
+          .toHex();
+  int id = Database::instance().findCustomerByPhoneAndPassword(
+      phone, QString::fromUtf8(passHash));
+  if (id > 0) {
+    customerId_ = id;
+    // Запросим имя
+    QSqlDatabase dbConn = QSqlDatabase::database("carrental");
+    QSqlQuery q(dbConn);
+    q.prepare("SELECT name FROM customers WHERE id = ?");
+    q.addBindValue(id);
+    if (q.exec() && q.next())
+      name_ = q.value(0).toString();
     phone_ = phone;
-    email_ = q.value(2).toString();
     accept();
   } else {
-    QMessageBox::information(
-        this, "Не найден",
-        "Клиент с таким телефоном не найден. Зарегистрируйтесь.");
+    QMessageBox::information(this, "Не найден",
+                             "Неверный телефон или пароль. Если вы не "
+                             "зарегистрированы, выполните регистрацию.");
   }
 }
 
 void LoginDialog::onRegister() {
   name_ = nameEdit_->text().trimmed();
   phone_ = phoneEdit_->text().trimmed();
-  email_ = emailEdit_->text().trimmed();
+  QString password = passwordEdit_->text();
+  QString password2 = passwordRepeatEdit_->text();
 
-  if (name_.isEmpty() || phone_.isEmpty()) {
-    QMessageBox::warning(this, "Ошибка", "Заполните имя и телефон");
+  if (name_.isEmpty()) {
+    QMessageBox::warning(this, "Ошибка", "Введите имя");
+    return;
+  }
+  QRegularExpression re("^\\+375\\d{9}$");
+  if (!re.match(phone_).hasMatch()) {
+    QMessageBox::warning(
+        this, "Ошибка",
+        "Телефон должен быть в формате +375xxxxxxxxx (11 цифр после +375)");
+    return;
+  }
+  // Проверим повтор телефона
+  {
+    QSqlDatabase dbConn = QSqlDatabase::database("carrental");
+    QSqlQuery query(dbConn);
+    query.prepare("SELECT COUNT(*) FROM customers WHERE phone = ?");
+    query.addBindValue(phone_);
+    if (query.exec() && query.next() && query.value(0).toInt() > 0) {
+      QMessageBox::warning(
+          this, "Аккаунт существует",
+          "Пользователь с таким номером телефона уже зарегистрирован!");
+      return;
+    }
+  }
+  if (password.size() < 6) {
+    QMessageBox::warning(this, "Ошибка",
+                         "Пароль должен содержать минимум 6 символов");
+    return;
+  }
+  if (password != password2) {
+    QMessageBox::warning(this, "Ошибка", "Пароли не совпадают");
     return;
   }
 
-  customerId_ = Database::instance().addCustomer(name_, phone_, email_);
+  QByteArray passHash =
+      QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
+          .toHex();
+  customerId_ = Database::instance().addCustomer(name_, phone_,
+                                                 QString::fromUtf8(passHash));
   if (customerId_ > 0) {
     accept();
   } else {

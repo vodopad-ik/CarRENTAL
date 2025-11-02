@@ -2,7 +2,7 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.cpp \
  /usr/include/stdc-predef.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateTimeEdit \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
@@ -353,9 +353,12 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qurl.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
- /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QCalendarWidget \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcalendarwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlDatabase \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlglobal.h \

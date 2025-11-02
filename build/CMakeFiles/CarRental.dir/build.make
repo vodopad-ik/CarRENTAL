@@ -74,7 +74,7 @@ CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp: CMakeFiles/CarRental_autogen.dir
 CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/vladius/Desktop/apps/CarRENTAL/resources/images/placeholder.svg
 CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp: /usr/lib/qt6/libexec/rcc
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic RCC for resources/resources.qrc"
-	/usr/bin/cmake -E cmake_autorcc /home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json 
+	/usr/bin/cmake -E cmake_autorcc /home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json Debug
 
 CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: CarRental_autogen/mocs_compilation.cpp
@@ -104,10 +104,24 @@ CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/vladius/Desktop/apps/CarRENTAL/src/CarCardWidget.cpp -o CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.s
 
+CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o: CMakeFiles/CarRental.dir/flags.make
+CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.cpp
+CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o -MF CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o.d -o CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.cpp
+
+CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.cpp > CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.i
+
+CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.cpp -o CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.s
+
 CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/LoginDialog.cpp
 CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o -MF CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o.d -o CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/LoginDialog.cpp
 
 CMakeFiles/CarRental.dir/src/LoginDialog.cpp.i: cmake_force
@@ -121,7 +135,7 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.s: cmake_force
 CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.cpp
 CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/CarRental.dir/src/MainWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/CarRental.dir/src/MainWindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/MainWindow.cpp.o -MF CMakeFiles/CarRental.dir/src/MainWindow.cpp.o.d -o CMakeFiles/CarRental.dir/src/MainWindow.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.cpp
 
 CMakeFiles/CarRental.dir/src/MainWindow.cpp.i: cmake_force
@@ -135,7 +149,7 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.s: cmake_force
 CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.cpp
 CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o -MF CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o.d -o CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.cpp
 
 CMakeFiles/CarRental.dir/src/RentalDialog.cpp.i: cmake_force
@@ -149,7 +163,7 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.s: cmake_force
 CMakeFiles/CarRental.dir/src/db/Database.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/src/db/Database.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp
 CMakeFiles/CarRental.dir/src/db/Database.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/CarRental.dir/src/db/Database.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/CarRental.dir/src/db/Database.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/db/Database.cpp.o -MF CMakeFiles/CarRental.dir/src/db/Database.cpp.o.d -o CMakeFiles/CarRental.dir/src/db/Database.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp
 
 CMakeFiles/CarRental.dir/src/db/Database.cpp.i: cmake_force
@@ -163,7 +177,7 @@ CMakeFiles/CarRental.dir/src/db/Database.cpp.s: cmake_force
 CMakeFiles/CarRental.dir/src/main.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/src/main.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/main.cpp
 CMakeFiles/CarRental.dir/src/main.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/CarRental.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/CarRental.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/main.cpp.o -MF CMakeFiles/CarRental.dir/src/main.cpp.o.d -o CMakeFiles/CarRental.dir/src/main.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/main.cpp
 
 CMakeFiles/CarRental.dir/src/main.cpp.i: cmake_force
@@ -177,7 +191,7 @@ CMakeFiles/CarRental.dir/src/main.cpp.s: cmake_force
 CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o: /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.cpp
 CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o -MF CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o.d -o CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.cpp
 
 CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.i: cmake_force
@@ -191,7 +205,7 @@ CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.s: cmake_force
 CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp
 CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o: CMakeFiles/CarRental.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o -MF CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o.d -o CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp
 
 CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.i: cmake_force
@@ -206,6 +220,7 @@ CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.s: cmake
 CarRental_OBJECTS = \
 "CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o" \
 "CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.o" \
+"CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o" \
 "CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o" \
 "CMakeFiles/CarRental.dir/src/MainWindow.cpp.o" \
 "CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o" \
@@ -219,6 +234,7 @@ CarRental_EXTERNAL_OBJECTS =
 
 bin/CarRental: CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o
 bin/CarRental: CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.o
+bin/CarRental: CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o
 bin/CarRental: CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o
 bin/CarRental: CMakeFiles/CarRental.dir/src/MainWindow.cpp.o
 bin/CarRental: CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o
@@ -234,7 +250,7 @@ bin/CarRental: /usr/lib/x86_64-linux-gnu/libGLX.so
 bin/CarRental: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 bin/CarRental: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.4.2
 bin/CarRental: CMakeFiles/CarRental.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable bin/CarRental"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable bin/CarRental"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/CarRental.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

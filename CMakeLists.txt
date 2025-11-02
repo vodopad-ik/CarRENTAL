@@ -21,7 +21,6 @@ else()
 endif()
 
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
-set(UI_DIR ${CMAKE_SOURCE_DIR}/ui)
 set(RES_DIR ${CMAKE_SOURCE_DIR}/resources)
 
 file(GLOB_RECURSE APP_SOURCES

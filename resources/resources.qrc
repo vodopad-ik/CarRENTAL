@@ -1,7 +1,5 @@
 <RCC>
   <qresource prefix="/images">
-    <file>images/placeholder.svg</file>
+    <file alias="placeholder.svg">images/placeholder.svg</file>
   </qresource>
 </RCC>
-
-

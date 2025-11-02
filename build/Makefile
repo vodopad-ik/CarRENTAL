@@ -227,6 +227,30 @@ src/CarCardWidget.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.s
 .PHONY : src/CarCardWidget.cpp.s
 
+src/CustomCalendarWidget.o: src/CustomCalendarWidget.cpp.o
+.PHONY : src/CustomCalendarWidget.o
+
+# target to build an object file
+src/CustomCalendarWidget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o
+.PHONY : src/CustomCalendarWidget.cpp.o
+
+src/CustomCalendarWidget.i: src/CustomCalendarWidget.cpp.i
+.PHONY : src/CustomCalendarWidget.i
+
+# target to preprocess a source file
+src/CustomCalendarWidget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.i
+.PHONY : src/CustomCalendarWidget.cpp.i
+
+src/CustomCalendarWidget.s: src/CustomCalendarWidget.cpp.s
+.PHONY : src/CustomCalendarWidget.s
+
+# target to generate assembly for a file
+src/CustomCalendarWidget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.s
+.PHONY : src/CustomCalendarWidget.cpp.s
+
 src/LoginDialog.o: src/LoginDialog.cpp.o
 .PHONY : src/LoginDialog.o
 
@@ -391,6 +415,9 @@ help:
 	@echo "... src/CarCardWidget.o"
 	@echo "... src/CarCardWidget.i"
 	@echo "... src/CarCardWidget.s"
+	@echo "... src/CustomCalendarWidget.o"
+	@echo "... src/CustomCalendarWidget.i"
+	@echo "... src/CustomCalendarWidget.s"
 	@echo "... src/LoginDialog.o"
 	@echo "... src/LoginDialog.i"
 	@echo "... src/LoginDialog.s"

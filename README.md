@@ -1,27 +1,37 @@
 # CarRental (C++/Qt Desktop App)
 
-A simple desktop application for car rental management built with C++ and Qt (Widgets + SQLite). Current MVP includes a Cars tab with CRUD operations backed by SQLite. Customers and Rentals tabs are scaffolded.
+Приложение для аренды автомобилей на C++ и Qt (Widgets + SQLite).
 
-## Prerequisites (Linux)
+## Возможности
+
+- Система регистрации и входа пользователей
+- Просмотр доступных автомобилей с фильтрацией
+- Добавление автомобилей в избранное
+- Бронирование автомобилей на выбранные даты
+- Просмотр истории аренд
+- Конвертация валют (USD, EUR, BYN)
+- Календарь с визуализацией забронированных дат
+
+## Требования (Linux)
 
 - CMake >= 3.21
-- C++17 compiler (gcc/clang)
+- Компилятор C++17 (gcc/clang)
 - Qt6 dev packages (Widgets, Sql)
 
-On Ubuntu/Debian, you can install:
+Установка на Ubuntu/Debian:
 
 ```bash
 sudo apt update
 sudo apt install -y build-essential cmake qt6-base-dev qt6-base-dev-tools
 ```
 
-If Qt6 is unavailable on your distro, install Qt5; CMake falls back automatically:
+Если Qt6 недоступен, можно использовать Qt5 (CMake автоматически переключится):
 
 ```bash
 sudo apt install -y qtbase5-dev
 ```
 
-## Build
+## Сборка
 
 ```bash
 mkdir -p build
@@ -30,26 +40,26 @@ cmake ..
 cmake --build . -j
 ```
 
-The binary will be located at `build/bin/CarRental`.
+Исполняемый файл будет находиться в `build/bin/CarRental`.
 
-## Run
+## Запуск
 
 ```bash
+cd build
 ./bin/CarRental
 ```
 
-The SQLite database is stored under `~/.carrental/app.db` and is auto-created with required tables on first launch.
+База данных SQLite создаётся автоматически в `~/.carrental/app.db` при первом запуске.
 
-## Project Structure
+## Структура проекта
 
-- `src/` C++ sources
-  - `MainWindow.*` main UI logic for Cars tab
-  - `db/Database.*` SQLite connection and schema + Cars model
-- `ui/` Qt Designer `.ui` files
-- `CMakeLists.txt` build configuration
-
-## Next Steps
-
-- Implement Customers and Rentals CRUD
-- Add validation and better dialogs
-- Add filtering, searching, and basic reports
+- `src/` — исходный код C++
+  - `MainWindow.*` — главное окно приложения
+  - `LoginDialog.*` — диалог входа/регистрации
+  - `RentalDialog.*` — диалог бронирования
+  - `CarCardWidget.*` — виджет карточки автомобиля
+  - `CustomCalendarWidget.*` — кастомный календарь
+  - `db/Database.*` — работа с базой данных
+  - `utils/CurrencyConverter.*` — конвертер валют
+- `resources/` — ресурсы (изображения автомобилей)
+- `CMakeLists.txt` — конфигурация сборки

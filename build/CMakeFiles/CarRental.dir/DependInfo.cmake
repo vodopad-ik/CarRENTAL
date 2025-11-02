@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp" "CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o" "gcc" "CMakeFiles/CarRental.dir/CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/mocs_compilation.cpp" "CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/CarCardWidget.cpp" "CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/CarCardWidget.cpp.o.d"
+  "/home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.cpp" "CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/LoginDialog.cpp" "CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.cpp" "CMakeFiles/CarRental.dir/src/MainWindow.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/MainWindow.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.cpp" "CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o.d"

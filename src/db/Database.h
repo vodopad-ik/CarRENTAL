@@ -12,10 +12,17 @@ struct CarInfo {
   QString brand;
   QString model;
   int year;
-  double pricePerHour;
+  double pricePerDay; // цена за день
+  int quantity = 1;   // количество экземпляров (1-10)
   QString description;
   bool available;
   QString imagePath;
+  bool bookmarked = false;
+  // extra specs
+  QString engineType;           // "EV", "Hybrid", "ICE"
+  double engineCapacityL = 0.0; // литры
+  int powerHp = 0;              // л.с.
+  int seats = 0;                // число мест
 };
 
 struct CustomerInfo {
@@ -44,15 +51,22 @@ public:
   bool initialize();
 
   // Cars
-  QSqlQueryModel *getAvailableCars();
-  CarInfo getCar(int id);
+  QSqlQueryModel *getAvailableCars(int customerId = -1);
+  QSqlQueryModel *getBookmarkedCars(int customerId);
+  CarInfo getCar(int id, int customerId = -1);
   bool isCarAvailable(int carId, const QDate &startDate, const QDate &endDate);
+  int getAvailableQuantity(
+      int carId, const QDate &startDate,
+      const QDate &endDate); // Возвращает доступное количество на период
+  bool setBookmarked(int carId, int customerId, bool bookmarked);
 
   // Customers
   int addCustomer(const QString &name, const QString &phone,
-                  const QString &email);
+                  const QString &passwordHash);
   CustomerInfo getCustomer(int id);
   QSqlQueryModel *getCustomersModel();
+  int findCustomerByPhoneAndPassword(const QString &phone,
+                                     const QString &passwordHash);
 
   // Rentals
   int createRental(int carId, int customerId, const QDate &startDate,
@@ -65,16 +79,19 @@ public:
   // Admin functions for cars
   QSqlTableModel *carsModel();
   bool insertCar(const QString &brand, const QString &model, int year,
-                 double pricePerHour, const QString &description = "",
+                 double pricePerDay, int quantity = 1,
+                 const QString &description = "",
                  const QString &imagePath = "");
   bool updateCar(int id, const QString &brand, const QString &model, int year,
-                 double pricePerHour, const QString &description = "",
+                 double pricePerDay, int quantity = 1,
+                 const QString &description = "",
                  const QString &imagePath = "");
   bool deleteCar(int id);
 
 private:
   Database();
   bool createSchema();
+  void ensureImagePaths();
   void setupCarsModel();
 
   QSqlDatabase db_;

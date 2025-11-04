@@ -2,7 +2,6 @@
 #include "db/Database.h"
 #include "utils/CurrencyConverter.h"
 #include <QCoreApplication>
-#include <QCursor>
 #include <QDebug> // Added for qDebug
 #include <QDir>
 #include <QEvent>
@@ -10,7 +9,6 @@
 #include <QFrame>
 #include <QGraphicsDropShadowEffect>
 #include <QHBoxLayout>
-#include <QIcon>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmap>
@@ -48,9 +46,6 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
                 "border-radius: 10px; } "
                 "CarCardWidget > QLabel { background-color: transparent; "
                 "border: none; }");
-
-  // Устанавливаем стандартный курсор для карточки
-  setCursor(QCursor(Qt::ArrowCursor));
 
   auto *layout = new QVBoxLayout(this);
   layout->setSpacing(6);

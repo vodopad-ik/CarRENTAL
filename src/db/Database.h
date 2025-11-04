@@ -29,19 +29,6 @@ struct CustomerInfo {
   int id;
   QString name;
   QString phone;
-  QString email;
-};
-
-struct RentalInfo {
-  int id;
-  int carId;
-  QString carName;
-  int customerId;
-  QString customerName;
-  QDate startDate;
-  QDate endDate;
-  double totalPrice;
-  QString status; // "active", "completed", "cancelled"
 };
 
 class Database {
@@ -54,7 +41,6 @@ public:
   QSqlQueryModel *getAvailableCars(int customerId = -1);
   QSqlQueryModel *getBookmarkedCars(int customerId);
   CarInfo getCar(int id, int customerId = -1);
-  bool isCarAvailable(int carId, const QDate &startDate, const QDate &endDate);
   int getAvailableQuantity(
       int carId, const QDate &startDate,
       const QDate &endDate); // Возвращает доступное количество на период
@@ -63,8 +49,6 @@ public:
   // Customers
   int addCustomer(const QString &name, const QString &phone,
                   const QString &passwordHash);
-  CustomerInfo getCustomer(int id);
-  QSqlQueryModel *getCustomersModel();
   int findCustomerByPhoneAndPassword(const QString &phone,
                                      const QString &passwordHash);
 
@@ -72,21 +56,12 @@ public:
   int createRental(int carId, int customerId, const QDate &startDate,
                    const QDate &endDate, double totalPrice);
   QSqlQueryModel *getCustomerRentals(int customerId);
-  QSqlQueryModel *getAllRentals();
-  bool cancelRental(int rentalId);
-  bool completeRental(int rentalId);
 
   // Admin functions for cars
-  QSqlTableModel *carsModel();
   bool insertCar(const QString &brand, const QString &model, int year,
                  double pricePerDay, int quantity = 1,
                  const QString &description = "",
                  const QString &imagePath = "");
-  bool updateCar(int id, const QString &brand, const QString &model, int year,
-                 double pricePerDay, int quantity = 1,
-                 const QString &description = "",
-                 const QString &imagePath = "");
-  bool deleteCar(int id);
 
 private:
   Database();

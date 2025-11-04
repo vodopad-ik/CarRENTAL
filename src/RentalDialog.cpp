@@ -5,6 +5,7 @@
 
 #include <QDate>
 #include <QFormLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>

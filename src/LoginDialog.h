@@ -15,7 +15,6 @@ public:
 
   QString customerName() const { return name_; }
   QString customerPhone() const { return phone_; }
-  QString customerEmail() const { return email_; }
   int customerId() const { return customerId_; }
 
 private slots:
@@ -34,6 +33,5 @@ private:
 
   QString name_;
   QString phone_;
-  QString email_;
   int customerId_ = -1;
 };

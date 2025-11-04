@@ -66,9 +66,9 @@ include CMakeFiles/CarRental_autogen_timestamp_deps.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/CarRental_autogen_timestamp_deps.dir/progress.make
 
+CMakeFiles/CarRental_autogen_timestamp_deps: /usr/lib/qt6/libexec/uic
 CMakeFiles/CarRental_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
 CMakeFiles/CarRental_autogen_timestamp_deps: /usr/lib/qt6/libexec/moc
-CMakeFiles/CarRental_autogen_timestamp_deps: /usr/lib/qt6/libexec/uic
 CMakeFiles/CarRental_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Sql.so.6.4.2
 
 CarRental_autogen_timestamp_deps: CMakeFiles/CarRental_autogen_timestamp_deps

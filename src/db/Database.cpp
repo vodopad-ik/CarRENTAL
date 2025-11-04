@@ -2,7 +2,6 @@
 
 #include <QDebug>
 #include <QDir>
-#include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 #include <QVariant>
@@ -412,7 +411,6 @@ bool Database::createSchema() {
               "id INTEGER PRIMARY KEY AUTOINCREMENT,"
               "name TEXT NOT NULL,"
               "phone TEXT NOT NULL,"
-              "email TEXT,"
               "password_hash TEXT"
               ")")) {
     return false;
@@ -678,8 +676,6 @@ void Database::setupCarsModel() {
   carsModel_->setHeaderData(4, Qt::Horizontal, QObject::tr("Price / day"));
 }
 
-QSqlTableModel *Database::carsModel() { return carsModel_.get(); }
-
 bool Database::insertCar(const QString &brand, const QString &model, int year,
                          double pricePerDay, int quantity,
                          const QString &description, const QString &imagePath) {
@@ -694,37 +690,6 @@ bool Database::insertCar(const QString &brand, const QString &model, int year,
   q.addBindValue(qBound(1, quantity, 10)); // Ограничиваем от 1 до 10
   q.addBindValue(description);
   q.addBindValue(imagePath);
-  const bool ok = q.exec();
-  if (ok && carsModel_)
-    carsModel_->select();
-  return ok;
-}
-
-bool Database::updateCar(int id, const QString &brand, const QString &model,
-                         int year, double pricePerDay, int quantity,
-                         const QString &description, const QString &imagePath) {
-  QSqlQuery q(db_);
-  q.prepare(
-      "UPDATE cars SET brand=?, model=?, year=?, price_per_day=?, quantity=?, "
-      "description=?, image_path=? WHERE id=?");
-  q.addBindValue(brand);
-  q.addBindValue(model);
-  q.addBindValue(year);
-  q.addBindValue(pricePerDay);
-  q.addBindValue(qBound(1, quantity, 10)); // Ограничиваем от 1 до 10
-  q.addBindValue(description);
-  q.addBindValue(imagePath);
-  q.addBindValue(id);
-  const bool ok = q.exec();
-  if (ok && carsModel_)
-    carsModel_->select();
-  return ok;
-}
-
-bool Database::deleteCar(int id) {
-  QSqlQuery q(db_);
-  q.prepare("DELETE FROM cars WHERE id=?");
-  q.addBindValue(id);
   const bool ok = q.exec();
   if (ok && carsModel_)
     carsModel_->select();
@@ -838,11 +803,6 @@ bool Database::setBookmarked(int carId, int customerId, bool bookmarked) {
   return ok;
 }
 
-bool Database::isCarAvailable(int carId, const QDate &startDate,
-                              const QDate &endDate) {
-  return getAvailableQuantity(carId, startDate, endDate) > 0;
-}
-
 int Database::getAvailableQuantity(int carId, const QDate &startDate,
                                    const QDate &endDate) {
   // Получаем общее количество экземпляров
@@ -853,7 +813,7 @@ int Database::getAvailableQuantity(int carId, const QDate &startDate,
   if (qTotal.exec() && qTotal.next()) {
     totalQuantity = qTotal.value(0).toInt();
   }
-
+  
   // Считаем количество забронированных экземпляров на перекрывающиеся периоды
   QSqlQuery q(db_);
   q.prepare(
@@ -882,8 +842,8 @@ int Database::getAvailableQuantity(int carId, const QDate &startDate,
 int Database::addCustomer(const QString &name, const QString &phone,
                           const QString &passwordHash) {
   QSqlQuery q(db_);
-  q.prepare("INSERT INTO customers (name, phone, email, password_hash) VALUES "
-            "(?, ?, '', ?)");
+  q.prepare("INSERT INTO customers (name, phone, password_hash) VALUES "
+            "(?, ?, ?)");
   q.addBindValue(name);
   q.addBindValue(phone);
   q.addBindValue(passwordHash);
@@ -891,30 +851,6 @@ int Database::addCustomer(const QString &name, const QString &phone,
     return q.lastInsertId().toInt();
   }
   return -1;
-}
-
-CustomerInfo Database::getCustomer(int id) {
-  CustomerInfo info;
-  QSqlQuery q(db_);
-  q.prepare("SELECT id, name, phone, email FROM customers WHERE id = ?");
-  q.addBindValue(id);
-  if (q.exec() && q.next()) {
-    info.id = q.value(0).toInt();
-    info.name = q.value(1).toString();
-    info.phone = q.value(2).toString();
-    info.email = q.value(3).toString();
-  }
-  return info;
-}
-
-QSqlQueryModel *Database::getCustomersModel() {
-  QSqlQueryModel *model = new QSqlQueryModel();
-  model->setQuery("SELECT id, name, phone, email FROM customers ORDER BY name",
-                  db_);
-  model->setHeaderData(1, Qt::Horizontal, "Имя");
-  model->setHeaderData(2, Qt::Horizontal, "Телефон");
-  model->setHeaderData(3, Qt::Horizontal, "Email");
-  return model;
 }
 
 int Database::findCustomerByPhoneAndPassword(const QString &phone,
@@ -960,36 +896,4 @@ QSqlQueryModel *Database::getCustomerRentals(int customerId) {
   model->setHeaderData(4, Qt::Horizontal, "Сумма (руб)");
   model->setHeaderData(5, Qt::Horizontal, "Статус");
   return model;
-}
-
-QSqlQueryModel *Database::getAllRentals() {
-  QSqlQueryModel *model = new QSqlQueryModel();
-  model->setQuery(
-      "SELECT r.id, c.brand || ' ' || c.model as car_name, "
-      "cust.name, r.start_date, r.end_date, r.total_price, r.status "
-      "FROM rentals r JOIN cars c ON r.car_id = c.id "
-      "JOIN customers cust ON r.customer_id = cust.id "
-      "ORDER BY r.start_date DESC",
-      db_);
-  model->setHeaderData(1, Qt::Horizontal, "Автомобиль");
-  model->setHeaderData(2, Qt::Horizontal, "Клиент");
-  model->setHeaderData(3, Qt::Horizontal, "Дата начала");
-  model->setHeaderData(4, Qt::Horizontal, "Дата окончания");
-  model->setHeaderData(5, Qt::Horizontal, "Сумма (руб)");
-  model->setHeaderData(6, Qt::Horizontal, "Статус");
-  return model;
-}
-
-bool Database::cancelRental(int rentalId) {
-  QSqlQuery q(db_);
-  q.prepare("UPDATE rentals SET status = 'cancelled' WHERE id = ?");
-  q.addBindValue(rentalId);
-  return q.exec();
-}
-
-bool Database::completeRental(int rentalId) {
-  QSqlQuery q(db_);
-  q.prepare("UPDATE rentals SET status = 'completed' WHERE id = ?");
-  q.addBindValue(rentalId);
-  return q.exec();
 }

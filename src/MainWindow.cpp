@@ -6,7 +6,6 @@
 
 #include <QApplication>
 #include <QComboBox>
-#include <QCursor>
 #include <QDialog>
 #include <QDir>
 #include <QDoubleSpinBox>
@@ -86,9 +85,6 @@ MainWindow::~MainWindow() {
 void MainWindow::setupUI() {
   centralWidget_ = new QWidget(this);
   setCentralWidget(centralWidget_);
-
-  // Устанавливаем стандартный курсор для главного окна
-  setCursor(QCursor(Qt::ArrowCursor));
 
   auto *mainLayout = new QVBoxLayout(centralWidget_);
   mainLayout->setSpacing(0);

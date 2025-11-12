@@ -2,19 +2,19 @@
 #include "CarCardWidget.h"
 #include "LoginDialog.h"
 #include "RentalDialog.h"
+#include "RentalsModel.h"
+#include "controllers/CarsCatalogController.h"
 #include "db/Database.h"
+#include "utils/SessionManager.h"
+#include "views/CarCardsView.h"
 
 #include <QApplication>
 #include <QComboBox>
 #include <QDialog>
-#include <QDir>
 #include <QDoubleSpinBox>
-#include <QFile>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QLabel>
 #include <QLineEdit>
 #include <QList>
@@ -31,49 +31,15 @@ MainWindow::MainWindow(QWidget *parent)
   setWindowTitle("Аренда автомобилей");
   resize(1200, 800);
 
-  // Initialize database
+  catalogController_ = std::make_unique<CarsCatalogController>();
+
   if (!Database::instance().initialize()) {
     QMessageBox::critical(this, "Ошибка",
                           "Не удалось инициализировать базу данных");
   }
 
   setupUI();
-  // попытка автологина
-  QFile sessionFile(QDir::homePath() + "/.carrental/session.json");
-  if (sessionFile.exists() && sessionFile.open(QIODevice::ReadOnly)) {
-    auto doc = QJsonDocument::fromJson(sessionFile.readAll());
-    sessionFile.close();
-    int sid = doc.object().value("customerId").toInt(-1);
-    QString sname = doc.object().value("name").toString();
-    if (sid > 0) {
-      currentCustomerId_ = sid;
-      currentCustomerName_ = sname;
-      welcomeLabel_->setText(
-          QString("Добро пожаловать, %1!").arg(currentCustomerName_));
-      tabs_->setVisible(true);
-      myRentalsBtn_->setVisible(true);
-      logoutBtn_->setVisible(true);
-      loadCars();
-      // Предзагружаем аренды, чтобы они были готовы при переключении на вкладку
-      // Загружаем данные без переключения вкладки
-      if (rentalsModel_) {
-        delete rentalsModel_;
-        rentalsModel_ = nullptr;
-      }
-      rentalsModel_ =
-          Database::instance().getCustomerRentals(currentCustomerId_);
-      rentalsTable_->setModel(rentalsModel_);
-      rentalsTable_->resizeColumnsToContents();
-      rentalsTable_->horizontalHeader()->setStretchLastSection(true);
-      // Убеждаемся, что активна вкладка "Автомобили" (первая вкладка)
-      tabs_->setCurrentIndex(0);
-      this->show(); // Показываем окно при успешном автологине
-    } else {
-      showLogin();
-    }
-  } else {
-    showLogin();
-  }
+  tryAutoLogin();
 }
 
 MainWindow::~MainWindow() {
@@ -90,7 +56,6 @@ void MainWindow::setupUI() {
   mainLayout->setSpacing(0);
   mainLayout->setContentsMargins(0, 0, 0, 0);
 
-  // Header
   auto *header = new QWidget(this);
   header->setStyleSheet("background-color: #2196F3; padding: 15px;");
   auto *headerLayout = new QHBoxLayout(header);
@@ -103,7 +68,7 @@ void MainWindow::setupUI() {
   headerLayout->addStretch();
 
   myRentalsBtn_ = new QPushButton("Мои аренды", header);
-  // Единый стиль кнопок в шапке
+
   const QString headerBtnStyle =
       "QPushButton { background-color: white; color: #2196F3; padding: 8px "
       "16px; border-radius: 6px; }"
@@ -114,7 +79,6 @@ void MainWindow::setupUI() {
   myRentalsBtn_->setMinimumHeight(36);
   headerLayout->addWidget(myRentalsBtn_);
 
-  // Currency selector
   currencyBox_ = new QComboBox(header);
   currencyBox_->addItem("USD");
   currencyBox_->addItem("EUR");
@@ -137,15 +101,12 @@ void MainWindow::setupUI() {
 
   mainLayout->addWidget(header);
 
-  // Tabs
   tabs_ = new QTabWidget(this);
   tabs_->setStyleSheet("QTabWidget::pane { border: none; }");
 
-  // Cars tab
   auto *carsTab = new QWidget();
   auto *carsLayout = new QVBoxLayout(carsTab);
 
-  // Search bar
   auto *searchLayout = new QHBoxLayout();
   searchEdit_ = new QLineEdit();
   searchEdit_->setPlaceholderText("Поиск по марке, модели...");
@@ -155,7 +116,6 @@ void MainWindow::setupUI() {
       "QLineEdit:focus { border-color: #2196F3; }");
   searchLayout->addWidget(searchEdit_);
 
-  // Фильтры
   engineTypeFilter_ = new QComboBox();
   engineTypeFilter_->addItem("Любой");
   engineTypeFilter_->addItem("EV");
@@ -186,7 +146,6 @@ void MainWindow::setupUI() {
 
   carsLayout->addLayout(searchLayout);
 
-  // Scroll area for cars
   scrollArea_ = new QScrollArea();
   scrollArea_->setWidgetResizable(true);
   scrollArea_->setStyleSheet(
@@ -197,12 +156,10 @@ void MainWindow::setupUI() {
   auto *gridLayout = new QGridLayout(carsContainer_);
   gridLayout->setSpacing(20);
   gridLayout->setContentsMargins(20, 20, 20, 20);
-  // Отключаем растягивание колонок, чтобы карточки не растягивались при малом
-  // количестве
+
   for (int i = 0; i < 3; ++i) {
     gridLayout->setColumnStretch(i, 0);
-    gridLayout->setColumnMinimumWidth(
-        i, 320); // Минимальная ширина колонки = минимальная ширина карточки
+    gridLayout->setColumnMinimumWidth(i, 320);
   }
 
   scrollArea_->setWidget(carsContainer_);
@@ -210,7 +167,6 @@ void MainWindow::setupUI() {
 
   tabs_->addTab(carsTab, "Автомобили");
 
-  // Bookmarks tab
   bookmarksContainer_ = new QWidget();
   auto *bmLayoutOuter = new QVBoxLayout(bookmarksContainer_);
   auto *bmScroll = new QScrollArea();
@@ -222,18 +178,15 @@ void MainWindow::setupUI() {
   auto *bmGrid = new QGridLayout(bmInner_);
   bmGrid->setSpacing(20);
   bmGrid->setContentsMargins(20, 20, 20, 20);
-  // Отключаем растягивание колонок, чтобы карточки не растягивались при малом
-  // количестве
+
   for (int i = 0; i < 3; ++i) {
     bmGrid->setColumnStretch(i, 0);
-    bmGrid->setColumnMinimumWidth(
-        i, 320); // Минимальная ширина колонки = минимальная ширина карточки
+    bmGrid->setColumnMinimumWidth(i, 320);
   }
   bmScroll->setWidget(bmInner_);
   bmLayoutOuter->addWidget(bmScroll);
   tabs_->addTab(bookmarksContainer_, "Закладки");
 
-  // My Rentals tab
   rentalsWidget_ = new QWidget();
   auto *rentalsLayout = new QVBoxLayout(rentalsWidget_);
   rentalsTable_ = new QTableView();
@@ -243,7 +196,11 @@ void MainWindow::setupUI() {
 
   mainLayout->addWidget(tabs_);
 
-  // Connections
+  carsView_ = std::make_unique<CarCardsView>(carsContainer_, 3);
+  carsView_->setCurrency(currentCurrency_);
+  bookmarksView_ = std::make_unique<CarCardsView>(bmInner_, 3);
+  bookmarksView_->setCurrency(currentCurrency_);
+
   connect(currencyBox_, &QComboBox::currentTextChanged, this,
           &MainWindow::onCurrencyChanged);
   connect(myRentalsBtn_, &QPushButton::clicked, this,
@@ -255,189 +212,112 @@ void MainWindow::setupUI() {
       onShowMyRentals();
   });
   connect(logoutBtn_, &QPushButton::clicked, this, &MainWindow::onLogout);
-  connect(searchEdit_, &QLineEdit::textChanged, this,
-          &MainWindow::onSearchChanged);
-  connect(engineTypeFilter_, &QComboBox::currentTextChanged, this,
-          [this](const QString &) { loadCars(); });
-  connect(seatsMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
-          [this](int) { loadCars(); });
-  connect(powerMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
-          [this](int) { loadCars(); });
-  connect(capacityMinFilter_, qOverload<double>(&QDoubleSpinBox::valueChanged),
-          this, [this](double) { loadCars(); });
+  connectFilters();
+}
 
-  // Initially hide tabs until login
-  tabs_->setVisible(false);
-  myRentalsBtn_->setVisible(false);
-  logoutBtn_->setVisible(false);
+void MainWindow::tryAutoLogin() {
+  SessionManager::SessionData session;
+  if (SessionManager::instance().loadSession(session) &&
+      session.customerId > 0) {
+    currentCustomerId_ = session.customerId;
+    currentCustomerName_ = session.name;
+    welcomeLabel_->setText(
+        QString("Добро пожаловать, %1!").arg(currentCustomerName_));
+    tabs_->setVisible(true);
+    myRentalsBtn_->setVisible(true);
+    logoutBtn_->setVisible(true);
+    loadCars();
+    Database::instance().updateExpiredRentals();
+    if (rentalsModel_) {
+      delete rentalsModel_;
+      rentalsModel_ = nullptr;
+    }
+    rentalsModel_ = new RentalsModel(this);
+    rentalsModel_->setCurrency(currentCurrency_);
+    rentalsModel_->refresh(currentCustomerId_);
+    rentalsTable_->setModel(rentalsModel_);
+    rentalsTable_->resizeColumnsToContents();
+    rentalsTable_->horizontalHeader()->setStretchLastSection(true);
+    tabs_->setCurrentIndex(0);
+    this->show();
+  } else {
+    showLogin();
+  }
 }
 
 void MainWindow::showLogin() {
-  this->hide(); // Скрываем главное окно перед показом диалога входа
+  this->hide();
   LoginDialog dialog(this);
   if (dialog.exec() == QDialog::Accepted) {
     currentCustomerId_ = dialog.customerId();
     currentCustomerName_ = dialog.customerName();
     welcomeLabel_->setText(
         QString("Добро пожаловать, %1!").arg(currentCustomerName_));
-    // сохранить сессию
-    QJsonObject obj;
-    obj["customerId"] = currentCustomerId_;
-    obj["name"] = currentCustomerName_;
-    QJsonDocument doc(obj);
-    QFile session(QDir::homePath() + "/.carrental/session.json");
-    QDir().mkpath(QDir::homePath() + "/.carrental");
-    if (session.open(QIODevice::WriteOnly)) {
-      session.write(doc.toJson());
-      session.close();
-    }
+    SessionManager::instance().saveSession(currentCustomerId_,
+                                           currentCustomerName_);
     tabs_->setVisible(true);
     myRentalsBtn_->setVisible(true);
     logoutBtn_->setVisible(true);
     loadCars();
-    // Предзагружаем аренды, чтобы они были готовы при переключении на вкладку
-    // Загружаем данные без переключения вкладки
+
+    Database::instance().updateExpiredRentals();
     if (rentalsModel_) {
       delete rentalsModel_;
       rentalsModel_ = nullptr;
     }
-    rentalsModel_ = Database::instance().getCustomerRentals(currentCustomerId_);
+    rentalsModel_ = new RentalsModel(this);
+    rentalsModel_->setCurrency(currentCurrency_);
+    rentalsModel_->refresh(currentCustomerId_);
     rentalsTable_->setModel(rentalsModel_);
     rentalsTable_->resizeColumnsToContents();
     rentalsTable_->horizontalHeader()->setStretchLastSection(true);
-    // Убеждаемся, что активна вкладка "Автомобили" (первая вкладка)
+
     tabs_->setCurrentIndex(0);
     this->show();
   } else {
-    // Если диалог закрыт без входа, закрываем приложение
+
     QApplication::quit();
   }
 }
 
 void MainWindow::loadCars() {
-  // Clear existing cards
-  for (auto *card : carCards_) {
-    card->deleteLater();
-  }
-  carCards_.clear();
+  if (!catalogController_)
+    catalogController_ = std::make_unique<CarsCatalogController>();
 
-  auto *model = Database::instance().getAvailableCars(currentCustomerId_);
-  auto *gridLayout = qobject_cast<QGridLayout *>(carsContainer_->layout());
+  if (currentCustomerId_ <= 0)
+    return;
 
-  QString searchText = searchEdit_->text().toLower();
-  int row = 0, col = 0;
-  const int colsPerRow = 3;
+  catalogController_->setFilters(currentFilters());
+  const QList<CarInfo> cars =
+      catalogController_->loadAvailable(currentCustomerId_);
 
-  for (int i = 0; i < model->rowCount(); ++i) {
-    CarInfo car;
-    car.id = model->data(model->index(i, 0)).toInt();
-    car.brand = model->data(model->index(i, 1)).toString();
-    car.model = model->data(model->index(i, 2)).toString();
-    car.year = model->data(model->index(i, 3)).toInt();
-    car.pricePerDay = model->data(model->index(i, 4)).toDouble();
-    car.description = model->data(model->index(i, 5)).toString();
-    car.available = model->data(model->index(i, 6)).toBool();
-    car.imagePath = model->data(model->index(i, 7)).toString();
-    if (model->columnCount() >= 14) {
-      car.bookmarked = model->data(model->index(i, 8)).toInt() != 0;
-      car.engineType = model->data(model->index(i, 9)).toString();
-      car.engineCapacityL = model->data(model->index(i, 10)).toDouble();
-      car.powerHp = model->data(model->index(i, 11)).toInt();
-      car.seats = model->data(model->index(i, 12)).toInt();
-      car.quantity = model->data(model->index(i, 13)).toInt();
-    } else {
-      car.bookmarked = model->data(model->index(i, 8)).toInt() != 0;
-      car.quantity = 1; // По умолчанию 1 экземпляр
-    }
-    QString carText =
-        (car.brand + " " + car.model + " " + QString::number(car.year))
-            .toLower();
-    if (!searchText.isEmpty() && !carText.contains(searchText)) {
-      continue;
-    }
-
-    // Фильтрация по дополнительным полям
-    const QString typeSel = engineTypeFilter_->currentText();
-    if (typeSel != "Любой" && !car.engineType.isEmpty() &&
-        car.engineType != typeSel)
-      continue;
-    if (seatsMinFilter_->value() > 0 && car.seats < seatsMinFilter_->value())
-      continue;
-    if (powerMinFilter_->value() > 0 && car.powerHp < powerMinFilter_->value())
-      continue;
-    if (capacityMinFilter_->value() > 0.0 &&
-        car.engineCapacityL < capacityMinFilter_->value())
-      continue;
-
-    auto *card = new CarCardWidget(car, currentCurrency_, carsContainer_);
+  carsView_->setCurrency(currentCurrency_);
+  carsView_->showCars(cars, [this](CarCardWidget *card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
             &MainWindow::onBookmarkToggled);
-    gridLayout->addWidget(card, row, col, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    carCards_.append(card);
-
-    col++;
-    if (col >= colsPerRow) {
-      col = 0;
-      row++;
-    }
-  }
-
-  delete model;
+  });
 }
 
 void MainWindow::loadBookmarks() {
-  // clear children of bmInner_
-  auto *grid = qobject_cast<QGridLayout *>(bmInner_->layout());
-  if (!grid)
-    grid = new QGridLayout(bmInner_);
-  QLayoutItem *child;
-  while ((child = grid->takeAt(0)) != nullptr) {
-    if (auto w = child->widget())
-      w->deleteLater();
-    delete child;
-  }
-  auto *model = Database::instance().getBookmarkedCars(currentCustomerId_);
-  int row = 0, col = 0;
-  const int colsPerRow = 3;
-  for (int i = 0; i < model->rowCount(); ++i) {
-    CarInfo car;
-    car.id = model->data(model->index(i, 0)).toInt();
-    car.brand = model->data(model->index(i, 1)).toString();
-    car.model = model->data(model->index(i, 2)).toString();
-    car.year = model->data(model->index(i, 3)).toInt();
-    car.pricePerDay = model->data(model->index(i, 4)).toDouble();
-    car.description = model->data(model->index(i, 5)).toString();
-    car.available = model->data(model->index(i, 6)).toBool();
-    car.imagePath = model->data(model->index(i, 7)).toString();
-    car.bookmarked = true; // Всегда true в закладках
-    // getBookmarkedCars возвращает 13 колонок: id, brand, model, year,
-    // price_per_day, description, available, image_path, engine_type,
-    // engine_capacity, power_hp, seats, quantity (без поля bookmarked, так как
-    // все здесь уже в закладках)
-    if (model->columnCount() >= 13) {
-      car.engineType =
-          model->data(model->index(i, 8)).toString(); // engine_type
-      car.engineCapacityL =
-          model->data(model->index(i, 9)).toDouble();         // engine_capacity
-      car.powerHp = model->data(model->index(i, 10)).toInt(); // power_hp
-      car.seats = model->data(model->index(i, 11)).toInt();   // seats
-      car.quantity = model->data(model->index(i, 12)).toInt(); // quantity
-    }
-    auto *card = new CarCardWidget(car, currentCurrency_, bmInner_);
+  if (!catalogController_)
+    catalogController_ = std::make_unique<CarsCatalogController>();
+
+  if (currentCustomerId_ <= 0)
+    return;
+
+  catalogController_->setFilters(currentFilters());
+  const QList<CarInfo> cars =
+      catalogController_->loadBookmarked(currentCustomerId_);
+
+  bookmarksView_->setCurrency(currentCurrency_);
+  bookmarksView_->showCars(cars, [this](CarCardWidget *card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
             &MainWindow::onBookmarkToggled);
-    grid->addWidget(card, row, col, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    col++;
-    if (col >= colsPerRow) {
-      col = 0;
-      row++;
-    }
-  }
-  delete model;
+  });
 }
 
 void MainWindow::onCarRentClicked(int carId) {
@@ -448,23 +328,28 @@ void MainWindow::onCarRentClicked(int carId) {
   RentalDialog dialog(car, currentCustomerId_, currentCurrency_, this);
   if (dialog.exec() == QDialog::Accepted) {
     loadCars();
+
+    Database::instance().updateExpiredRentals();
+    if (rentalsModel_) {
+      rentalsModel_->refresh(currentCustomerId_);
+    } else {
+      rentalsModel_ = new RentalsModel(this);
+      rentalsModel_->setCurrency(currentCurrency_);
+      rentalsModel_->refresh(currentCustomerId_);
+      rentalsTable_->setModel(rentalsModel_);
+    }
     onShowMyRentals();
   }
 }
 
 void MainWindow::onBookmarkToggled(int carId, bool bookmarked) {
   Database::instance().setBookmarked(carId, currentCustomerId_, bookmarked);
-  if (tabs_->currentIndex() == tabs_->indexOf(bookmarksContainer_)) {
-    loadBookmarks();
-  }
-  // Оптимизация: обновляем только нужную карточку на главной вкладке
-  // вместо пересоздания всех карточек
-  for (auto *card : carCards_) {
-    if (card->carId() == carId) {
+  carsView_->forEachCard([&](CarCardWidget *card) {
+    if (card->carId() == carId)
       card->updateBookmarkStatus(bookmarked);
-      break;
-    }
-  }
+  });
+
+  loadBookmarks();
 }
 
 void MainWindow::onShowMyRentals() {
@@ -472,11 +357,15 @@ void MainWindow::onShowMyRentals() {
   if (rentalsIdx >= 0) {
     tabs_->setCurrentIndex(rentalsIdx);
   }
+
+  Database::instance().updateExpiredRentals();
   if (rentalsModel_) {
     delete rentalsModel_;
     rentalsModel_ = nullptr;
   }
-  rentalsModel_ = Database::instance().getCustomerRentals(currentCustomerId_);
+  rentalsModel_ = new RentalsModel(this);
+  rentalsModel_->setCurrency(currentCurrency_);
+  rentalsModel_->refresh(currentCustomerId_);
   rentalsTable_->setModel(rentalsModel_);
   rentalsTable_->resizeColumnsToContents();
   rentalsTable_->horizontalHeader()->setStretchLastSection(true);
@@ -484,17 +373,20 @@ void MainWindow::onShowMyRentals() {
 
 void MainWindow::onShowBookmarks() { loadBookmarks(); }
 
-void MainWindow::onSearchChanged() { loadCars(); }
-
 void MainWindow::onCurrencyChanged() {
   currentCurrency_ = currencyBox_->currentText();
   updateCurrencyForAllCards();
+
+  if (rentalsModel_) {
+    rentalsModel_->setCurrency(currentCurrency_);
+  }
 }
 
 void MainWindow::updateCurrencyForAllCards() {
-  for (auto *card : carCards_) {
-    card->updateCurrency(currentCurrency_);
-  }
+  if (carsView_)
+    carsView_->setCurrency(currentCurrency_);
+  if (bookmarksView_)
+    bookmarksView_->setCurrency(currentCurrency_);
 }
 
 void MainWindow::onLogout() {
@@ -507,7 +399,36 @@ void MainWindow::onLogout() {
     delete rentalsModel_;
     rentalsModel_ = nullptr;
   }
-  QFile::remove(QDir::homePath() + "/.carrental/session.json");
+  SessionManager::instance().clearSession();
   this->hide();
   showLogin();
 }
+void MainWindow::connectFilters() {
+  auto applyFilters = [this]() {
+    loadCars();
+    if (tabs_->currentWidget() == bookmarksContainer_)
+      loadBookmarks();
+  };
+
+  connect(searchEdit_, &QLineEdit::textChanged, this,
+          [applyFilters](const QString &) { applyFilters(); });
+  connect(engineTypeFilter_, &QComboBox::currentTextChanged, this,
+          [applyFilters](const QString &) { applyFilters(); });
+  connect(seatsMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
+          [applyFilters](int) { applyFilters(); });
+  connect(powerMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
+          [applyFilters](int) { applyFilters(); });
+  connect(capacityMinFilter_, qOverload<double>(&QDoubleSpinBox::valueChanged),
+          this, [applyFilters](double) { applyFilters(); });
+}
+
+CatalogFilters MainWindow::currentFilters() const {
+  CatalogFilters getFilters;
+  getFilters.searchText = searchEdit_->text();
+  getFilters.engineType = engineTypeFilter_->currentText();
+  getFilters.seatsMin = seatsMinFilter_->value();
+  getFilters.powerMin = powerMinFilter_->value();
+  getFilters.capacityMin = capacityMinFilter_->value();
+  return getFilters;
+}
+

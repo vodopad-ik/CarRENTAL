@@ -388,4 +388,17 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_RentalsModel.cpp \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/RentalsModel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QModelIndex \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQueryModel \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlglobal.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/qtsql-config.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlexports.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h

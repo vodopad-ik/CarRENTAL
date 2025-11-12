@@ -6,20 +6,9 @@ CurrencyConverter &CurrencyConverter::instance() {
 }
 
 CurrencyConverter::CurrencyConverter() {
-  // Set exchange rates (example rates, in real app would fetch from API)
-  usdToEur_ = 0.92; // 1 USD = 0.92 EUR
-  usdToByn_ = 3.28; // 1 USD = 3.28 BYN
-}
 
-double CurrencyConverter::convert(double amount, Currency from,
-                                  Currency to) const {
-  if (from == to)
-    return amount;
-
-  // Convert to base (USD) first
-  double usdAmount = toBase(amount, from);
-  // Then convert to target
-  return fromBase(usdAmount, to);
+  usdToEur_ = 0.92;
+  usdToByn_ = 3.28;
 }
 
 double CurrencyConverter::fromBase(double usdAmount, Currency to) const {

@@ -61,7 +61,6 @@
 #define __BFLT16_MAX_10_EXP__ 38
 #define __BFLT16_MAX_EXP__ 128
 #define __LDBL_IS_IEC_60559__ 1
-#define QT_NO_DEBUG 1
 #define __FLT64X_HAS_QUIET_NAN__ 1
 #define __UINT_LEAST8_MAX__ 0xff
 #define __GCC_ATOMIC_BOOL_LOCK_FREE 2
@@ -206,7 +205,7 @@
 #define __FLT16_MIN_10_EXP__ (-4)
 #define __FLT64X_DECIMAL_DIG__ 21
 #define __DEC128_MIN__ 1E-6143DL
-#define __REGISTER_PREFIX__ 
+#define __REGISTER_PREFIX__
 #define __UINT16_MAX__ 0xffff
 #define __FLT128_HAS_INFINITY__ 1
 #define __FLT32_MIN__ 1.17549435082228750796873653722224568e-38F32
@@ -264,7 +263,7 @@
 #define __SIG_ATOMIC_MAX__ 0x7fffffff
 #define __cpp_constexpr 201603L
 #define __GCC_ATOMIC_WCHAR_T_LOCK_FREE 2
-#define __USER_LABEL_PREFIX__ 
+#define __USER_LABEL_PREFIX__
 #define __STDC_IEC_60559_BFP__ 201404L
 #define __SIZEOF_PTRDIFF_T__ 8
 #define __FLT64X_HAS_INFINITY__ 1

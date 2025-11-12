@@ -1,10 +1,4 @@
-/****************************************************************************
-** Meta object code from reading C++ file 'RentalDialog.h'
-**
-** Created by: The Qt Meta Object Compiler version 68 (Qt 6.4.2)
-**
-** WARNING! All changes made in this file will be lost!
-*****************************************************************************/
+
 
 #include <memory>
 #include "../../../src/RentalDialog.h"
@@ -34,13 +28,13 @@ struct qt_meta_stringdata_RentalDialog_t {
     char stringdata3[12];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(sizeof(qt_meta_stringdata_RentalDialog_t::offsetsAndSizes) + ofs), len 
+    uint(sizeof(qt_meta_stringdata_RentalDialog_t::offsetsAndSizes) + ofs), len
 Q_CONSTINIT static const qt_meta_stringdata_RentalDialog_t qt_meta_stringdata_RentalDialog = {
     {
-        QT_MOC_LITERAL(0, 12),  // "RentalDialog"
-        QT_MOC_LITERAL(13, 6),  // "onRent"
-        QT_MOC_LITERAL(20, 0),  // ""
-        QT_MOC_LITERAL(21, 11)   // "updatePrice"
+        QT_MOC_LITERAL(0, 12),
+        QT_MOC_LITERAL(13, 6),
+        QT_MOC_LITERAL(20, 0),
+        QT_MOC_LITERAL(21, 11)
     },
     "RentalDialog",
     "onRent",
@@ -48,30 +42,30 @@ Q_CONSTINIT static const qt_meta_stringdata_RentalDialog_t qt_meta_stringdata_Re
     "updatePrice"
 };
 #undef QT_MOC_LITERAL
-} // unnamed namespace
+}
 
 Q_CONSTINIT static const uint qt_meta_data_RentalDialog[] = {
 
- // content:
-      10,       // revision
-       0,       // classname
-       0,    0, // classinfo
-       2,   14, // methods
-       0,    0, // properties
-       0,    0, // enums/sets
-       0,    0, // constructors
-       0,       // flags
-       0,       // signalCount
 
- // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   26,    2, 0x08,    1 /* Private */,
-       3,    0,   27,    2, 0x08,    2 /* Private */,
+      10,
+       0,
+       0,    0,
+       2,   14,
+       0,    0,
+       0,    0,
+       0,    0,
+       0,
+       0,
 
- // slots: parameters
+
+       1,    0,   26,    2, 0x08,    1 ,
+       3,    0,   27,    2, 0x08,    2 ,
+
+
     QMetaType::Void,
     QMetaType::Void,
 
-       0        // eod
+       0
 };
 
 Q_CONSTINIT const QMetaObject RentalDialog::staticMetaObject = { {
@@ -81,11 +75,11 @@ Q_CONSTINIT const QMetaObject RentalDialog::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
     qt_incomplete_metaTypeArray<qt_meta_stringdata_RentalDialog_t,
-        // Q_OBJECT / Q_GADGET
+
         QtPrivate::TypeAndForceComplete<RentalDialog, std::true_type>,
-        // method 'onRent'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'updatePrice'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr

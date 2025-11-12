@@ -323,6 +323,78 @@ src/RentalDialog.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/RentalDialog.cpp.s
 .PHONY : src/RentalDialog.cpp.s
 
+src/RentalsModel.o: src/RentalsModel.cpp.o
+.PHONY : src/RentalsModel.o
+
+# target to build an object file
+src/RentalsModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/RentalsModel.cpp.o
+.PHONY : src/RentalsModel.cpp.o
+
+src/RentalsModel.i: src/RentalsModel.cpp.i
+.PHONY : src/RentalsModel.i
+
+# target to preprocess a source file
+src/RentalsModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/RentalsModel.cpp.i
+.PHONY : src/RentalsModel.cpp.i
+
+src/RentalsModel.s: src/RentalsModel.cpp.s
+.PHONY : src/RentalsModel.s
+
+# target to generate assembly for a file
+src/RentalsModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/RentalsModel.cpp.s
+.PHONY : src/RentalsModel.cpp.s
+
+src/controllers/CarsCatalogController.o: src/controllers/CarsCatalogController.cpp.o
+.PHONY : src/controllers/CarsCatalogController.o
+
+# target to build an object file
+src/controllers/CarsCatalogController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/controllers/CarsCatalogController.cpp.o
+.PHONY : src/controllers/CarsCatalogController.cpp.o
+
+src/controllers/CarsCatalogController.i: src/controllers/CarsCatalogController.cpp.i
+.PHONY : src/controllers/CarsCatalogController.i
+
+# target to preprocess a source file
+src/controllers/CarsCatalogController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/controllers/CarsCatalogController.cpp.i
+.PHONY : src/controllers/CarsCatalogController.cpp.i
+
+src/controllers/CarsCatalogController.s: src/controllers/CarsCatalogController.cpp.s
+.PHONY : src/controllers/CarsCatalogController.s
+
+# target to generate assembly for a file
+src/controllers/CarsCatalogController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/controllers/CarsCatalogController.cpp.s
+.PHONY : src/controllers/CarsCatalogController.cpp.s
+
+src/db/CarSeeder.o: src/db/CarSeeder.cpp.o
+.PHONY : src/db/CarSeeder.o
+
+# target to build an object file
+src/db/CarSeeder.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/CarSeeder.cpp.o
+.PHONY : src/db/CarSeeder.cpp.o
+
+src/db/CarSeeder.i: src/db/CarSeeder.cpp.i
+.PHONY : src/db/CarSeeder.i
+
+# target to preprocess a source file
+src/db/CarSeeder.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/CarSeeder.cpp.i
+.PHONY : src/db/CarSeeder.cpp.i
+
+src/db/CarSeeder.s: src/db/CarSeeder.cpp.s
+.PHONY : src/db/CarSeeder.s
+
+# target to generate assembly for a file
+src/db/CarSeeder.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/CarSeeder.cpp.s
+.PHONY : src/db/CarSeeder.cpp.s
+
 src/db/Database.o: src/db/Database.cpp.o
 .PHONY : src/db/Database.o
 
@@ -346,6 +418,102 @@ src/db/Database.s: src/db/Database.cpp.s
 src/db/Database.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/Database.cpp.s
 .PHONY : src/db/Database.cpp.s
+
+src/db/SchemaManager.o: src/db/SchemaManager.cpp.o
+.PHONY : src/db/SchemaManager.o
+
+# target to build an object file
+src/db/SchemaManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/SchemaManager.cpp.o
+.PHONY : src/db/SchemaManager.cpp.o
+
+src/db/SchemaManager.i: src/db/SchemaManager.cpp.i
+.PHONY : src/db/SchemaManager.i
+
+# target to preprocess a source file
+src/db/SchemaManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/SchemaManager.cpp.i
+.PHONY : src/db/SchemaManager.cpp.i
+
+src/db/SchemaManager.s: src/db/SchemaManager.cpp.s
+.PHONY : src/db/SchemaManager.s
+
+# target to generate assembly for a file
+src/db/SchemaManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/SchemaManager.cpp.s
+.PHONY : src/db/SchemaManager.cpp.s
+
+src/db/repositories/CarsRepository.o: src/db/repositories/CarsRepository.cpp.o
+.PHONY : src/db/repositories/CarsRepository.o
+
+# target to build an object file
+src/db/repositories/CarsRepository.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/CarsRepository.cpp.o
+.PHONY : src/db/repositories/CarsRepository.cpp.o
+
+src/db/repositories/CarsRepository.i: src/db/repositories/CarsRepository.cpp.i
+.PHONY : src/db/repositories/CarsRepository.i
+
+# target to preprocess a source file
+src/db/repositories/CarsRepository.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/CarsRepository.cpp.i
+.PHONY : src/db/repositories/CarsRepository.cpp.i
+
+src/db/repositories/CarsRepository.s: src/db/repositories/CarsRepository.cpp.s
+.PHONY : src/db/repositories/CarsRepository.s
+
+# target to generate assembly for a file
+src/db/repositories/CarsRepository.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/CarsRepository.cpp.s
+.PHONY : src/db/repositories/CarsRepository.cpp.s
+
+src/db/repositories/CustomersRepository.o: src/db/repositories/CustomersRepository.cpp.o
+.PHONY : src/db/repositories/CustomersRepository.o
+
+# target to build an object file
+src/db/repositories/CustomersRepository.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/CustomersRepository.cpp.o
+.PHONY : src/db/repositories/CustomersRepository.cpp.o
+
+src/db/repositories/CustomersRepository.i: src/db/repositories/CustomersRepository.cpp.i
+.PHONY : src/db/repositories/CustomersRepository.i
+
+# target to preprocess a source file
+src/db/repositories/CustomersRepository.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/CustomersRepository.cpp.i
+.PHONY : src/db/repositories/CustomersRepository.cpp.i
+
+src/db/repositories/CustomersRepository.s: src/db/repositories/CustomersRepository.cpp.s
+.PHONY : src/db/repositories/CustomersRepository.s
+
+# target to generate assembly for a file
+src/db/repositories/CustomersRepository.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/CustomersRepository.cpp.s
+.PHONY : src/db/repositories/CustomersRepository.cpp.s
+
+src/db/repositories/RentalsRepository.o: src/db/repositories/RentalsRepository.cpp.o
+.PHONY : src/db/repositories/RentalsRepository.o
+
+# target to build an object file
+src/db/repositories/RentalsRepository.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/RentalsRepository.cpp.o
+.PHONY : src/db/repositories/RentalsRepository.cpp.o
+
+src/db/repositories/RentalsRepository.i: src/db/repositories/RentalsRepository.cpp.i
+.PHONY : src/db/repositories/RentalsRepository.i
+
+# target to preprocess a source file
+src/db/repositories/RentalsRepository.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/RentalsRepository.cpp.i
+.PHONY : src/db/repositories/RentalsRepository.cpp.i
+
+src/db/repositories/RentalsRepository.s: src/db/repositories/RentalsRepository.cpp.s
+.PHONY : src/db/repositories/RentalsRepository.s
+
+# target to generate assembly for a file
+src/db/repositories/RentalsRepository.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/RentalsRepository.cpp.s
+.PHONY : src/db/repositories/RentalsRepository.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -371,6 +539,54 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/utils/CarDetailsFormatter.o: src/utils/CarDetailsFormatter.cpp.o
+.PHONY : src/utils/CarDetailsFormatter.o
+
+# target to build an object file
+src/utils/CarDetailsFormatter.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.o
+.PHONY : src/utils/CarDetailsFormatter.cpp.o
+
+src/utils/CarDetailsFormatter.i: src/utils/CarDetailsFormatter.cpp.i
+.PHONY : src/utils/CarDetailsFormatter.i
+
+# target to preprocess a source file
+src/utils/CarDetailsFormatter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.i
+.PHONY : src/utils/CarDetailsFormatter.cpp.i
+
+src/utils/CarDetailsFormatter.s: src/utils/CarDetailsFormatter.cpp.s
+.PHONY : src/utils/CarDetailsFormatter.s
+
+# target to generate assembly for a file
+src/utils/CarDetailsFormatter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.s
+.PHONY : src/utils/CarDetailsFormatter.cpp.s
+
+src/utils/CarImageLoader.o: src/utils/CarImageLoader.cpp.o
+.PHONY : src/utils/CarImageLoader.o
+
+# target to build an object file
+src/utils/CarImageLoader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.o
+.PHONY : src/utils/CarImageLoader.cpp.o
+
+src/utils/CarImageLoader.i: src/utils/CarImageLoader.cpp.i
+.PHONY : src/utils/CarImageLoader.i
+
+# target to preprocess a source file
+src/utils/CarImageLoader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.i
+.PHONY : src/utils/CarImageLoader.cpp.i
+
+src/utils/CarImageLoader.s: src/utils/CarImageLoader.cpp.s
+.PHONY : src/utils/CarImageLoader.s
+
+# target to generate assembly for a file
+src/utils/CarImageLoader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.s
+.PHONY : src/utils/CarImageLoader.cpp.s
+
 src/utils/CurrencyConverter.o: src/utils/CurrencyConverter.cpp.o
 .PHONY : src/utils/CurrencyConverter.o
 
@@ -394,6 +610,102 @@ src/utils/CurrencyConverter.s: src/utils/CurrencyConverter.cpp.s
 src/utils/CurrencyConverter.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.s
 .PHONY : src/utils/CurrencyConverter.cpp.s
+
+src/utils/PathsConfig.o: src/utils/PathsConfig.cpp.o
+.PHONY : src/utils/PathsConfig.o
+
+# target to build an object file
+src/utils/PathsConfig.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/PathsConfig.cpp.o
+.PHONY : src/utils/PathsConfig.cpp.o
+
+src/utils/PathsConfig.i: src/utils/PathsConfig.cpp.i
+.PHONY : src/utils/PathsConfig.i
+
+# target to preprocess a source file
+src/utils/PathsConfig.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/PathsConfig.cpp.i
+.PHONY : src/utils/PathsConfig.cpp.i
+
+src/utils/PathsConfig.s: src/utils/PathsConfig.cpp.s
+.PHONY : src/utils/PathsConfig.s
+
+# target to generate assembly for a file
+src/utils/PathsConfig.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/PathsConfig.cpp.s
+.PHONY : src/utils/PathsConfig.cpp.s
+
+src/utils/RentalCalculator.o: src/utils/RentalCalculator.cpp.o
+.PHONY : src/utils/RentalCalculator.o
+
+# target to build an object file
+src/utils/RentalCalculator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/RentalCalculator.cpp.o
+.PHONY : src/utils/RentalCalculator.cpp.o
+
+src/utils/RentalCalculator.i: src/utils/RentalCalculator.cpp.i
+.PHONY : src/utils/RentalCalculator.i
+
+# target to preprocess a source file
+src/utils/RentalCalculator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/RentalCalculator.cpp.i
+.PHONY : src/utils/RentalCalculator.cpp.i
+
+src/utils/RentalCalculator.s: src/utils/RentalCalculator.cpp.s
+.PHONY : src/utils/RentalCalculator.s
+
+# target to generate assembly for a file
+src/utils/RentalCalculator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/RentalCalculator.cpp.s
+.PHONY : src/utils/RentalCalculator.cpp.s
+
+src/utils/SessionManager.o: src/utils/SessionManager.cpp.o
+.PHONY : src/utils/SessionManager.o
+
+# target to build an object file
+src/utils/SessionManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/SessionManager.cpp.o
+.PHONY : src/utils/SessionManager.cpp.o
+
+src/utils/SessionManager.i: src/utils/SessionManager.cpp.i
+.PHONY : src/utils/SessionManager.i
+
+# target to preprocess a source file
+src/utils/SessionManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/SessionManager.cpp.i
+.PHONY : src/utils/SessionManager.cpp.i
+
+src/utils/SessionManager.s: src/utils/SessionManager.cpp.s
+.PHONY : src/utils/SessionManager.s
+
+# target to generate assembly for a file
+src/utils/SessionManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/utils/SessionManager.cpp.s
+.PHONY : src/utils/SessionManager.cpp.s
+
+src/views/CarCardsView.o: src/views/CarCardsView.cpp.o
+.PHONY : src/views/CarCardsView.o
+
+# target to build an object file
+src/views/CarCardsView.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.o
+.PHONY : src/views/CarCardsView.cpp.o
+
+src/views/CarCardsView.i: src/views/CarCardsView.cpp.i
+.PHONY : src/views/CarCardsView.i
+
+# target to preprocess a source file
+src/views/CarCardsView.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.i
+.PHONY : src/views/CarCardsView.cpp.i
+
+src/views/CarCardsView.s: src/views/CarCardsView.cpp.s
+.PHONY : src/views/CarCardsView.s
+
+# target to generate assembly for a file
+src/views/CarCardsView.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.s
+.PHONY : src/views/CarCardsView.cpp.s
 
 # Help Target
 help:
@@ -427,15 +739,54 @@ help:
 	@echo "... src/RentalDialog.o"
 	@echo "... src/RentalDialog.i"
 	@echo "... src/RentalDialog.s"
+	@echo "... src/RentalsModel.o"
+	@echo "... src/RentalsModel.i"
+	@echo "... src/RentalsModel.s"
+	@echo "... src/controllers/CarsCatalogController.o"
+	@echo "... src/controllers/CarsCatalogController.i"
+	@echo "... src/controllers/CarsCatalogController.s"
+	@echo "... src/db/CarSeeder.o"
+	@echo "... src/db/CarSeeder.i"
+	@echo "... src/db/CarSeeder.s"
 	@echo "... src/db/Database.o"
 	@echo "... src/db/Database.i"
 	@echo "... src/db/Database.s"
+	@echo "... src/db/SchemaManager.o"
+	@echo "... src/db/SchemaManager.i"
+	@echo "... src/db/SchemaManager.s"
+	@echo "... src/db/repositories/CarsRepository.o"
+	@echo "... src/db/repositories/CarsRepository.i"
+	@echo "... src/db/repositories/CarsRepository.s"
+	@echo "... src/db/repositories/CustomersRepository.o"
+	@echo "... src/db/repositories/CustomersRepository.i"
+	@echo "... src/db/repositories/CustomersRepository.s"
+	@echo "... src/db/repositories/RentalsRepository.o"
+	@echo "... src/db/repositories/RentalsRepository.i"
+	@echo "... src/db/repositories/RentalsRepository.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/utils/CarDetailsFormatter.o"
+	@echo "... src/utils/CarDetailsFormatter.i"
+	@echo "... src/utils/CarDetailsFormatter.s"
+	@echo "... src/utils/CarImageLoader.o"
+	@echo "... src/utils/CarImageLoader.i"
+	@echo "... src/utils/CarImageLoader.s"
 	@echo "... src/utils/CurrencyConverter.o"
 	@echo "... src/utils/CurrencyConverter.i"
 	@echo "... src/utils/CurrencyConverter.s"
+	@echo "... src/utils/PathsConfig.o"
+	@echo "... src/utils/PathsConfig.i"
+	@echo "... src/utils/PathsConfig.s"
+	@echo "... src/utils/RentalCalculator.o"
+	@echo "... src/utils/RentalCalculator.i"
+	@echo "... src/utils/RentalCalculator.s"
+	@echo "... src/utils/SessionManager.o"
+	@echo "... src/utils/SessionManager.i"
+	@echo "... src/utils/SessionManager.s"
+	@echo "... src/views/CarCardsView.o"
+	@echo "... src/views/CarCardsView.i"
+	@echo "... src/views/CarCardsView.s"
 .PHONY : help
 
 

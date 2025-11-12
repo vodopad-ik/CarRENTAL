@@ -1,10 +1,4 @@
-/****************************************************************************
-** Meta object code from reading C++ file 'CarCardWidget.h'
-**
-** Created by: The Qt Meta Object Compiler version 68 (Qt 6.4.2)
-**
-** WARNING! All changes made in this file will be lost!
-*****************************************************************************/
+
 
 #include <memory>
 #include "../../../src/CarCardWidget.h"
@@ -36,15 +30,15 @@ struct qt_meta_stringdata_CarCardWidget_t {
     char stringdata5[11];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(sizeof(qt_meta_stringdata_CarCardWidget_t::offsetsAndSizes) + ofs), len 
+    uint(sizeof(qt_meta_stringdata_CarCardWidget_t::offsetsAndSizes) + ofs), len
 Q_CONSTINIT static const qt_meta_stringdata_CarCardWidget_t qt_meta_stringdata_CarCardWidget = {
     {
-        QT_MOC_LITERAL(0, 13),  // "CarCardWidget"
-        QT_MOC_LITERAL(14, 11),  // "rentClicked"
-        QT_MOC_LITERAL(26, 0),  // ""
-        QT_MOC_LITERAL(27, 5),  // "carId"
-        QT_MOC_LITERAL(33, 15),  // "bookmarkToggled"
-        QT_MOC_LITERAL(49, 10)   // "bookmarked"
+        QT_MOC_LITERAL(0, 13),
+        QT_MOC_LITERAL(14, 11),
+        QT_MOC_LITERAL(26, 0),
+        QT_MOC_LITERAL(27, 5),
+        QT_MOC_LITERAL(33, 15),
+        QT_MOC_LITERAL(49, 10)
     },
     "CarCardWidget",
     "rentClicked",
@@ -54,30 +48,30 @@ Q_CONSTINIT static const qt_meta_stringdata_CarCardWidget_t qt_meta_stringdata_C
     "bookmarked"
 };
 #undef QT_MOC_LITERAL
-} // unnamed namespace
+}
 
 Q_CONSTINIT static const uint qt_meta_data_CarCardWidget[] = {
 
- // content:
-      10,       // revision
-       0,       // classname
-       0,    0, // classinfo
-       2,   14, // methods
-       0,    0, // properties
-       0,    0, // enums/sets
-       0,    0, // constructors
-       0,       // flags
-       2,       // signalCount
 
- // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   26,    2, 0x06,    1 /* Public */,
-       4,    2,   29,    2, 0x06,    3 /* Public */,
+      10,
+       0,
+       0,    0,
+       2,   14,
+       0,    0,
+       0,    0,
+       0,    0,
+       0,
+       2,
 
- // signals: parameters
+
+       1,    1,   26,    2, 0x06,    1 ,
+       4,    2,   29,    2, 0x06,    3 ,
+
+
     QMetaType::Void, QMetaType::Int,    3,
     QMetaType::Void, QMetaType::Int, QMetaType::Bool,    3,    5,
 
-       0        // eod
+       0
 };
 
 Q_CONSTINIT const QMetaObject CarCardWidget::staticMetaObject = { {
@@ -87,12 +81,12 @@ Q_CONSTINIT const QMetaObject CarCardWidget::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
     qt_incomplete_metaTypeArray<qt_meta_stringdata_CarCardWidget_t,
-        // Q_OBJECT / Q_GADGET
+
         QtPrivate::TypeAndForceComplete<CarCardWidget, std::true_type>,
-        // method 'rentClicked'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'bookmarkToggled'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>
@@ -159,14 +153,14 @@ int CarCardWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     return _id;
 }
 
-// SIGNAL 0
+
 void CarCardWidget::rentClicked(int _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
-// SIGNAL 1
+
 void CarCardWidget::bookmarkToggled(int _t1, bool _t2)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };

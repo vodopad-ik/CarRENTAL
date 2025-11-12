@@ -37,9 +37,51 @@
 },
 {
   "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/RentalsModel.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/RentalsModel.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/controllers/CarsCatalogController.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/controllers/CarsCatalogController.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/db/CarSeeder.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/CarSeeder.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/db/CarSeeder.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/db/CarSeeder.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
   "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/db/Database.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp",
   "file": "/home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp",
   "output": "CMakeFiles/CarRental.dir/src/db/Database.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/db/SchemaManager.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/SchemaManager.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/db/SchemaManager.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/db/SchemaManager.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/db/repositories/CarsRepository.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CarsRepository.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CarsRepository.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/db/repositories/CarsRepository.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/db/repositories/CustomersRepository.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CustomersRepository.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CustomersRepository.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/db/repositories/CustomersRepository.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/db/repositories/RentalsRepository.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/RentalsRepository.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/RentalsRepository.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/db/repositories/RentalsRepository.cpp.o"
 },
 {
   "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
@@ -49,9 +91,45 @@
 },
 {
   "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/CarImageLoader.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarImageLoader.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
   "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.cpp",
   "file": "/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.cpp",
   "output": "CMakeFiles/CarRental.dir/src/utils/CurrencyConverter.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/utils/PathsConfig.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/PathsConfig.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/utils/PathsConfig.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/utils/PathsConfig.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/utils/RentalCalculator.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/utils/RentalCalculator.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/utils/SessionManager.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/utils/SessionManager.cpp.o"
+},
+{
+  "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -I/home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/include -I/home/vladius/Desktop/apps/CarRENTAL/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSql -g -std=gnu++17 -fPIC -o CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.o -c /home/vladius/Desktop/apps/CarRENTAL/src/views/CarCardsView.cpp",
+  "file": "/home/vladius/Desktop/apps/CarRENTAL/src/views/CarCardsView.cpp",
+  "output": "CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.o"
 },
 {
   "directory": "/home/vladius/Desktop/apps/CarRENTAL/build",

@@ -14,11 +14,15 @@ CarRental_autogen/timestamp: \
 	/home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.h \
+	/home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.cpp \
+	/home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/main.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h \
+	/home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.cpp \
+	/home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.h \
 	/usr/include/alloca.h \
 	/usr/include/asm-generic/errno-base.h \
 	/usr/include/asm-generic/errno.h \
@@ -303,7 +307,10 @@ CarRental_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
+	/usr/include/x86_64-linux-gnu/qt6/QtCore/QModelIndex \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
+	/usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
+	/usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qarraydata.h \
@@ -420,6 +427,12 @@ CarRental_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQueryModel \
+	/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtSql/qtsql-config.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlexports.h \
+	/usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlglobal.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QCalendarWidget \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDialog \

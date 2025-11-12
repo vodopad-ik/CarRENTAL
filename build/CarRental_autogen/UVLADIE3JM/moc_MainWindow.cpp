@@ -1,10 +1,4 @@
-/****************************************************************************
-** Meta object code from reading C++ file 'MainWindow.h'
-**
-** Created by: The Qt Meta Object Compiler version 68 (Qt 6.4.2)
-**
-** WARNING! All changes made in this file will be lost!
-*****************************************************************************/
+
 
 #include <memory>
 #include "../../../src/MainWindow.h"
@@ -41,20 +35,20 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata10[9];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(sizeof(qt_meta_stringdata_MainWindow_t::offsetsAndSizes) + ofs), len 
+    uint(sizeof(qt_meta_stringdata_MainWindow_t::offsetsAndSizes) + ofs), len
 Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
-        QT_MOC_LITERAL(0, 10),  // "MainWindow"
-        QT_MOC_LITERAL(11, 16),  // "onCarRentClicked"
-        QT_MOC_LITERAL(28, 0),  // ""
-        QT_MOC_LITERAL(29, 5),  // "carId"
-        QT_MOC_LITERAL(35, 17),  // "onBookmarkToggled"
-        QT_MOC_LITERAL(53, 10),  // "bookmarked"
-        QT_MOC_LITERAL(64, 15),  // "onShowMyRentals"
-        QT_MOC_LITERAL(80, 15),  // "onShowBookmarks"
-        QT_MOC_LITERAL(96, 15),  // "onSearchChanged"
-        QT_MOC_LITERAL(112, 17),  // "onCurrencyChanged"
-        QT_MOC_LITERAL(130, 8)   // "onLogout"
+        QT_MOC_LITERAL(0, 10),
+        QT_MOC_LITERAL(11, 16),
+        QT_MOC_LITERAL(28, 0),
+        QT_MOC_LITERAL(29, 5),
+        QT_MOC_LITERAL(35, 17),
+        QT_MOC_LITERAL(53, 10),
+        QT_MOC_LITERAL(64, 15),
+        QT_MOC_LITERAL(80, 15),
+        QT_MOC_LITERAL(96, 15),
+        QT_MOC_LITERAL(112, 17),
+        QT_MOC_LITERAL(130, 8)
     },
     "MainWindow",
     "onCarRentClicked",
@@ -69,31 +63,31 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "onLogout"
 };
 #undef QT_MOC_LITERAL
-} // unnamed namespace
+}
 
 Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
 
- // content:
-      10,       // revision
-       0,       // classname
-       0,    0, // classinfo
-       7,   14, // methods
-       0,    0, // properties
-       0,    0, // enums/sets
-       0,    0, // constructors
-       0,       // flags
-       0,       // signalCount
 
- // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   56,    2, 0x08,    1 /* Private */,
-       4,    2,   59,    2, 0x08,    3 /* Private */,
-       6,    0,   64,    2, 0x08,    6 /* Private */,
-       7,    0,   65,    2, 0x08,    7 /* Private */,
-       8,    0,   66,    2, 0x08,    8 /* Private */,
-       9,    0,   67,    2, 0x08,    9 /* Private */,
-      10,    0,   68,    2, 0x08,   10 /* Private */,
+      10,
+       0,
+       0,    0,
+       7,   14,
+       0,    0,
+       0,    0,
+       0,    0,
+       0,
+       0,
 
- // slots: parameters
+
+       1,    1,   56,    2, 0x08,    1 ,
+       4,    2,   59,    2, 0x08,    3 ,
+       6,    0,   64,    2, 0x08,    6 ,
+       7,    0,   65,    2, 0x08,    7 ,
+       8,    0,   66,    2, 0x08,    8 ,
+       9,    0,   67,    2, 0x08,    9 ,
+      10,    0,   68,    2, 0x08,   10 ,
+
+
     QMetaType::Void, QMetaType::Int,    3,
     QMetaType::Void, QMetaType::Int, QMetaType::Bool,    3,    5,
     QMetaType::Void,
@@ -102,7 +96,7 @@ Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
 
-       0        // eod
+       0
 };
 
 Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
@@ -112,24 +106,24 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
     qt_incomplete_metaTypeArray<qt_meta_stringdata_MainWindow_t,
-        // Q_OBJECT / Q_GADGET
+
         QtPrivate::TypeAndForceComplete<MainWindow, std::true_type>,
-        // method 'onCarRentClicked'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'onBookmarkToggled'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
-        // method 'onShowMyRentals'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onShowBookmarks'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onSearchChanged'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onCurrencyChanged'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onLogout'
+
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr

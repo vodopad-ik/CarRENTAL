@@ -1,9 +1,13 @@
 #pragma once
 
+#include "controllers/CarsCatalogController.h"
+
 #include <QLabel>
 #include <QMainWindow>
 #include <QScrollArea>
 #include <QWidget>
+
+#include <memory>
 
 class LoginDialog;
 class CarCardWidget;
@@ -14,7 +18,8 @@ class QTableView;
 class QComboBox;
 class QSpinBox;
 class QDoubleSpinBox;
-class QSqlQueryModel;
+class RentalsModel;
+class CarCardsView;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -28,7 +33,6 @@ private slots:
   void onBookmarkToggled(int carId, bool bookmarked);
   void onShowMyRentals();
   void onShowBookmarks();
-  void onSearchChanged();
   void onCurrencyChanged();
   void onLogout();
 
@@ -38,19 +42,22 @@ private:
   void loadBookmarks();
   void showLogin();
   void updateCurrencyForAllCards();
+  void tryAutoLogin();
+  void connectFilters();
+  CatalogFilters currentFilters() const;
 
   int currentCustomerId_ = -1;
   QString currentCustomerName_;
   QString currentCurrency_;
 
-  // UI elements
+
   QWidget *centralWidget_;
   QTabWidget *tabs_;
   QScrollArea *scrollArea_;
   QWidget *carsContainer_;
   QLineEdit *searchEdit_;
   QComboBox *currencyBox_;
-  // filters
+
   QComboBox *engineTypeFilter_;
   QSpinBox *seatsMinFilter_;
   QSpinBox *powerMinFilter_;
@@ -63,6 +70,8 @@ private:
   QWidget *bookmarksContainer_;
   QWidget *bmInner_;
 
-  QList<CarCardWidget *> carCards_;
-  QSqlQueryModel *rentalsModel_ = nullptr;
+  std::unique_ptr<CarCardsView> carsView_;
+  std::unique_ptr<CarCardsView> bookmarksView_;
+  std::unique_ptr<CarsCatalogController> catalogController_;
+  RentalsModel *rentalsModel_ = nullptr;
 };

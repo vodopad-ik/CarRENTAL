@@ -287,15 +287,99 @@
 			null
 		],
 		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.h",
+			"MU",
+			"UVLADIE3JM/moc_RentalsModel.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.h",
+			"MU",
+			"METKDVI4SS/moc_CarsCatalogController.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h",
+			"MU",
+			"RLKJE3IM4Y/moc_CarInfo.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/CarSeeder.h",
+			"MU",
+			"RLKJE3IM4Y/moc_CarSeeder.cpp",
+			null
+		],
+		[
 			"/home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h",
 			"MU",
 			"RLKJE3IM4Y/moc_Database.cpp",
 			null
 		],
 		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/SchemaManager.h",
+			"MU",
+			"RLKJE3IM4Y/moc_SchemaManager.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CarsRepository.h",
+			"MU",
+			"UGSPXC2RQW/moc_CarsRepository.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CustomersRepository.h",
+			"MU",
+			"UGSPXC2RQW/moc_CustomersRepository.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/RentalsRepository.h",
+			"MU",
+			"UGSPXC2RQW/moc_RentalsRepository.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.h",
+			"MU",
+			"VSCBVMNR7M/moc_CarDetailsFormatter.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarImageLoader.h",
+			"MU",
+			"VSCBVMNR7M/moc_CarImageLoader.cpp",
+			null
+		],
+		[
 			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h",
 			"MU",
 			"VSCBVMNR7M/moc_CurrencyConverter.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/PathsConfig.h",
+			"MU",
+			"VSCBVMNR7M/moc_PathsConfig.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.h",
+			"MU",
+			"VSCBVMNR7M/moc_RentalCalculator.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.h",
+			"MU",
+			"VSCBVMNR7M/moc_SessionManager.cpp",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/views/CarCardsView.h",
+			"MU",
+			"Z3L7HTGYLD/moc_CarCardsView.cpp",
 			null
 		]
 	],
@@ -381,13 +465,78 @@
 			null
 		],
 		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/CarSeeder.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/SchemaManager.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CarsRepository.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CustomersRepository.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/RentalsRepository.cpp",
 			"MU",
 			null
 		],
 		[ "/home/vladius/Desktop/apps/CarRENTAL/src/main.cpp", "MU", null ],
 		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarImageLoader.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/PathsConfig.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/vladius/Desktop/apps/CarRENTAL/src/views/CarCardsView.cpp",
 			"MU",
 			null
 		]

@@ -1,10 +1,4 @@
-/****************************************************************************
-** Meta object code from reading C++ file 'CustomCalendarWidget.h'
-**
-** Created by: The Qt Meta Object Compiler version 68 (Qt 6.4.2)
-**
-** WARNING! All changes made in this file will be lost!
-*****************************************************************************/
+
 
 #include <memory>
 #include "../../../src/CustomCalendarWidget.h"
@@ -30,30 +24,30 @@ struct qt_meta_stringdata_CustomCalendarWidget_t {
     char stringdata0[21];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(sizeof(qt_meta_stringdata_CustomCalendarWidget_t::offsetsAndSizes) + ofs), len 
+    uint(sizeof(qt_meta_stringdata_CustomCalendarWidget_t::offsetsAndSizes) + ofs), len
 Q_CONSTINIT static const qt_meta_stringdata_CustomCalendarWidget_t qt_meta_stringdata_CustomCalendarWidget = {
     {
-        QT_MOC_LITERAL(0, 20)   // "CustomCalendarWidget"
+        QT_MOC_LITERAL(0, 20)
     },
     "CustomCalendarWidget"
 };
 #undef QT_MOC_LITERAL
-} // unnamed namespace
+}
 
 Q_CONSTINIT static const uint qt_meta_data_CustomCalendarWidget[] = {
 
- // content:
-      10,       // revision
-       0,       // classname
-       0,    0, // classinfo
-       0,    0, // methods
-       0,    0, // properties
-       0,    0, // enums/sets
-       0,    0, // constructors
-       0,       // flags
-       0,       // signalCount
 
-       0        // eod
+      10,
+       0,
+       0,    0,
+       0,    0,
+       0,    0,
+       0,    0,
+       0,    0,
+       0,
+       0,
+
+       0
 };
 
 Q_CONSTINIT const QMetaObject CustomCalendarWidget::staticMetaObject = { {
@@ -63,7 +57,7 @@ Q_CONSTINIT const QMetaObject CustomCalendarWidget::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
     qt_incomplete_metaTypeArray<qt_meta_stringdata_CustomCalendarWidget_t,
-        // Q_OBJECT / Q_GADGET
+
         QtPrivate::TypeAndForceComplete<CustomCalendarWidget, std::true_type>
     >,
     nullptr

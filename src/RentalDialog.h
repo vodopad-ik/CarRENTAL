@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils/RentalCalculator.h"
+
 #include <QDateEdit>
 #include <QDialog>
 #include <QLabel>
@@ -29,4 +31,5 @@ private:
   QDateEdit *endDateEdit_;
   QLabel *totalPriceLabel_;
   QLabel *specsLabel_ = nullptr;
+  RentalCalculator calculator_;
 };

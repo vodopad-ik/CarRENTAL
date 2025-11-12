@@ -14,7 +14,6 @@ public:
   ~LoginDialog() override;
 
   QString customerName() const { return name_; }
-  QString customerPhone() const { return phone_; }
   int customerId() const { return customerId_; }
 
 private slots:

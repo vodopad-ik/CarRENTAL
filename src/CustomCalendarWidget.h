@@ -8,7 +8,6 @@ class CustomCalendarWidget : public QCalendarWidget {
 
 public:
   explicit CustomCalendarWidget(int carId, QWidget *parent = nullptr);
-  void setCarId(int carId);
 
 protected:
   void showEvent(QShowEvent *event) override;

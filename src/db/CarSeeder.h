@@ -5,8 +5,8 @@
 
 class CarSeeder {
 public:
-  void seedIfEmpty(QSqlDatabase &db);
-  void populateSpecs(QSqlDatabase &db);
+  void seedIfEmpty(const QSqlDatabase &db);
+  void populateSpecs(const QSqlDatabase &db);
 
 private:
   bool hasCars(const QSqlDatabase &db) const;
@@ -19,7 +19,7 @@ private:
     QString description;
     QString imagePath;
   };
-  bool insertCar(QSqlDatabase &db, const CarData &data);
+  bool insertCar(const QSqlDatabase &db, const CarData &data);
   struct CarSpecs {
     QString type;
     double capacity;

@@ -4,11 +4,11 @@
 
 class SchemaManager {
 public:
-  bool ensureSchema(QSqlDatabase &db);
+  bool ensureSchema(const QSqlDatabase &db);
 
 private:
-  bool createTables(QSqlDatabase &db);
-  void createIndexes(QSqlDatabase &db);
+  bool createTables(const QSqlDatabase &db);
+  void createIndexes(const QSqlDatabase &db);
 };
 
 

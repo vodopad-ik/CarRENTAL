@@ -13,7 +13,7 @@ CatalogFilters CarsCatalogController::getFilters() const { return filters_; }
 
 QList<CarInfo> CarsCatalogController::loadAvailable(int customerId) const {
   QSqlQueryModel *rawModel = Database::instance().getAvailableCars(customerId);
-  auto model = std::unique_ptr<QSqlQueryModel>(rawModel);
+  std::unique_ptr<QSqlQueryModel> model(rawModel);
   return mapModelToCars(model.get());
 }
 

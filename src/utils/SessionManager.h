@@ -4,7 +4,7 @@
 
 class SessionManager {
 public:
-  static SessionManager &instance() {
+  static inline SessionManager &instance() {
     static SessionManager inst;
     return inst;
   }

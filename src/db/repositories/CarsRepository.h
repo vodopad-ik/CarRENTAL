@@ -5,13 +5,14 @@
 #include <QDate>
 #include <QSqlDatabase>
 #include <QSqlQueryModel>
+#include <memory>
 
 class CarsRepository {
 public:
   explicit CarsRepository(QSqlDatabase &db);
 
-  QSqlQueryModel *fetchAvailableCars(int customerId) const;
-  QSqlQueryModel *fetchBookmarkedCars(int customerId) const;
+  std::unique_ptr<QSqlQueryModel> fetchAvailableCars(int customerId) const;
+  std::unique_ptr<QSqlQueryModel> fetchBookmarkedCars(int customerId) const;
   CarInfo findCar(int id, int customerId) const;
   int availableQuantity(int carId, const QDate &startDate,
                         const QDate &endDate) const;

@@ -68,12 +68,12 @@ void Database::ensureRepositories() {
     rentalsRepository_ = std::make_unique<RentalsRepository>(db_);
 }
 
-QSqlQueryModel *Database::getAvailableCars(int customerId) {
+std::unique_ptr<QSqlQueryModel> Database::getAvailableCars(int customerId) {
   ensureRepositories();
   return carsRepository_->fetchAvailableCars(customerId);
 }
 
-QSqlQueryModel *Database::getBookmarked(int customerId) {
+std::unique_ptr<QSqlQueryModel> Database::getBookmarked(int customerId) {
   ensureRepositories();
   return carsRepository_->fetchBookmarkedCars(customerId);
 }

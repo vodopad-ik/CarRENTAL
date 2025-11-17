@@ -5,14 +5,14 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-bool SchemaManager::ensureSchema(const QSqlDatabase &db) {
+bool SchemaManager::ensureSchema(QSqlDatabase &db) {
   if (!createTables(db))
     return false;
   createIndexes(db);
   return true;
 }
 
-bool SchemaManager::createTables(const QSqlDatabase &db) {
+bool SchemaManager::createTables(QSqlDatabase &db) {
   QSqlQuery q(db);
 
   if (!q.exec("CREATE TABLE IF NOT EXISTS cars ("
@@ -71,7 +71,7 @@ bool SchemaManager::createTables(const QSqlDatabase &db) {
   return true;
 }
 
-void SchemaManager::createIndexes(const QSqlDatabase &db) {
+void SchemaManager::createIndexes(QSqlDatabase &db) {
   QSqlQuery uq(db);
   uq.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_customers_phone_unique ON "
           "customers(phone)");

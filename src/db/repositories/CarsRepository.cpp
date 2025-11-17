@@ -4,8 +4,8 @@
 
 CarsRepository::CarsRepository(QSqlDatabase &db) : db_(db) {}
 
-QSqlQueryModel *CarsRepository::fetchAvailableCars(int customerId) const {
-  auto *model = new QSqlQueryModel();
+std::unique_ptr<QSqlQueryModel> CarsRepository::fetchAvailableCars(int customerId) const {
+  auto model = std::make_unique<QSqlQueryModel>();
   QSqlQuery q(db_);
   q.prepare("SELECT c.id, c.brand, c.model, c.year, c.price_per_day, "
             "c.description, c.available, c.image_path, "
@@ -20,8 +20,8 @@ QSqlQueryModel *CarsRepository::fetchAvailableCars(int customerId) const {
   return model;
 }
 
-QSqlQueryModel *CarsRepository::fetchBookmarkedCars(int customerId) const {
-  auto *model = new QSqlQueryModel();
+std::unique_ptr<QSqlQueryModel> CarsRepository::fetchBookmarkedCars(int customerId) const {
+  auto model = std::make_unique<QSqlQueryModel>();
   QSqlQuery q(db_);
   q.prepare("SELECT c.id, c.brand, c.model, c.year, c.price_per_day, "
             "c.description, c.available, c.image_path, 1 AS bookmarked, "

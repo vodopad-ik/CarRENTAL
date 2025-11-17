@@ -26,8 +26,8 @@ public:
 
   void initialize();
 
-  QSqlQueryModel *getAvailableCars(int customerId);
-  QSqlQueryModel *getBookmarked(int customerId);
+  std::unique_ptr<QSqlQueryModel> getAvailableCars(int customerId);
+  std::unique_ptr<QSqlQueryModel> getBookmarked(int customerId);
   CarInfo getCar(int id, int customerId);
   int getAvailableQuantity(int carId, const QDate &startDate,
                            const QDate &endDate);

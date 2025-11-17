@@ -3,8 +3,9 @@
 #include <QSqlQuery>
 #include <QStringList>
 #include <QtGlobal>
+#include <array>
 
-void CarSeeder::seedIfEmpty(QSqlDatabase &db) {
+void CarSeeder::seedIfEmpty(const QSqlDatabase &db) {
   if (hasCars(db))
     return;
 
@@ -135,7 +136,7 @@ void CarSeeder::seedIfEmpty(QSqlDatabase &db) {
             "Семейный внедорожник", ":/images/cars/mitsubishi_outlander.jpg");
 }
 
-void CarSeeder::populateSpecs(QSqlDatabase &db) {
+void CarSeeder::populateSpecs(const QSqlDatabase &db) {
   struct Spec {
     const char *brand;
     const char *model;
@@ -145,7 +146,7 @@ void CarSeeder::populateSpecs(QSqlDatabase &db) {
     int seats;
   };
 
-  const Spec specs[] = {{"Audi", "A4", "ICE", 2.0, 190, 5},
+  const std::array<Spec, 15> specs = {{{"Audi", "A4", "ICE", 2.0, 190, 5},
                         {"Audi", "A6", "ICE", 2.0, 204, 5},
                         {"Audi", "Q5", "ICE", 2.0, 249, 5},
                         {"BMW", "3 Series", "Hybrid", 2.0, 292, 5},
@@ -159,7 +160,7 @@ void CarSeeder::populateSpecs(QSqlDatabase &db) {
                         {"Mercedes", "C-Class", "ICE", 1.5, 204, 5},
                         {"Mercedes", "E-Class", "ICE", 2.0, 258, 5},
                         {"Volkswagen", "Golf", "ICE", 1.4, 150, 5},
-                        {"Volkswagen", "Passat", "ICE", 2.0, 190, 5}};
+                        {"Volkswagen", "Passat", "ICE", 2.0, 190, 5}}};
 
   for (const auto &s : specs) {
     QSqlQuery up(db);
@@ -186,61 +187,21 @@ void CarSeeder::populateSpecs(QSqlDatabase &db) {
     QString brand = sel.value(1).toString();
     QString model = sel.value(2).toString();
 
-    QString type = "ICE";
-    double cap = 2.0;
-    int hp = 170;
-    int seats = 5;
-
-    if (brand.contains("Tesla", Qt::CaseInsensitive)) {
-      type = "EV";
-      cap = 0.0;
-      hp = model.contains("S", Qt::CaseInsensitive) ? 670 : 283;
-    } else if (brand.contains("Toyota", Qt::CaseInsensitive) &&
-               model.contains("RAV", Qt::CaseInsensitive)) {
-      type = "Hybrid";
-      cap = 2.5;
-      hp = 222;
-    } else if (brand.contains("BMW", Qt::CaseInsensitive) &&
-               (model.contains("5", Qt::CaseInsensitive) ||
-                model.contains("X5", Qt::CaseInsensitive))) {
-      type = "Hybrid";
-      cap = model.contains("X5") ? 3.0 : 2.0;
-      hp = model.contains("X5") ? 340 : 308;
-    } else if (brand.contains("Mercedes", Qt::CaseInsensitive) &&
-               model.contains("E", Qt::CaseInsensitive)) {
-      type = "ICE";
-      cap = 2.0;
-      hp = 258;
-    } else {
-      bool isSUV = false;
-      for (const auto &k : suvKeys) {
-        if (model.contains(k, Qt::CaseInsensitive)) {
-          isSUV = true;
-          break;
-        }
-      }
-      if (isSUV) {
-        cap = 2.0;
-        hp = 180;
-      } else {
-        cap = 1.6;
-        hp = 130;
-      }
-    }
+    const CarSpecs specs = determineSpecs(brand, model, suvKeys);
 
     QSqlQuery up(db);
     up.prepare("UPDATE cars SET engine_type=?, engine_capacity=?, power_hp=?, "
                "seats=? WHERE id=?");
-    up.addBindValue(type);
-    up.addBindValue(cap);
-    up.addBindValue(hp);
-    up.addBindValue(seats);
+    up.addBindValue(specs.type);
+    up.addBindValue(specs.capacity);
+    up.addBindValue(specs.power);
+    up.addBindValue(specs.seats);
     up.addBindValue(id);
     up.exec();
   }
 }
 
-bool CarSeeder::hasCars(QSqlDatabase &db) const {
+bool CarSeeder::hasCars(const QSqlDatabase &db) const {
   QSqlQuery q(db);
   q.exec("SELECT COUNT(*) FROM cars");
   if (q.next())
@@ -248,7 +209,7 @@ bool CarSeeder::hasCars(QSqlDatabase &db) const {
   return false;
 }
 
-bool CarSeeder::insertCar(QSqlDatabase &db, const QString &brand,
+bool CarSeeder::insertCar(const QSqlDatabase &db, const QString &brand,
                           const QString &model, int year, double pricePerDay,
                           int quantity, const QString &description,
                           const QString &imagePath) {
@@ -264,4 +225,60 @@ bool CarSeeder::insertCar(QSqlDatabase &db, const QString &brand,
   query.addBindValue(description);
   query.addBindValue(imagePath);
   return query.exec();
+}
+
+CarSeeder::CarSpecs CarSeeder::determineSpecs(const QString &brand,
+                                               const QString &model,
+                                               const QStringList &suvKeys) const {
+  CarSpecs specs{"ICE", 2.0, 170, 5};
+
+  if (brand.contains("Tesla", Qt::CaseInsensitive)) {
+    specs.type = "EV";
+    specs.capacity = 0.0;
+    specs.power = model.contains("S", Qt::CaseInsensitive) ? 670 : 283;
+    return specs;
+  }
+
+  if (brand.contains("Toyota", Qt::CaseInsensitive) &&
+      model.contains("RAV", Qt::CaseInsensitive)) {
+    specs.type = "Hybrid";
+    specs.capacity = 2.5;
+    specs.power = 222;
+    return specs;
+  }
+
+  if (brand.contains("BMW", Qt::CaseInsensitive) &&
+      (model.contains("5", Qt::CaseInsensitive) ||
+       model.contains("X5", Qt::CaseInsensitive))) {
+    specs.type = "Hybrid";
+    specs.capacity = model.contains("X5") ? 3.0 : 2.0;
+    specs.power = model.contains("X5") ? 340 : 308;
+    return specs;
+  }
+
+  if (brand.contains("Mercedes", Qt::CaseInsensitive) &&
+      model.contains("E", Qt::CaseInsensitive)) {
+    specs.type = "ICE";
+    specs.capacity = 2.0;
+    specs.power = 258;
+    return specs;
+  }
+
+  bool isSUV = false;
+  for (const auto &k : suvKeys) {
+    if (model.contains(k, Qt::CaseInsensitive)) {
+      isSUV = true;
+      break;
+    }
+  }
+
+  if (isSUV) {
+    specs.capacity = 2.0;
+    specs.power = 180;
+  } else {
+    specs.capacity = 1.6;
+    specs.power = 130;
+  }
+
+  return specs;
 }

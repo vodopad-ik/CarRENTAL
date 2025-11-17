@@ -16,7 +16,7 @@ void RentalsModel::setCurrency(const QString &currency) {
   const int rows = QSqlQueryModel::rowCount();
   if (rows > 0) {
     emit headerDataChanged(Qt::Horizontal, 4, 4);
-    emit dataChanged(index(0, 4), index(rows - 1, 4));
+    emit dataChanged(QSqlQueryModel::index(0, 4), QSqlQueryModel::index(rows - 1, 4));
   }
 }
 

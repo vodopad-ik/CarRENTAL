@@ -62,10 +62,10 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setupUI() {
-  centralWidget_ = new QWidget(this);
-  setCentralWidget(centralWidget_);
+  ui_.centralWidget_ = new QWidget(this);
+  setCentralWidget(ui_.centralWidget_);
 
-  auto *mainLayout = new QVBoxLayout(centralWidget_);
+  auto *mainLayout = new QVBoxLayout(ui_.centralWidget_);
   mainLayout->setSpacing(0);
   mainLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -73,24 +73,25 @@ void MainWindow::setupUI() {
   header->setStyleSheet("background-color: #2196F3; padding: 15px;");
   auto *headerLayout = new QHBoxLayout(header);
 
-  welcomeLabel_ = new QLabel("Добро пожаловать", header);
-  welcomeLabel_->setStyleSheet(
+  labels_.welcomeLabel_ = new QLabel("Добро пожаловать", header);
+  labels_.welcomeLabel_->setStyleSheet(
       "color: white; font-size: 18px; font-weight: bold;");
-  headerLayout->addWidget(welcomeLabel_);
+  headerLayout->addWidget(labels_.welcomeLabel_);
 
   headerLayout->addStretch();
 
-  myRentalsBtn_ = new QPushButton("Мои аренды", header);
+  buttons_.myRentalsBtn_ = new QPushButton("Мои аренды", header);
 
   const QString headerBtnStyle =
       "QPushButton { background-color: white; color: #2196F3; padding: 8px "
       "16px; border-radius: 6px; }"
       "QPushButton:hover { filter: brightness(0.95); }"
       "QPushButton:pressed { transform: translateY(1px); }";
-  myRentalsBtn_->setStyleSheet(headerBtnStyle);
-  myRentalsBtn_->setIcon(style()->standardIcon(QStyle::SP_FileDialogListView));
-  myRentalsBtn_->setMinimumHeight(36);
-  headerLayout->addWidget(myRentalsBtn_);
+  buttons_.myRentalsBtn_->setStyleSheet(headerBtnStyle);
+  buttons_.myRentalsBtn_->setIcon(
+      style()->standardIcon(QStyle::SP_FileDialogListView));
+  buttons_.myRentalsBtn_->setMinimumHeight(36);
+  headerLayout->addWidget(buttons_.myRentalsBtn_);
 
   currencyBox_ = new QComboBox(header);
   currencyBox_->addItem("USD");
@@ -106,67 +107,68 @@ void MainWindow::setupUI() {
       "selection-background-color: #E3F2FD; }");
   headerLayout->addWidget(currencyBox_);
 
-  logoutBtn_ = new QPushButton("Выйти", header);
-  logoutBtn_->setStyleSheet(headerBtnStyle);
-  logoutBtn_->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
-  logoutBtn_->setMinimumHeight(36);
-  headerLayout->addWidget(logoutBtn_);
+  buttons_.logoutBtn_ = new QPushButton("Выйти", header);
+  buttons_.logoutBtn_->setStyleSheet(headerBtnStyle);
+  buttons_.logoutBtn_->setIcon(
+      style()->standardIcon(QStyle::SP_DialogCloseButton));
+  buttons_.logoutBtn_->setMinimumHeight(36);
+  headerLayout->addWidget(buttons_.logoutBtn_);
 
   mainLayout->addWidget(header);
 
-  tabs_ = new QTabWidget(this);
-  tabs_->setStyleSheet("QTabWidget::pane { border: none; }");
+  ui_.tabs_ = new QTabWidget(this);
+  ui_.tabs_->setStyleSheet("QTabWidget::pane { border: none; }");
 
   auto *carsTab = new QWidget();
   auto *carsLayout = new QVBoxLayout(carsTab);
 
   auto *searchLayout = new QHBoxLayout();
-  searchEdit_ = new QLineEdit();
-  searchEdit_->setPlaceholderText("Поиск по марке, модели...");
-  searchEdit_->setStyleSheet(
+  filters_.searchEdit_ = new QLineEdit();
+  filters_.searchEdit_->setPlaceholderText("Поиск по марке, модели...");
+  filters_.searchEdit_->setStyleSheet(
       "QLineEdit { padding: 10px; font-size: 14px; border: 2px solid #e0e0e0; "
       "border-radius: 5px; }"
       "QLineEdit:focus { border-color: #2196F3; }");
-  searchLayout->addWidget(searchEdit_);
+  searchLayout->addWidget(filters_.searchEdit_);
 
-  engineTypeFilter_ = new QComboBox();
-  engineTypeFilter_->addItem("Любой");
-  engineTypeFilter_->addItem("EV");
-  engineTypeFilter_->addItem("Hybrid");
-  engineTypeFilter_->addItem("ICE");
-  engineTypeFilter_->setMinimumHeight(38);
-  searchLayout->addWidget(engineTypeFilter_);
+  filters_.engineTypeFilter_ = new QComboBox();
+  filters_.engineTypeFilter_->addItem("Любой");
+  filters_.engineTypeFilter_->addItem("EV");
+  filters_.engineTypeFilter_->addItem("Hybrid");
+  filters_.engineTypeFilter_->addItem("ICE");
+  filters_.engineTypeFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(filters_.engineTypeFilter_);
 
-  seatsMinFilter_ = new QSpinBox();
-  seatsMinFilter_->setRange(0, 9);
-  seatsMinFilter_->setPrefix("Мест ≥ ");
-  seatsMinFilter_->setMinimumHeight(38);
-  searchLayout->addWidget(seatsMinFilter_);
+  filters_.seatsMinFilter_ = new QSpinBox();
+  filters_.seatsMinFilter_->setRange(0, 9);
+  filters_.seatsMinFilter_->setPrefix("Мест ≥ ");
+  filters_.seatsMinFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(filters_.seatsMinFilter_);
 
-  powerMinFilter_ = new QSpinBox();
-  powerMinFilter_->setRange(0, 2000);
-  powerMinFilter_->setPrefix("ЛС ≥ ");
-  powerMinFilter_->setMinimumHeight(38);
-  searchLayout->addWidget(powerMinFilter_);
+  filters_.powerMinFilter_ = new QSpinBox();
+  filters_.powerMinFilter_->setRange(0, 2000);
+  filters_.powerMinFilter_->setPrefix("ЛС ≥ ");
+  filters_.powerMinFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(filters_.powerMinFilter_);
 
-  capacityMinFilter_ = new QDoubleSpinBox();
-  capacityMinFilter_->setRange(0.0, 10.0);
-  capacityMinFilter_->setDecimals(1);
-  capacityMinFilter_->setSingleStep(0.1);
-  capacityMinFilter_->setPrefix("Литры ≥ ");
-  capacityMinFilter_->setMinimumHeight(38);
-  searchLayout->addWidget(capacityMinFilter_);
+  filters_.capacityMinFilter_ = new QDoubleSpinBox();
+  filters_.capacityMinFilter_->setRange(0.0, 10.0);
+  filters_.capacityMinFilter_->setDecimals(1);
+  filters_.capacityMinFilter_->setSingleStep(0.1);
+  filters_.capacityMinFilter_->setPrefix("Литры ≥ ");
+  filters_.capacityMinFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(filters_.capacityMinFilter_);
 
   carsLayout->addLayout(searchLayout);
 
-  scrollArea_ = new QScrollArea();
-  scrollArea_->setWidgetResizable(true);
-  scrollArea_->setStyleSheet(
+  ui_.scrollArea_ = new QScrollArea();
+  ui_.scrollArea_->setWidgetResizable(true);
+  ui_.scrollArea_->setStyleSheet(
       "QScrollArea { border: none; background-color: #f5f5f5; }");
 
-  carsContainer_ = new QWidget();
-  carsContainer_->setStyleSheet("background-color: #f5f5f5;");
-  auto *gridLayout = new QGridLayout(carsContainer_);
+  ui_.carsContainer_ = new QWidget();
+  ui_.carsContainer_->setStyleSheet("background-color: #f5f5f5;");
+  auto *gridLayout = new QGridLayout(ui_.carsContainer_);
   gridLayout->setSpacing(20);
   gridLayout->setContentsMargins(20, 20, 20, 20);
 
@@ -175,20 +177,20 @@ void MainWindow::setupUI() {
     gridLayout->setColumnMinimumWidth(i, 320);
   }
 
-  scrollArea_->setWidget(carsContainer_);
-  carsLayout->addWidget(scrollArea_);
+  ui_.scrollArea_->setWidget(ui_.carsContainer_);
+  carsLayout->addWidget(ui_.scrollArea_);
 
-  tabs_->addTab(carsTab, "Автомобили");
+  ui_.tabs_->addTab(carsTab, "Автомобили");
 
-  bookmarksContainer_ = new QWidget();
-  auto *bmLayoutOuter = new QVBoxLayout(bookmarksContainer_);
+  ui_.bookmarksContainer_ = new QWidget();
+  auto *bmLayoutOuter = new QVBoxLayout(ui_.bookmarksContainer_);
   auto *bmScroll = new QScrollArea();
   bmScroll->setWidgetResizable(true);
   bmScroll->setStyleSheet(
       "QScrollArea { border: none; background-color: white; }");
-  bmInner_ = new QWidget();
-  bmInner_->setStyleSheet("background-color: white;");
-  auto *bmGrid = new QGridLayout(bmInner_);
+  ui_.bmInner_ = new QWidget();
+  ui_.bmInner_->setStyleSheet("background-color: white;");
+  auto *bmGrid = new QGridLayout(ui_.bmInner_);
   bmGrid->setSpacing(20);
   bmGrid->setContentsMargins(20, 20, 20, 20);
 
@@ -196,35 +198,36 @@ void MainWindow::setupUI() {
     bmGrid->setColumnStretch(i, 0);
     bmGrid->setColumnMinimumWidth(i, 320);
   }
-  bmScroll->setWidget(bmInner_);
+  bmScroll->setWidget(ui_.bmInner_);
   bmLayoutOuter->addWidget(bmScroll);
-  tabs_->addTab(bookmarksContainer_, "Закладки");
+  ui_.tabs_->addTab(ui_.bookmarksContainer_, "Закладки");
 
-  rentalsWidget_ = new QWidget();
-  auto *rentalsLayout = new QVBoxLayout(rentalsWidget_);
+  ui_.rentalsWidget_ = new QWidget();
+  auto *rentalsLayout = new QVBoxLayout(ui_.rentalsWidget_);
   rentalsTable_ = new QTableView();
   rentalsTable_->setStyleSheet("QTableView { border: none; }");
   rentalsLayout->addWidget(rentalsTable_);
-  tabs_->addTab(rentalsWidget_, "Мои аренды");
+  ui_.tabs_->addTab(ui_.rentalsWidget_, "Мои аренды");
 
-  mainLayout->addWidget(tabs_);
+  mainLayout->addWidget(ui_.tabs_);
 
-  carsView_ = std::make_unique<CarCardsView>(carsContainer_, 3);
+  carsView_ = std::make_unique<CarCardsView>(ui_.carsContainer_, 3);
   carsView_->setCurrency(currentCurrency_);
-  bookmarksView_ = std::make_unique<CarCardsView>(bmInner_, 3);
+  bookmarksView_ = std::make_unique<CarCardsView>(ui_.bmInner_, 3);
   bookmarksView_->setCurrency(currentCurrency_);
 
   connect(currencyBox_, &QComboBox::currentTextChanged, this,
           &MainWindow::onCurrencyChanged);
-  connect(myRentalsBtn_, &QPushButton::clicked, this,
+  connect(buttons_.myRentalsBtn_, &QPushButton::clicked, this,
           &MainWindow::onShowMyRentals);
-  connect(tabs_, &QTabWidget::currentChanged, this, [this](int idx) {
-    if (tabs_->tabText(idx) == "Закладки")
+  connect(ui_.tabs_, &QTabWidget::currentChanged, this, [this](int idx) {
+    if (ui_.tabs_->tabText(idx) == "Закладки")
       loadBookmarks();
-    else if (tabs_->tabText(idx) == "Мои аренды")
+    else if (ui_.tabs_->tabText(idx) == "Мои аренды")
       onShowMyRentals();
   });
-  connect(logoutBtn_, &QPushButton::clicked, this, &MainWindow::onLogout);
+  connect(buttons_.logoutBtn_, &QPushButton::clicked, this,
+          &MainWindow::onLogout);
   connectFilters();
 }
 
@@ -234,11 +237,11 @@ void MainWindow::tryAutoLogin() {
       session.customerId > 0) {
     currentCustomerId_ = session.customerId;
     currentCustomerName_ = session.name;
-    welcomeLabel_->setText(
+    labels_.welcomeLabel_->setText(
         QString("Добро пожаловать, %1!").arg(currentCustomerName_));
-    tabs_->setVisible(true);
-    myRentalsBtn_->setVisible(true);
-    logoutBtn_->setVisible(true);
+    ui_.tabs_->setVisible(true);
+    buttons_.myRentalsBtn_->setVisible(true);
+    buttons_.logoutBtn_->setVisible(true);
     loadCars();
     Database::instance().updateExpiredRentals();
     if (rentalsModel_) {
@@ -251,7 +254,7 @@ void MainWindow::tryAutoLogin() {
     rentalsTable_->setModel(rentalsModel_);
     rentalsTable_->resizeColumnsToContents();
     rentalsTable_->horizontalHeader()->setStretchLastSection(true);
-    tabs_->setCurrentIndex(0);
+    ui_.tabs_->setCurrentIndex(0);
     this->show();
   } else {
     showLogin();
@@ -264,13 +267,13 @@ void MainWindow::showLogin() {
   if (dialog.exec() == QDialog::Accepted) {
     currentCustomerId_ = dialog.customerId();
     currentCustomerName_ = dialog.customerName();
-    welcomeLabel_->setText(
+    labels_.welcomeLabel_->setText(
         QString("Добро пожаловать, %1!").arg(currentCustomerName_));
     SessionManager::instance().saveSession(currentCustomerId_,
                                            currentCustomerName_);
-    tabs_->setVisible(true);
-    myRentalsBtn_->setVisible(true);
-    logoutBtn_->setVisible(true);
+    ui_.tabs_->setVisible(true);
+    buttons_.myRentalsBtn_->setVisible(true);
+    buttons_.logoutBtn_->setVisible(true);
     loadCars();
 
     Database::instance().updateExpiredRentals();
@@ -285,7 +288,7 @@ void MainWindow::showLogin() {
     rentalsTable_->resizeColumnsToContents();
     rentalsTable_->horizontalHeader()->setStretchLastSection(true);
 
-    tabs_->setCurrentIndex(0);
+    ui_.tabs_->setCurrentIndex(0);
     this->show();
   } else {
 
@@ -325,7 +328,7 @@ void MainWindow::loadBookmarks() {
       catalogController_->loadBookmarked(currentCustomerId_);
 
   bookmarksView_->setCurrency(currentCurrency_);
-  bookmarksView_->showCars(cars, [this](const CarCardWidget *card) {
+  bookmarksView_->showCars(cars, [this](CarCardWidget *card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
@@ -366,8 +369,9 @@ void MainWindow::onBookmarkToggled(int carId, bool bookmarked) {
 }
 
 void MainWindow::onShowMyRentals() {
-  if (int rentalsIdx = tabs_->indexOf(rentalsWidget_); rentalsIdx >= 0) {
-    tabs_->setCurrentIndex(rentalsIdx);
+  if (int rentalsIdx = ui_.tabs_->indexOf(ui_.rentalsWidget_);
+      rentalsIdx >= 0) {
+    ui_.tabs_->setCurrentIndex(rentalsIdx);
   }
 
   Database::instance().updateExpiredRentals();
@@ -404,9 +408,9 @@ void MainWindow::updateCurrencyForAllCards() {
 void MainWindow::onLogout() {
   currentCustomerId_ = -1;
   currentCustomerName_.clear();
-  tabs_->setVisible(false);
-  myRentalsBtn_->setVisible(false);
-  logoutBtn_->setVisible(false);
+  ui_.tabs_->setVisible(false);
+  buttons_.myRentalsBtn_->setVisible(false);
+  buttons_.logoutBtn_->setVisible(false);
   if (rentalsModel_) {
     delete rentalsModel_;
     rentalsModel_ = nullptr;
@@ -416,31 +420,31 @@ void MainWindow::onLogout() {
   showLogin();
 }
 void MainWindow::connectFilters() {
-  auto applyFilters = [this, tabs = tabs_,
-                       bookmarksContainer = bookmarksContainer_]() {
+  auto applyFilters = [this]() {
     loadCars();
-    if (tabs->currentWidget() == bookmarksContainer)
+    if (ui_.tabs_->currentWidget() == ui_.bookmarksContainer_)
       loadBookmarks();
   };
 
-  connect(searchEdit_, &QLineEdit::textChanged, this,
+  connect(filters_.searchEdit_, &QLineEdit::textChanged, this,
           [applyFilters](const QString &) { applyFilters(); });
-  connect(engineTypeFilter_, &QComboBox::currentTextChanged, this,
+  connect(filters_.engineTypeFilter_, &QComboBox::currentTextChanged, this,
           [applyFilters](const QString &) { applyFilters(); });
-  connect(seatsMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
-          [applyFilters](int) { applyFilters(); });
-  connect(powerMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
-          [applyFilters](int) { applyFilters(); });
-  connect(capacityMinFilter_, qOverload<double>(&QDoubleSpinBox::valueChanged),
-          this, [applyFilters](double) { applyFilters(); });
+  connect(filters_.seatsMinFilter_, qOverload<int>(&QSpinBox::valueChanged),
+          this, [applyFilters](int) { applyFilters(); });
+  connect(filters_.powerMinFilter_, qOverload<int>(&QSpinBox::valueChanged),
+          this, [applyFilters](int) { applyFilters(); });
+  connect(filters_.capacityMinFilter_,
+          qOverload<double>(&QDoubleSpinBox::valueChanged), this,
+          [applyFilters](double) { applyFilters(); });
 }
 
 CatalogFilters MainWindow::currentFilters() const {
   CatalogFilters getFilters;
-  getFilters.searchText = searchEdit_->text();
-  getFilters.engineType = engineTypeFilter_->currentText();
-  getFilters.seatsMin = seatsMinFilter_->value();
-  getFilters.powerMin = powerMinFilter_->value();
-  getFilters.capacityMin = capacityMinFilter_->value();
+  getFilters.searchText = filters_.searchEdit_->text();
+  getFilters.engineType = filters_.engineTypeFilter_->currentText();
+  getFilters.seatsMin = filters_.seatsMinFilter_->value();
+  getFilters.powerMin = filters_.powerMinFilter_->value();
+  getFilters.capacityMin = filters_.capacityMinFilter_->value();
   return getFilters;
 }

@@ -50,25 +50,35 @@ private:
   QString currentCustomerName_;
   QString currentCurrency_ = "USD";
 
+  struct UIWidgets {
+    QWidget *centralWidget_ = nullptr;
+    QTabWidget *tabs_ = nullptr;
+    QScrollArea *scrollArea_ = nullptr;
+    QWidget *carsContainer_ = nullptr;
+    QWidget *rentalsWidget_ = nullptr;
+    QWidget *bookmarksContainer_ = nullptr;
+    QWidget *bmInner_ = nullptr;
+  } ui_;
 
-  QWidget *centralWidget_;
-  QTabWidget *tabs_;
-  QScrollArea *scrollArea_;
-  QWidget *carsContainer_;
-  QLineEdit *searchEdit_;
-  QComboBox *currencyBox_;
+  struct UIFilters {
+    QLineEdit *searchEdit_ = nullptr;
+    QComboBox *engineTypeFilter_ = nullptr;
+    QSpinBox *seatsMinFilter_ = nullptr;
+    QSpinBox *powerMinFilter_ = nullptr;
+    QDoubleSpinBox *capacityMinFilter_ = nullptr;
+  } filters_;
 
-  QComboBox *engineTypeFilter_;
-  QSpinBox *seatsMinFilter_;
-  QSpinBox *powerMinFilter_;
-  QDoubleSpinBox *capacityMinFilter_;
-  QPushButton *myRentalsBtn_;
-  QPushButton *logoutBtn_;
-  QLabel *welcomeLabel_;
-  QTableView *rentalsTable_;
-  QWidget *rentalsWidget_;
-  QWidget *bookmarksContainer_;
-  QWidget *bmInner_;
+  struct UIButtons {
+    QPushButton *myRentalsBtn_ = nullptr;
+    QPushButton *logoutBtn_ = nullptr;
+  } buttons_;
+
+  struct UILabels {
+    QLabel *welcomeLabel_ = nullptr;
+  } labels_;
+
+  QComboBox *currencyBox_ = nullptr;
+  QTableView *rentalsTable_ = nullptr;
 
   std::unique_ptr<CarCardsView> carsView_;
   std::unique_ptr<CarCardsView> bookmarksView_;

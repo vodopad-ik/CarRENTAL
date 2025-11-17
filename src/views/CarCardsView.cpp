@@ -24,28 +24,6 @@ void CarCardsView::setCurrency(const QString &currency) {
   forEachCard([currency](CarCardWidget *card) { card->updateCurrency(currency); });
 }
 
-void CarCardsView::showCars(
-    const QList<CarInfo> &cars,
-    const std::function<void(CarCardWidget *)> &binder) {
-  clear();
-
-  int row = 0;
-  int col = 0;
-  for (const auto &car : cars) {
-    auto *card = new CarCardWidget(car, currentCurrency_, container_);
-    if (binder)
-      binder(card);
-    layout_->addWidget(card, row, col, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    cards_.append(card);
-
-    ++col;
-    if (col >= columns_) {
-      col = 0;
-      ++row;
-    }
-  }
-}
-
 void CarCardsView::clear() {
   while (QLayoutItem *item = layout_->takeAt(0)) {
     if (auto *widget = item->widget()) {
@@ -54,11 +32,4 @@ void CarCardsView::clear() {
     delete item;
   }
   cards_.clear();
-}
-
-void CarCardsView::forEachCard(
-    const std::function<void(CarCardWidget *)> &visitor) const {
-  for (auto *card : cards_) {
-    visitor(card);
-  }
 }

@@ -11,7 +11,7 @@ class LoginDialog : public QDialog {
 
 public:
   explicit LoginDialog(QWidget *parent = nullptr);
-  ~LoginDialog() override;
+  ~LoginDialog() override = default;
 
   QString customerName() const { return name_; }
   int customerId() const { return customerId_; }

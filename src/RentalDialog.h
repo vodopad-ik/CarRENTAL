@@ -31,5 +31,5 @@ private:
   QDateEdit *endDateEdit_;
   QLabel *totalPriceLabel_;
   QLabel *specsLabel_ = nullptr;
-  RentalCalculator calculator_;
+  [[no_unique_address]] RentalCalculator calculator_;
 };

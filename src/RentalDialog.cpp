@@ -14,8 +14,8 @@
 
 RentalDialog::RentalDialog(const CarInfo &car, int customerId,
                            const QString &currency, QWidget *parent)
-    : QDialog(parent), customerId_(customerId), currentCurrency_(currency) {
-  car_ = new CarInfo(car);
+    : QDialog(parent), car_(new CarInfo(car)), customerId_(customerId),
+      currentCurrency_(currency) {
   setWindowTitle("Оформление аренды");
   setModal(true);
   resize(350, 250);
@@ -145,9 +145,9 @@ void RentalDialog::onRent() {
     return;
   }
 
-  int availableQty =
-      Database::instance().getAvailableQuantity(car_->id, start, end);
-  if (availableQty <= 0) {
+  if (int availableQty =
+          Database::instance().getAvailableQuantity(car_->id, start, end);
+      availableQty <= 0) {
     QMessageBox::warning(
         this, "Недоступно",
         "Все экземпляры этого автомобиля уже забронированы на выбранные даты");

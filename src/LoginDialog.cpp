@@ -13,7 +13,7 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
+LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
   setWindowTitle("Вход / Регистрация");
   setModal(true);
   resize(400, 300);
@@ -36,8 +36,8 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
 
 
   auto *tabsLayout = new QHBoxLayout();
-  QPushButton *tabLogin = new QPushButton("Войти", this);
-  QPushButton *tabRegister = new QPushButton("Зарегистрироваться", this);
+  auto *tabLogin = new QPushButton("Войти", this);
+  auto *tabRegister = new QPushButton("Зарегистрироваться", this);
   tabLogin->setCheckable(true);
   tabRegister->setCheckable(true);
   tabLogin->setChecked(true);
@@ -104,25 +104,31 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
   passwordRepeatEdit_->setVisible(false);
   registerBtn_->setVisible(false);
 
-  auto setLoginMode = [=]() {
+  auto setLoginMode = [tabLogin, tabRegister, nameLabel = nameLabel_,
+                       nameEdit = nameEdit_, passwordRepeatLabel = passwordRepeatLabel_,
+                       passwordRepeatEdit = passwordRepeatEdit_, loginBtn = loginBtn_,
+                       registerBtn = registerBtn_]() {
     tabLogin->setChecked(true);
     tabRegister->setChecked(false);
-    nameLabel_->setVisible(false);
-    nameEdit_->setVisible(false);
-    passwordRepeatLabel_->setVisible(false);
-    passwordRepeatEdit_->setVisible(false);
-    loginBtn_->setVisible(true);
-    registerBtn_->setVisible(false);
+    nameLabel->setVisible(false);
+    nameEdit->setVisible(false);
+    passwordRepeatLabel->setVisible(false);
+    passwordRepeatEdit->setVisible(false);
+    loginBtn->setVisible(true);
+    registerBtn->setVisible(false);
   };
-  auto setRegisterMode = [=]() {
+  auto setRegisterMode = [tabLogin, tabRegister, nameLabel = nameLabel_,
+                          nameEdit = nameEdit_, passwordRepeatLabel = passwordRepeatLabel_,
+                          passwordRepeatEdit = passwordRepeatEdit_, loginBtn = loginBtn_,
+                          registerBtn = registerBtn_]() {
     tabLogin->setChecked(false);
     tabRegister->setChecked(true);
-    nameLabel_->setVisible(true);
-    nameEdit_->setVisible(true);
-    passwordRepeatLabel_->setVisible(true);
-    passwordRepeatEdit_->setVisible(true);
-    loginBtn_->setVisible(false);
-    registerBtn_->setVisible(true);
+    nameLabel->setVisible(true);
+    nameEdit->setVisible(true);
+    passwordRepeatLabel->setVisible(true);
+    passwordRepeatEdit->setVisible(true);
+    loginBtn->setVisible(false);
+    registerBtn->setVisible(true);
   };
   connect(tabLogin, &QPushButton::clicked, setLoginMode);
   connect(tabRegister, &QPushButton::clicked, setRegisterMode);
@@ -131,7 +137,6 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
   connect(registerBtn_, &QPushButton::clicked, this, &LoginDialog::onRegister);
 }
 
-LoginDialog::~LoginDialog() {}
 
 void LoginDialog::onLogin() {
   QString phone = phoneEdit_->text().trimmed();
@@ -141,8 +146,7 @@ void LoginDialog::onLogin() {
     return;
   }
 
-  QRegularExpression re("^\\+375\\d{9}$");
-  if (!re.match(phone).hasMatch()) {
+  if (QRegularExpression re("^\\+375\\d{9}$"); !re.match(phone).hasMatch()) {
     QMessageBox::warning(
         this, "Ошибка",
         "Телефон должен быть в формате +375xxxxxxxxx (11 цифр после +375)");
@@ -153,9 +157,6 @@ void LoginDialog::onLogin() {
     return;
   }
 
-
-
-  auto &db = Database::instance();
   QByteArray passHash =
       QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
           .toHex();
@@ -189,8 +190,7 @@ void LoginDialog::onRegister() {
     QMessageBox::warning(this, "Ошибка", "Введите имя");
     return;
   }
-  QRegularExpression re("^\\+375\\d{9}$");
-  if (!re.match(phone_).hasMatch()) {
+  if (QRegularExpression re("^\\+375\\d{9}$"); !re.match(phone_).hasMatch()) {
     QMessageBox::warning(
         this, "Ошибка",
         "Телефон должен быть в формате +375xxxxxxxxx (11 цифр после +375)");

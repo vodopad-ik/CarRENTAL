@@ -28,8 +28,7 @@
 #include <QTableView>
 #include <QVBoxLayout>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), currentCustomerId_(-1), currentCurrency_("USD") {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setWindowTitle("Аренда автомобилей");
   resize(1200, 800);
 
@@ -306,7 +305,7 @@ void MainWindow::loadCars() {
       catalogController_->loadAvailable(currentCustomerId_);
 
   carsView_->setCurrency(currentCurrency_);
-  carsView_->showCars(cars, [this](CarCardWidget *card) {
+  carsView_->showCars(cars, [this](CarCardWidget *const card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
@@ -326,7 +325,7 @@ void MainWindow::loadBookmarks() {
       catalogController_->loadBookmarked(currentCustomerId_);
 
   bookmarksView_->setCurrency(currentCurrency_);
-  bookmarksView_->showCars(cars, [this](CarCardWidget *card) {
+  bookmarksView_->showCars(cars, [this](CarCardWidget *const card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
@@ -358,7 +357,7 @@ void MainWindow::onCarRentClicked(int carId) {
 
 void MainWindow::onBookmarkToggled(int carId, bool bookmarked) {
   Database::instance().setBookmarked(carId, currentCustomerId_, bookmarked);
-  carsView_->forEachCard([&](CarCardWidget *card) {
+  carsView_->forEachCard([carId, bookmarked](CarCardWidget *card) {
     if (card->carId() == carId)
       card->updateBookmarkStatus(bookmarked);
   });
@@ -367,8 +366,7 @@ void MainWindow::onBookmarkToggled(int carId, bool bookmarked) {
 }
 
 void MainWindow::onShowMyRentals() {
-  int rentalsIdx = tabs_->indexOf(rentalsWidget_);
-  if (rentalsIdx >= 0) {
+  if (int rentalsIdx = tabs_->indexOf(rentalsWidget_); rentalsIdx >= 0) {
     tabs_->setCurrentIndex(rentalsIdx);
   }
 
@@ -418,9 +416,10 @@ void MainWindow::onLogout() {
   showLogin();
 }
 void MainWindow::connectFilters() {
-  auto applyFilters = [this]() {
+  auto applyFilters = [this, tabs = tabs_,
+                       bookmarksContainer = bookmarksContainer_]() {
     loadCars();
-    if (tabs_->currentWidget() == bookmarksContainer_)
+    if (tabs->currentWidget() == bookmarksContainer)
       loadBookmarks();
   };
 

@@ -48,7 +48,7 @@ private:
 
   int currentCustomerId_ = -1;
   QString currentCustomerName_;
-  QString currentCurrency_;
+  QString currentCurrency_ = "USD";
 
 
   QWidget *centralWidget_;

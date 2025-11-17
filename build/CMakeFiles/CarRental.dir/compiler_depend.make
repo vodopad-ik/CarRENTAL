@@ -1330,8 +1330,6 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: /home/vladius/Desktop/apps/CarRE
   /home/vladius/Desktop/apps/CarRENTAL/src/LoginDialog.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
-  /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
-  /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

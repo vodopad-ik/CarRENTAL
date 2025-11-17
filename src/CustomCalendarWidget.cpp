@@ -45,9 +45,7 @@ void CustomCalendarWidget::mouseMoveEvent(QMouseEvent *event) {
 
   QPoint pos = event->pos();
 
-
-  QDate monthStart = selectedDate();
-  if (monthStart.isValid()) {
+  if (QDate monthStart = selectedDate(); monthStart.isValid()) {
     monthStart = QDate(monthStart.year(), monthStart.month(), 1);
     QDate monthEnd = monthStart.addMonths(1).addDays(-1);
 

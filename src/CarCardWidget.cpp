@@ -19,8 +19,7 @@
 
 CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
                              QWidget *parent)
-    : QWidget(parent), currentCurrency_(currency) {
-  carData_ = new CarInfo(car);
+    : QWidget(parent), carData_(new CarInfo(car)), currentCurrency_(currency) {
   setMinimumSize(320, 360);
   setMaximumSize(360, 420);
 
@@ -59,7 +58,7 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
           "QLabel { background-color: #e0e0e0; border: none; color: #999; "
           "font-size: 40px; }");
     }
-  } catch (const FileLoadException &e) {
+  } catch (const FileLoadException &) {
     imageLabel_->setText("🚗");
     imageLabel_->setStyleSheet(
         "QLabel { background-color: #e0e0e0; border: none; color: #999; "
@@ -203,7 +202,7 @@ void CarCardWidget::updateBookmarkStatus(bool bookmarked) {
 }
 
 void CarCardWidget::updatePriceDisplay() {
-  auto &converter = CurrencyConverter::instance();
+  const auto &converter = CurrencyConverter::instance();
   auto currency = CurrencyConverter::fromString(currentCurrency_);
   double price = converter.fromBase(carData_->pricePerDay, currency);
   QString symbol = converter.symbol(currency);

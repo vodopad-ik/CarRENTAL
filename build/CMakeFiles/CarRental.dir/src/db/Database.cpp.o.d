@@ -2,8 +2,8 @@ CMakeFiles/CarRental.dir/src/db/Database.cpp.o: \
  /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.cpp \
  /usr/include/stdc-predef.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h \
@@ -250,6 +250,9 @@ CMakeFiles/CarRental.dir/src/db/Database.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qutf8stringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringtokenizer.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h \
  /usr/include/c++/13/numeric /usr/include/c++/13/bits/stl_numeric.h \
@@ -313,8 +316,14 @@ CMakeFiles/CarRental.dir/src/db/Database.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/CarSeeder.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/SchemaManager.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CarsRepository.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/CustomersRepository.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/repositories/RentalsRepository.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/utils/PathsConfig.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDir \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdir.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h \
@@ -343,7 +352,5 @@ CMakeFiles/CarRental.dir/src/db/Database.cpp.o: \
  /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfileinfo.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
- /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQuery \
- /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquery.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlError \
+ /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlerror.h

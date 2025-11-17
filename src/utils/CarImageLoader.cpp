@@ -1,6 +1,7 @@
 #include "CarImageLoader.h"
-
 #include "PathsConfig.h"
+
+#include "exceptions/FileLoadException.h"
 
 #include <QDir>
 #include <QFile>
@@ -21,12 +22,16 @@ QPixmap CarImageLoader::loadCardImage(const QString &resourcePath,
       break;
   }
 
-  if (pixmap.isNull()) {
-    pixmap.load(PathsConfig::placeholderImage());
+  if (pixmap.isNull()) { 
+    const QString placeholderPath = PathsConfig::placeholderImage();
+    if (!pixmap.load(placeholderPath)) {
+      throw FileLoadException(placeholderPath, "Failed to load placeholder image");
+    }
   }
 
-  if (pixmap.isNull())
-    return pixmap;
+  if (pixmap.isNull()) {
+    throw FileLoadException(resourcePath, "Image is null after loading");
+  }
 
   QPixmap scaled = pixmap.scaled(targetSize, Qt::KeepAspectRatioByExpanding,
                                  Qt::SmoothTransformation);
@@ -65,4 +70,8 @@ QPixmap CarImageLoader::roundCorners(const QPixmap &source, int radius) {
   painter.drawPixmap(0, 0, source);
   return target;
 }
+
+
+
+
 

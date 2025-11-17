@@ -1,0 +1,3304 @@
+ЛИСТИНГИ КОДА ПРОГРАММЫ ПРОКАТА АВТОМОБИЛЕЙ
+
+================================================================================
+Файл: src/db/CarInfo.h
+================================================================================
+
+#pragma once
+
+#include <QString>
+
+struct CarInfo {
+  int id;
+  QString brand;
+  QString model;
+  int year;
+  double pricePerDay;
+  int quantity = 1;
+  QString description;
+  bool available;
+  QString imagePath;
+  bool bookmarked = false;
+  QString engineType;
+  double engineCapacityL = 0.0;
+  int powerHp = 0;
+  int seats = 0;
+};
+
+
+================================================================================
+Файл: src/db/Database.h
+================================================================================
+
+#pragma once
+
+#include "CarInfo.h"
+
+#include <QDate>
+#include <QSqlDatabase>
+#include <QSqlQueryModel>
+#include <QString>
+
+#include <memory>
+
+class SchemaManager;
+class CarSeeder;
+class CarsRepository;
+class CustomersRepository;
+class RentalsRepository;
+
+class Database {
+public:
+  static Database &instance();
+
+  bool initialize();
+
+  QSqlQueryModel *getAvailableCars(int customerId);
+  QSqlQueryModel *getBookmarked(int customerId);
+  CarInfo getCar(int id, int customerId);
+  int getAvailableQuantity(int carId, const QDate &startDate,
+                           const QDate &endDate);
+  bool setBookmarked(int carId, int customerId, bool bookmarked);
+
+  int addCustomer(const QString &name, const QString &phone,
+                  const QString &passwordHash);
+  int findCustomerByPhoneAndPassword(const QString &phone,
+                                     const QString &passwordHash);
+
+  int createRental(int carId, int customerId, const QDate &startDate,
+                   const QDate &endDate, double totalPrice);
+  void updateExpiredRentals();
+
+  QSqlDatabase &database() { return db_; }
+
+private:
+  Database();
+
+  bool createSchema();
+  void seedCars();
+  void populateCarSpecs();
+  void ensureRepositories();
+
+  QSqlDatabase db_;
+  std::unique_ptr<SchemaManager> schemaManager_;
+  std::unique_ptr<CarSeeder> carSeeder_;
+  std::unique_ptr<CarsRepository> carsRepository_;
+  std::unique_ptr<CustomersRepository> customersRepository_;
+  std::unique_ptr<RentalsRepository> rentalsRepository_;
+};
+
+
+================================================================================
+Файл: src/db/Database.cpp
+================================================================================
+
+#include "Database.h"
+
+#include "CarSeeder.h"
+#include "SchemaManager.h"
+#include "repositories/CarsRepository.h"
+#include "repositories/CustomersRepository.h"
+#include "repositories/RentalsRepository.h"
+
+#include "utils/PathsConfig.h"
+
+#include <QDir>
+
+Database &Database::instance() {
+  static Database inst;
+  return inst;
+}
+
+Database::Database() = default;
+
+bool Database::initialize() {
+  if (!QSqlDatabase::contains("carrental")) {
+    db_ = QSqlDatabase::addDatabase("QSQLITE", "carrental");
+  } else {
+    db_ = QSqlDatabase::database("carrental");
+  }
+
+  const QString dataDir = PathsConfig::dataDir();
+  const QString dbPath = PathsConfig::databaseFile();
+  db_.setDatabaseName(dbPath);
+
+  if (!db_.open()) {
+    return false;
+  }
+
+  if (!createSchema())
+    return false;
+
+  seedCars();
+  populateCarSpecs();
+
+  ensureRepositories();
+  return true;
+}
+
+bool Database::createSchema() {
+  if (!schemaManager_)
+    schemaManager_ = std::make_unique<SchemaManager>();
+  return schemaManager_->ensureSchema(db_);
+}
+
+void Database::seedCars() {
+  if (!carSeeder_)
+    carSeeder_ = std::make_unique<CarSeeder>();
+  carSeeder_->seedIfEmpty(db_);
+  }
+
+void Database::populateCarSpecs() {
+  if (!carSeeder_)
+    carSeeder_ = std::make_unique<CarSeeder>();
+  carSeeder_->populateSpecs(db_);
+}
+
+void Database::ensureRepositories() {
+  if (!carsRepository_)
+    carsRepository_ = std::make_unique<CarsRepository>(db_);
+  if (!customersRepository_)
+    customersRepository_ = std::make_unique<CustomersRepository>(db_);
+  if (!rentalsRepository_)
+    rentalsRepository_ = std::make_unique<RentalsRepository>(db_);
+}
+
+QSqlQueryModel *Database::getAvailableCars(int customerId) {
+  ensureRepositories();
+  return carsRepository_->fetchAvailableCars(customerId);
+}
+
+QSqlQueryModel *Database::getBookmarked(int customerId) {
+  ensureRepositories();
+  return carsRepository_->fetchBookmarkedCars(customerId);
+}
+
+CarInfo Database::getCar(int id, int customerId) {
+  ensureRepositories();
+  return carsRepository_->findCar(id, customerId);
+}
+
+int Database::getAvailableQuantity(int carId, const QDate &startDate,
+                                   const QDate &endDate) {
+  ensureRepositories();
+  return carsRepository_->availableQuantity(carId, startDate, endDate);
+}
+
+bool Database::setBookmarked(int carId, int customerId, bool bookmarked) {
+  ensureRepositories();
+  return carsRepository_->setBookmarked(carId, customerId, bookmarked);
+}
+
+int Database::addCustomer(const QString &name, const QString &phone,
+                          const QString &passwordHash) {
+  ensureRepositories();
+  return customersRepository_->addCustomer(name, phone, passwordHash);
+}
+
+int Database::findCustomerByPhoneAndPassword(const QString &phone,
+                                             const QString &passwordHash) {
+  ensureRepositories();
+  return customersRepository_->findCustomerByPhoneAndPassword(phone,
+                                                              passwordHash);
+}
+
+int Database::createRental(int carId, int customerId, const QDate &startDate,
+                           const QDate &endDate, double totalPrice) {
+  ensureRepositories();
+  return rentalsRepository_->createRental(carId, customerId, startDate, endDate,
+                                          totalPrice);
+}
+
+void Database::updateExpiredRentals() {
+  ensureRepositories();
+  rentalsRepository_->updateExpiredRentals();
+}
+
+
+================================================================================
+Файл: src/db/repositories/CarsRepository.h
+================================================================================
+
+#pragma once
+
+#include "db/CarInfo.h"
+
+#include <QDate>
+#include <QSqlDatabase>
+#include <QSqlQueryModel>
+
+class CarsRepository {
+public:
+  explicit CarsRepository(QSqlDatabase &db);
+
+  QSqlQueryModel *fetchAvailableCars(int customerId) const;
+  QSqlQueryModel *fetchBookmarkedCars(int customerId) const;
+  CarInfo findCar(int id, int customerId) const;
+  int availableQuantity(int carId, const QDate &startDate,
+                        const QDate &endDate) const;
+  bool setBookmarked(int carId, int customerId, bool bookmarked) const;
+
+private:
+  QSqlDatabase &db_;
+};
+
+
+================================================================================
+Файл: src/db/repositories/CarsRepository.cpp
+================================================================================
+
+#include "CarsRepository.h"
+
+#include <QSqlQuery>
+
+CarsRepository::CarsRepository(QSqlDatabase &db) : db_(db) {}
+
+QSqlQueryModel *CarsRepository::fetchAvailableCars(int customerId) const {
+  auto *model = new QSqlQueryModel();
+  QSqlQuery q(db_);
+  q.prepare("SELECT c.id, c.brand, c.model, c.year, c.price_per_day, "
+            "c.description, c.available, c.image_path, "
+            "CASE WHEN b.id IS NOT NULL THEN 1 ELSE 0 END AS bookmarked, "
+            "c.engine_type, c.engine_capacity, c.power_hp, c.seats, c.quantity "
+            "FROM cars c "
+            "LEFT JOIN bookmarks b ON c.id = b.car_id AND b.customer_id = ? "
+            "WHERE c.available = 1 ORDER BY c.brand, c.model");
+  q.addBindValue(customerId);
+  q.exec();
+  model->setQuery(std::move(q));
+  return model;
+}
+
+QSqlQueryModel *CarsRepository::fetchBookmarkedCars(int customerId) const {
+  auto *model = new QSqlQueryModel();
+  QSqlQuery q(db_);
+  q.prepare("SELECT c.id, c.brand, c.model, c.year, c.price_per_day, "
+            "c.description, c.available, c.image_path, 1 AS bookmarked, "
+            "c.engine_type, c.engine_capacity, c.power_hp, c.seats, c.quantity "
+            "FROM cars c JOIN bookmarks b ON c.id = b.car_id "
+            "WHERE b.customer_id = ? ORDER BY c.brand, c.model");
+  q.addBindValue(customerId);
+  q.exec();
+  model->setQuery(std::move(q));
+  return model;
+}
+
+CarInfo CarsRepository::findCar(int id, int customerId) const {
+  CarInfo info{};
+  QSqlQuery q(db_);
+  q.prepare("SELECT c.id, c.brand, c.model, c.year, c.price_per_day, c.quantity, "
+            "c.description, c.available, c.image_path, "
+            "CASE WHEN b.id IS NOT NULL THEN 1 ELSE 0 END AS bookmarked, "
+            "c.engine_type, c.engine_capacity, c.power_hp, c.seats "
+            "FROM cars c LEFT JOIN bookmarks b ON c.id = b.car_id AND "
+            "b.customer_id = ? WHERE c.id = ?");
+  q.addBindValue(customerId);
+  q.addBindValue(id);
+  if (q.exec() && q.next()) {
+    info.id = q.value(0).toInt();
+    info.brand = q.value(1).toString();
+    info.model = q.value(2).toString();
+    info.year = q.value(3).toInt();
+    info.pricePerDay = q.value(4).toDouble();
+    info.quantity = q.value(5).toInt();
+    info.description = q.value(6).toString();
+    info.available = q.value(7).toInt() == 1;
+    info.imagePath = q.value(8).toString();
+    info.bookmarked = q.value(9).toInt() == 1;
+    info.engineType = q.value(10).toString();
+    info.engineCapacityL = q.value(11).toDouble();
+    info.powerHp = q.value(12).toInt();
+    info.seats = q.value(13).toInt();
+  }
+  return info;
+}
+
+int CarsRepository::availableQuantity(int carId, const QDate &startDate,
+                                      const QDate &endDate) const {
+  QSqlQuery q(db_);
+  q.prepare("SELECT quantity - (SELECT COUNT(*) FROM rentals WHERE car_id = ? "
+            "AND NOT(date(end_date) <= date(?) OR date(start_date) >= date(?)))"
+            " FROM cars WHERE id=?");
+  q.addBindValue(carId);
+  q.addBindValue(startDate.toString("yyyy-MM-dd"));
+  q.addBindValue(endDate.toString("yyyy-MM-dd"));
+  q.addBindValue(carId);
+  if (q.exec() && q.next())
+    return q.value(0).toInt();
+  return 0;
+}
+
+bool CarsRepository::setBookmarked(int carId, int customerId,
+                                   bool bookmarked) const {
+  if (bookmarked) {
+    QSqlQuery q(db_);
+    q.prepare("INSERT OR IGNORE INTO bookmarks (customer_id, car_id) VALUES (?, ?)" );
+    q.addBindValue(customerId);
+    q.addBindValue(carId);
+    return q.exec();
+  }
+
+  QSqlQuery q(db_);
+  q.prepare("DELETE FROM bookmarks WHERE customer_id=? AND car_id=?");
+  q.addBindValue(customerId);
+  q.addBindValue(carId);
+  return q.exec();
+}
+
+
+================================================================================
+Файл: src/db/repositories/CustomersRepository.h
+================================================================================
+
+#pragma once
+
+#include <QSqlDatabase>
+
+class CustomersRepository {
+public:
+  explicit CustomersRepository(QSqlDatabase &db);
+
+  int addCustomer(const QString &name, const QString &phone,
+                  const QString &passwordHash) const;
+  int findCustomerByPhoneAndPassword(const QString &phone,
+                                     const QString &passwordHash) const;
+
+private:
+  QSqlDatabase &db_;
+};
+
+
+================================================================================
+Файл: src/db/repositories/CustomersRepository.cpp
+================================================================================
+
+#include "CustomersRepository.h"
+
+#include <QSqlQuery>
+
+CustomersRepository::CustomersRepository(QSqlDatabase &db) : db_(db) {}
+
+int CustomersRepository::addCustomer(const QString &name, const QString &phone,
+                                     const QString &passwordHash) const {
+  QSqlQuery q(db_);
+  q.prepare("INSERT INTO customers (name, phone, password_hash) VALUES (?, ?, ?)");
+  q.addBindValue(name);
+  q.addBindValue(phone);
+  q.addBindValue(passwordHash);
+  if (!q.exec())
+    return -1;
+  return q.lastInsertId().toInt();
+}
+
+int CustomersRepository::findCustomerByPhoneAndPassword(
+    const QString &phone, const QString &passwordHash) const {
+  QSqlQuery q(db_);
+  q.prepare("SELECT id FROM customers WHERE phone = ? AND password_hash = ?");
+  q.addBindValue(phone);
+  q.addBindValue(passwordHash);
+  if (q.exec() && q.next())
+    return q.value(0).toInt();
+  return -1;
+}
+
+
+================================================================================
+Файл: src/db/repositories/RentalsRepository.h
+================================================================================
+
+#pragma once
+
+#include <QDate>
+#include <QSqlDatabase>
+
+class RentalsRepository {
+public:
+  explicit RentalsRepository(QSqlDatabase &db);
+
+  int createRental(int carId, int customerId, const QDate &startDate,
+                   const QDate &endDate, double totalPrice) const;
+  void updateExpiredRentals() const;
+
+private:
+  QSqlDatabase &db_;
+};
+
+
+================================================================================
+Файл: src/db/repositories/RentalsRepository.cpp
+================================================================================
+
+#include "RentalsRepository.h"
+
+#include <QSqlQuery>
+
+RentalsRepository::RentalsRepository(QSqlDatabase &db) : db_(db) {}
+
+int RentalsRepository::createRental(int carId, int customerId,
+                                    const QDate &startDate,
+                                    const QDate &endDate,
+                                    double totalPrice) const {
+  QSqlQuery q(db_);
+  q.prepare("INSERT INTO rentals (car_id, customer_id, start_date, end_date, "
+            "total_price) VALUES (?, ?, ?, ?, ?)");
+  q.addBindValue(carId);
+  q.addBindValue(customerId);
+  q.addBindValue(startDate.toString("yyyy-MM-dd"));
+  q.addBindValue(endDate.toString("yyyy-MM-dd"));
+  q.addBindValue(totalPrice);
+  if (!q.exec())
+    return -1;
+  return q.lastInsertId().toInt();
+}
+
+void RentalsRepository::updateExpiredRentals() const {
+  QSqlQuery q(db_);
+  q.prepare("UPDATE rentals SET status='expired' WHERE status='active' AND "
+            "date(end_date) < date('now')");
+  q.exec();
+}
+
+
+================================================================================
+Файл: src/utils/CurrencyConverter.h
+================================================================================
+
+#pragma once
+
+#include <QString>
+
+class CurrencyConverter {
+public:
+  enum Currency { USD, EUR, BYN };
+  static CurrencyConverter &instance();
+
+
+  double fromBase(double usdAmount, Currency to) const;
+
+
+  double toBase(double amount, Currency from) const;
+
+
+  QString symbol(Currency currency) const;
+
+
+  QString code(Currency currency) const;
+
+
+  static Currency fromString(const QString &str);
+
+private:
+  CurrencyConverter();
+
+
+  double usdToEur_;
+  double usdToByn_;
+};
+
+
+================================================================================
+Файл: src/utils/CurrencyConverter.cpp
+================================================================================
+
+#include "CurrencyConverter.h"
+
+CurrencyConverter &CurrencyConverter::instance() {
+  static CurrencyConverter inst;
+  return inst;
+}
+
+CurrencyConverter::CurrencyConverter() {
+
+  usdToEur_ = 0.92;
+  usdToByn_ = 3.28;
+}
+
+double CurrencyConverter::fromBase(double usdAmount, Currency to) const {
+  switch (to) {
+  case USD:
+    return usdAmount;
+  case EUR:
+    return usdAmount * usdToEur_;
+  case BYN:
+    return usdAmount * usdToByn_;
+  }
+  return usdAmount;
+}
+
+double CurrencyConverter::toBase(double amount, Currency from) const {
+  switch (from) {
+  case USD:
+    return amount;
+  case EUR:
+    return amount / usdToEur_;
+  case BYN:
+    return amount / usdToByn_;
+  }
+  return amount;
+}
+
+QString CurrencyConverter::symbol(Currency currency) const {
+  switch (currency) {
+  case USD:
+    return QString("$");
+  case EUR:
+    return QString("€");
+  case BYN:
+    return QString("Br");
+  }
+  return QString("$");
+}
+
+QString CurrencyConverter::code(Currency currency) const {
+  switch (currency) {
+  case USD:
+    return QString("USD");
+  case EUR:
+    return QString("EUR");
+  case BYN:
+    return QString("BYN");
+  }
+  return QString("USD");
+}
+
+CurrencyConverter::Currency CurrencyConverter::fromString(const QString &str) {
+  if (str == "USD")
+    return USD;
+  if (str == "EUR")
+    return EUR;
+  if (str == "BYN")
+    return BYN;
+  return USD;
+}
+
+
+================================================================================
+Файл: src/CarCardWidget.h
+================================================================================
+
+#pragma once
+
+#include <QFrame>
+#include <QLabel>
+#include <QPushButton>
+#include <QToolButton>
+#include <QWidget>
+
+struct CarInfo;
+
+class CarCardWidget : public QWidget {
+  Q_OBJECT
+
+public:
+  explicit CarCardWidget(const CarInfo &car, const QString &currency = "USD",
+                         QWidget *parent = nullptr);
+  void updateCurrency(const QString &currency);
+  void updateBookmarkStatus(bool bookmarked);
+  int carId() const;
+  bool eventFilter(QObject *obj, QEvent *event) override;
+
+signals:
+  void rentClicked(int carId);
+  void bookmarkToggled(int carId, bool bookmarked);
+
+private:
+  void updatePriceDisplay();
+  void showDetailsTooltip();
+  void hideDetailsTooltip();
+
+  CarInfo *carData_;
+  QString currentCurrency_;
+  QString shortDescription_;
+  QLabel *imageLabel_;
+  QLabel *nameLabel_;
+  QLabel *priceLabel_;
+  QLabel *descLabel_;
+  QFrame *detailsPopup_;
+  QLabel *detailsLabel_;
+  QPushButton *rentBtn_;
+  QToolButton *bookmarkBtn_;
+};
+
+
+================================================================================
+Файл: src/CarCardWidget.cpp
+================================================================================
+
+#include "CarCardWidget.h"
+
+#include "db/CarInfo.h"
+#include "utils/CarDetailsFormatter.h"
+#include "utils/CarImageLoader.h"
+#include "utils/CurrencyConverter.h"
+
+#include <QEvent>
+#include <QFrame>
+#include <QGraphicsDropShadowEffect>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPixmap>
+#include <QPushButton>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
+                             QWidget *parent)
+    : QWidget(parent), currentCurrency_(currency) {
+  carData_ = new CarInfo(car);
+  setMinimumSize(320, 360);
+  setMaximumSize(360, 420);
+
+  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  setStyleSheet("CarCardWidget { background-color: white; border: none; "
+                "border-radius: 10px; } "
+                "CarCardWidget > QLabel { background-color: transparent; "
+                "border: none; }");
+
+  auto *layout = new QVBoxLayout(this);
+  layout->setSpacing(6);
+  layout->setContentsMargins(12, 12, 12, 12);
+
+  imageLabel_ = new QLabel(this);
+  imageLabel_->setFixedHeight(180);
+  imageLabel_->setAlignment(Qt::AlignCenter);
+  imageLabel_->setStyleSheet(
+      "QLabel { background-color: transparent; border: none; }");
+  imageLabel_->setScaledContents(false);
+
+  auto *shadow = new QGraphicsDropShadowEffect(this);
+  shadow->setBlurRadius(18);
+  shadow->setOffset(0, 2);
+  shadow->setColor(QColor(0, 0, 0, 80));
+  imageLabel_->setGraphicsEffect(shadow);
+
+  const QPixmap cardImage =
+      CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180));
+  if (!cardImage.isNull()) {
+    imageLabel_->setPixmap(cardImage);
+    imageLabel_->setText("");
+  } else {
+    imageLabel_->setText("🚗");
+    imageLabel_->setStyleSheet(
+        "QLabel { background-color: #e0e0e0; border: none; color: #999; "
+        "font-size: 40px; }");
+  }
+  layout->addWidget(imageLabel_, 0, Qt::AlignHCenter);
+
+  imageLabel_->setMouseTracking(true);
+  imageLabel_->installEventFilter(this);
+  setMouseTracking(true);
+
+  const QString carName = CarDetailsFormatter::name(*carData_);
+  nameLabel_ = new QLabel(carName, this);
+  nameLabel_->setStyleSheet(
+      "QLabel { background-color: transparent; border: none; padding: 0px; "
+      "font-size: 16px; font-weight: bold; color: #333; }");
+  nameLabel_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+  nameLabel_->setWordWrap(false);
+  nameLabel_->setTextFormat(Qt::PlainText);
+  layout->addWidget(nameLabel_);
+
+  priceLabel_ = new QLabel(this);
+  updatePriceDisplay();
+  priceLabel_->setStyleSheet(
+      "QLabel { background-color: transparent; border: none; padding: 0px; "
+      "font-size: 14px; color: #4CAF50; font-weight: bold; }");
+  priceLabel_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+  priceLabel_->setWordWrap(false);
+  priceLabel_->setTextFormat(Qt::PlainText);
+  layout->addWidget(priceLabel_);
+
+  shortDescription_ = carData_->description;
+  descLabel_ = new QLabel(shortDescription_, this);
+  descLabel_->setWordWrap(true);
+  descLabel_->setMaximumHeight(40);
+  descLabel_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+  descLabel_->setStyleSheet(
+      "QLabel { background-color: transparent; border: none; padding-top: 2px; "
+      "font-size: 12px; color: #455A64; font-weight: 500; }");
+  descLabel_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+  descLabel_->setTextFormat(Qt::PlainText);
+  layout->addWidget(descLabel_);
+
+  detailsPopup_ = new QFrame(this);
+  detailsPopup_->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
+  detailsPopup_->setStyleSheet("QFrame { background-color: black; "
+                               "border: none; border-radius: 8px; }");
+  detailsPopup_->hide();
+  detailsPopup_->setAttribute(Qt::WA_TransparentForMouseEvents);
+
+  auto *popupLayout = new QVBoxLayout(detailsPopup_);
+  popupLayout->setContentsMargins(12, 12, 12, 12);
+  popupLayout->setSpacing(4);
+
+  detailsLabel_ = new QLabel(detailsPopup_);
+  detailsLabel_->setWordWrap(true);
+  detailsLabel_->setStyleSheet(
+      "QLabel { background: transparent; border: none; "
+      "font-size: 12px; color: #E0E0E0; font-weight: 600; "
+      "padding: 0px; margin: 0px; line-height: 1.4; }");
+  detailsLabel_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+  popupLayout->addWidget(detailsLabel_);
+
+  auto *popupShadow = new QGraphicsDropShadowEffect(detailsPopup_);
+  popupShadow->setBlurRadius(12);
+  popupShadow->setOffset(0, 2);
+  popupShadow->setColor(QColor(0, 0, 0, 100));
+  detailsPopup_->setGraphicsEffect(popupShadow);
+
+  layout->addSpacing(10);
+
+  auto *btnLayout = new QHBoxLayout();
+  btnLayout->setContentsMargins(0, -20, 0, 0);
+
+  rentBtn_ = new QPushButton("Арендовать", this);
+  rentBtn_->setStyleSheet(
+      "QPushButton { background-color: #2196F3; color: white; "
+      "padding: 10px 14px; border-radius: 6px; font-size: 14px; }"
+      "QPushButton:hover { background-color: #1976D2; }"
+      "QPushButton:pressed { transform: translateY(1px); }");
+  rentBtn_->setMinimumHeight(38);
+  btnLayout->addWidget(rentBtn_);
+
+  bookmarkBtn_ = new QToolButton(this);
+  bookmarkBtn_->setText(carData_->bookmarked ? "★" : "☆");
+  bookmarkBtn_->setToolTip(carData_->bookmarked ? "Убрать из закладок"
+                                                : "В закладки");
+  bookmarkBtn_->setStyleSheet(
+      QString("QToolButton { background-color: %1; border: none; "
+              "border-radius: 6px; padding: 6px; font-size: 20px; color: %2; }"
+              "QToolButton:hover { filter: brightness(0.97); }"
+              "QToolButton:pressed { transform: translateY(1px); }")
+          .arg(carData_->bookmarked ? "#FFC107" : "#E0E0E0")
+          .arg(carData_->bookmarked ? "#FF6F00" : "#757575"));
+  bookmarkBtn_->setMinimumSize(38, 38);
+  bookmarkBtn_->setMaximumSize(38, 38);
+  btnLayout->addWidget(bookmarkBtn_);
+
+  layout->addLayout(btnLayout);
+
+  connect(rentBtn_, &QPushButton::clicked,
+          [this]() { emit rentClicked(carData_->id); });
+
+  connect(bookmarkBtn_, &QToolButton::clicked, [this]() {
+    carData_->bookmarked = !carData_->bookmarked;
+    bookmarkBtn_->setText(carData_->bookmarked ? "★" : "☆");
+    bookmarkBtn_->setToolTip(carData_->bookmarked ? "Убрать из закладок"
+                                                  : "В закладки");
+    bookmarkBtn_->setStyleSheet(
+        QString(
+            "QToolButton { background-color: %1; border: none; "
+            "border-radius: 6px; padding: 6px; font-size: 20px; color: %2; }"
+            "QToolButton:hover { filter: brightness(0.97); }"
+            "QToolButton:pressed { transform: translateY(1px); }")
+            .arg(carData_->bookmarked ? "#FFC107" : "#E0E0E0")
+            .arg(carData_->bookmarked ? "#FF6F00" : "#757575"));
+    emit bookmarkToggled(carData_->id, carData_->bookmarked);
+  });
+}
+
+void CarCardWidget::updateCurrency(const QString &currency) {
+  currentCurrency_ = currency;
+  updatePriceDisplay();
+}
+
+int CarCardWidget::carId() const { return carData_ ? carData_->id : -1; }
+
+void CarCardWidget::updateBookmarkStatus(bool bookmarked) {
+  if (!carData_)
+    return;
+  carData_->bookmarked = bookmarked;
+  bookmarkBtn_->setText(bookmarked ? "★" : "☆");
+  bookmarkBtn_->setToolTip(bookmarked ? "Убрать из закладок" : "В закладки");
+  bookmarkBtn_->setStyleSheet(
+      QString("QToolButton { background-color: %1; border: none; "
+              "border-radius: 6px; padding: 6px; font-size: 20px; color: %2; }"
+              "QToolButton:hover { filter: brightness(0.97); }"
+              "QToolButton:pressed { transform: translateY(1px); }")
+          .arg(bookmarked ? "#FFC107" : "#E0E0E0")
+          .arg(bookmarked ? "#FF6F00" : "#757575"));
+}
+
+void CarCardWidget::updatePriceDisplay() {
+  auto &converter = CurrencyConverter::instance();
+  auto currency = CurrencyConverter::fromString(currentCurrency_);
+  double price = converter.fromBase(carData_->pricePerDay, currency);
+  QString symbol = converter.symbol(currency);
+
+  QString priceText = QString::number(price, 'f', 2) + " " + symbol + "/день";
+  priceLabel_->setText(priceText);
+}
+
+bool CarCardWidget::eventFilter(QObject *obj, QEvent *event) {
+  if (obj == imageLabel_) {
+    if (event->type() == QEvent::Enter) {
+      showDetailsTooltip();
+      return true;
+    } else if (event->type() == QEvent::Leave) {
+      hideDetailsTooltip();
+      return true;
+    }
+  }
+  return QWidget::eventFilter(obj, event);
+}
+
+void CarCardWidget::showDetailsTooltip() {
+  const QString detailsText = CarDetailsFormatter::tooltipText(*carData_);
+  if (detailsText.isEmpty()) {
+    return;
+  }
+
+  detailsLabel_->setText(detailsText.trimmed());
+
+  int margin = 12;
+  int cardWidth = width();
+
+  int imageX = imageLabel_->x();
+  int imageY = imageLabel_->y();
+  int imageWidth = imageLabel_->width();
+  int imageHeight = imageLabel_->height();
+
+  int popupWidth = 180;
+  detailsLabel_->setFixedWidth(popupWidth - 28);
+  detailsLabel_->adjustSize();
+
+  int labelHeight = detailsLabel_->height();
+  int popupHeight = labelHeight + 32;
+
+  int popupX = imageX + imageWidth + 8;
+
+  int popupY = imageY + imageHeight - popupHeight - 8;
+
+  if (popupX + popupWidth > cardWidth - margin) {
+    popupX = cardWidth - popupWidth - margin;
+  }
+
+  if (popupY < imageY) {
+    popupY = imageY + imageHeight - popupHeight - 5;
+  }
+
+  detailsPopup_->setGeometry(popupX, popupY, popupWidth, popupHeight);
+  detailsPopup_->raise();
+  detailsPopup_->show();
+  detailsPopup_->update();
+}
+
+void CarCardWidget::hideDetailsTooltip() { detailsPopup_->hide(); }
+
+
+================================================================================
+Файл: src/RentalDialog.h
+================================================================================
+
+#pragma once
+
+#include "utils/RentalCalculator.h"
+
+#include <QDateEdit>
+#include <QDialog>
+#include <QLabel>
+#include <QString>
+
+class CustomCalendarWidget;
+
+struct CarInfo;
+
+class RentalDialog : public QDialog {
+  Q_OBJECT
+
+public:
+  explicit RentalDialog(const CarInfo &car, int customerId,
+                        const QString &currency = "USD",
+                        QWidget *parent = nullptr);
+
+private slots:
+  void onRent();
+  void updatePrice();
+
+private:
+  CarInfo *car_;
+  int customerId_;
+  QString currentCurrency_;
+  QDateEdit *startDateEdit_;
+  QDateEdit *endDateEdit_;
+  QLabel *totalPriceLabel_;
+  QLabel *specsLabel_ = nullptr;
+  RentalCalculator calculator_;
+};
+
+
+================================================================================
+Файл: src/RentalDialog.cpp
+================================================================================
+
+#include "RentalDialog.h"
+#include "CustomCalendarWidget.h"
+#include "db/Database.h"
+#include "utils/CurrencyConverter.h"
+
+#include <QDate>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+RentalDialog::RentalDialog(const CarInfo &car, int customerId,
+                           const QString &currency, QWidget *parent)
+    : QDialog(parent), customerId_(customerId), currentCurrency_(currency) {
+  car_ = new CarInfo(car);
+  setWindowTitle("Оформление аренды");
+  setModal(true);
+  resize(350, 250);
+
+  auto *layout = new QVBoxLayout(this);
+
+  auto *carLabel = new QLabel(
+      QString("%1 %2 (%3)")
+          .arg(car_->brand, car_->model, QString::number(car_->year)),
+      this);
+  carLabel->setStyleSheet(
+      "font-size: 18px; font-weight: bold; margin-bottom: 15px;");
+  layout->addWidget(carLabel);
+
+
+  QString specs;
+  if (!car_->engineType.isEmpty())
+    specs += QString("Тип двигателя: %1\n").arg(car_->engineType);
+  if (car_->engineCapacityL > 0.0)
+    specs += QString("Объем двигателя: %1 л\n")
+                 .arg(QString::number(car_->engineCapacityL, 'f', 1));
+  if (car_->powerHp > 0)
+    specs += QString("Мощность: %1 л.с.\n").arg(car_->powerHp);
+  if (car_->seats > 0)
+    specs += QString("Число мест: %1").arg(car_->seats);
+  if (!specs.isEmpty()) {
+    specsLabel_ = new QLabel(specs, this);
+    specsLabel_->setStyleSheet("color:#555; margin-bottom: 10px;");
+    layout->addWidget(specsLabel_);
+  }
+
+  auto *formLayout = new QFormLayout();
+
+  QDate maxDate =
+      QDate::currentDate().addYears(1);
+
+  startDateEdit_ = new QDateEdit(QDate::currentDate(), this);
+  startDateEdit_->setMinimumDate(QDate::currentDate());
+  startDateEdit_->setMaximumDate(maxDate);
+  startDateEdit_->setCalendarPopup(true);
+  startDateEdit_->setDisplayFormat("dd.MM.yyyy");
+
+  auto *startCalendar = new CustomCalendarWidget(car_->id, this);
+  startDateEdit_->setCalendarWidget(startCalendar);
+  formLayout->addRow("Дата начала:", startDateEdit_);
+
+  endDateEdit_ = new QDateEdit(QDate::currentDate().addDays(1), this);
+  endDateEdit_->setMinimumDate(QDate::currentDate().addDays(1));
+  endDateEdit_->setMaximumDate(maxDate);
+  endDateEdit_->setCalendarPopup(true);
+  endDateEdit_->setDisplayFormat("dd.MM.yyyy");
+
+  auto *endCalendar = new CustomCalendarWidget(car_->id, this);
+  endDateEdit_->setCalendarWidget(endCalendar);
+  formLayout->addRow("Дата окончания:", endDateEdit_);
+
+  layout->addLayout(formLayout);
+
+  totalPriceLabel_ = new QLabel("Итого: 0", this);
+  totalPriceLabel_->setStyleSheet(
+      "font-size: 16px; font-weight: bold; color: #4CAF50;");
+  layout->addWidget(totalPriceLabel_);
+
+  connect(startDateEdit_, &QDateEdit::dateChanged, this,
+          &RentalDialog::updatePrice);
+  connect(endDateEdit_, &QDateEdit::dateChanged, this,
+          &RentalDialog::updatePrice);
+  updatePrice();
+
+  auto *btnLayout = new QHBoxLayout();
+  auto *cancelBtn = new QPushButton("Отмена", this);
+  auto *rentBtn = new QPushButton("Оформить аренду", this);
+  rentBtn->setStyleSheet("QPushButton { background-color: #4CAF50; color: "
+                         "white; padding: 10px; }");
+
+  btnLayout->addWidget(cancelBtn);
+  btnLayout->addWidget(rentBtn);
+  layout->addLayout(btnLayout);
+
+  connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
+  connect(rentBtn, &QPushButton::clicked, this, &RentalDialog::onRent);
+}
+
+void RentalDialog::updatePrice() {
+  QDate start = startDateEdit_->date();
+  QDate end = endDateEdit_->date();
+  QDate currentDate = QDate::currentDate();
+  QDate maxDate = currentDate.addYears(1);
+
+  const auto normalized =
+      calculator_.normalizeDates(start, end, currentDate, maxDate);
+
+  if (normalized.startClamped) {
+    QMessageBox::warning(
+        this, "Предупреждение",
+        QString("Дата начала не может быть позже %1 (максимальный срок "
+                "бронирования - 1 год от текущей даты)")
+            .arg(maxDate.toString("dd.MM.yyyy")));
+  }
+
+  if (normalized.endClamped) {
+    QMessageBox::warning(
+        this, "Предупреждение",
+        QString("Дата окончания не может быть позже %1 (максимальный срок "
+                "бронирования - 1 год от текущей даты)")
+            .arg(maxDate.toString("dd.MM.yyyy")));
+  }
+
+  if (normalized.endAdjusted) {
+    QMessageBox::warning(this, "Ошибка",
+                         "Дата окончания должна быть позже даты начала");
+  }
+
+  startDateEdit_->setDate(normalized.start);
+  endDateEdit_->setDate(normalized.end);
+
+  const int days = calculator_.rentalDays(normalized.start, normalized.end);
+  totalPriceLabel_->setText(
+      calculator_.formattedTotal(*car_, days, currentCurrency_));
+}
+
+void RentalDialog::onRent() {
+  QDate start = startDateEdit_->date();
+  QDate end = endDateEdit_->date();
+
+  if (end <= start) {
+    QMessageBox::warning(this, "Ошибка",
+                         "Дата окончания должна быть позже даты начала");
+    return;
+  }
+
+
+  int availableQty =
+      Database::instance().getAvailableQuantity(car_->id, start, end);
+  if (availableQty <= 0) {
+    QMessageBox::warning(
+        this, "Недоступно",
+        "Все экземпляры этого автомобиля уже забронированы на выбранные даты");
+    return;
+  }
+
+  const int days = calculator_.rentalDays(start, end);
+  const double total = calculator_.totalBasePrice(*car_, days);
+
+  int rentalId = Database::instance().createRental(car_->id, customerId_, start,
+                                                   end, total);
+  if (rentalId > 0) {
+    QMessageBox::information(
+        this, "Успешно",
+        QString("Аренда оформлена! Номер заказа: %1").arg(rentalId));
+    accept();
+  } else {
+    QMessageBox::warning(this, "Ошибка", "Не удалось оформить аренду");
+  }
+}
+
+
+================================================================================
+Файл: src/main.cpp
+================================================================================
+
+#include "MainWindow.h"
+#include <QApplication>
+
+int main(int argc, char *argv[]) {
+  QApplication app(argc, argv);
+  QApplication::setApplicationName("CarRental");
+  QApplication::setOrganizationName("CarRental");
+
+  MainWindow w;
+
+  return app.exec();
+}
+
+
+================================================================================
+Файл: src/MainWindow.h
+================================================================================
+
+#pragma once
+
+#include "controllers/CarsCatalogController.h"
+
+#include <QLabel>
+#include <QMainWindow>
+#include <QScrollArea>
+#include <QWidget>
+
+#include <memory>
+
+class LoginDialog;
+class CarCardWidget;
+class QLineEdit;
+class QPushButton;
+class QTabWidget;
+class QTableView;
+class QComboBox;
+class QSpinBox;
+class QDoubleSpinBox;
+class RentalsModel;
+class CarCardsView;
+
+class MainWindow : public QMainWindow {
+    Q_OBJECT
+
+public:
+  explicit MainWindow(QWidget *parent = nullptr);
+  ~MainWindow() override;
+
+private slots:
+  void onCarRentClicked(int carId);
+  void onBookmarkToggled(int carId, bool bookmarked);
+  void onShowMyRentals();
+  void onShowBookmarks();
+  void onCurrencyChanged();
+  void onLogout();
+
+private:
+  void setupUI();
+  void loadCars();
+  void loadBookmarks();
+  void showLogin();
+  void updateCurrencyForAllCards();
+  void tryAutoLogin();
+  void connectFilters();
+  CatalogFilters currentFilters() const;
+
+  int currentCustomerId_ = -1;
+  QString currentCustomerName_;
+  QString currentCurrency_;
+
+
+  QWidget *centralWidget_;
+  QTabWidget *tabs_;
+  QScrollArea *scrollArea_;
+  QWidget *carsContainer_;
+  QLineEdit *searchEdit_;
+  QComboBox *currencyBox_;
+
+  QComboBox *engineTypeFilter_;
+  QSpinBox *seatsMinFilter_;
+  QSpinBox *powerMinFilter_;
+  QDoubleSpinBox *capacityMinFilter_;
+  QPushButton *myRentalsBtn_;
+  QPushButton *logoutBtn_;
+  QLabel *welcomeLabel_;
+  QTableView *rentalsTable_;
+  QWidget *rentalsWidget_;
+  QWidget *bookmarksContainer_;
+  QWidget *bmInner_;
+
+  std::unique_ptr<CarCardsView> carsView_;
+  std::unique_ptr<CarCardsView> bookmarksView_;
+  std::unique_ptr<CarsCatalogController> catalogController_;
+  RentalsModel *rentalsModel_ = nullptr;
+};
+
+
+================================================================================
+Файл: src/MainWindow.cpp
+================================================================================
+
+#include "MainWindow.h"
+#include "CarCardWidget.h"
+#include "LoginDialog.h"
+#include "RentalDialog.h"
+#include "RentalsModel.h"
+#include "controllers/CarsCatalogController.h"
+#include "db/Database.h"
+#include "utils/SessionManager.h"
+#include "views/CarCardsView.h"
+
+#include <QApplication>
+#include <QComboBox>
+#include <QDialog>
+#include <QDoubleSpinBox>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QList>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QSpinBox>
+#include <QTabWidget>
+#include <QTableView>
+#include <QVBoxLayout>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent), currentCustomerId_(-1), currentCurrency_("USD") {
+  setWindowTitle("Аренда автомобилей");
+  resize(1200, 800);
+
+  catalogController_ = std::make_unique<CarsCatalogController>();
+
+  if (!Database::instance().initialize()) {
+    QMessageBox::critical(this, "Ошибка",
+                          "Не удалось инициализировать базу данных");
+  }
+
+  setupUI();
+  tryAutoLogin();
+}
+
+MainWindow::~MainWindow() {
+  if (rentalsModel_) {
+    delete rentalsModel_;
+  }
+}
+
+void MainWindow::setupUI() {
+  centralWidget_ = new QWidget(this);
+  setCentralWidget(centralWidget_);
+
+  auto *mainLayout = new QVBoxLayout(centralWidget_);
+  mainLayout->setSpacing(0);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+
+  auto *header = new QWidget(this);
+  header->setStyleSheet("background-color: #2196F3; padding: 15px;");
+  auto *headerLayout = new QHBoxLayout(header);
+
+  welcomeLabel_ = new QLabel("Добро пожаловать", header);
+  welcomeLabel_->setStyleSheet(
+      "color: white; font-size: 18px; font-weight: bold;");
+  headerLayout->addWidget(welcomeLabel_);
+
+  headerLayout->addStretch();
+
+  myRentalsBtn_ = new QPushButton("Мои аренды", header);
+
+  const QString headerBtnStyle =
+      "QPushButton { background-color: white; color: #2196F3; padding: 8px "
+      "16px; border-radius: 6px; }"
+      "QPushButton:hover { filter: brightness(0.95); }"
+      "QPushButton:pressed { transform: translateY(1px); }";
+  myRentalsBtn_->setStyleSheet(headerBtnStyle);
+  myRentalsBtn_->setIcon(style()->standardIcon(QStyle::SP_FileDialogListView));
+  myRentalsBtn_->setMinimumHeight(36);
+  headerLayout->addWidget(myRentalsBtn_);
+
+  currencyBox_ = new QComboBox(header);
+  currencyBox_->addItem("USD");
+  currencyBox_->addItem("EUR");
+  currencyBox_->addItem("BYN");
+  currencyBox_->setMinimumHeight(36);
+  currencyBox_->setStyleSheet(
+      "QComboBox { background-color: white; color: #2196F3; padding: 6px 12px; "
+      "border-radius: 6px; border: 1px solid #e0e0e0; }"
+      "QComboBox:hover { border-color: #bdbdbd; }"
+      "QComboBox::drop-down { width: 26px; border: none; }"
+      "QComboBox QAbstractItemView { background: white; "
+      "selection-background-color: #E3F2FD; }");
+  headerLayout->addWidget(currencyBox_);
+
+  logoutBtn_ = new QPushButton("Выйти", header);
+  logoutBtn_->setStyleSheet(headerBtnStyle);
+  logoutBtn_->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
+  logoutBtn_->setMinimumHeight(36);
+  headerLayout->addWidget(logoutBtn_);
+
+  mainLayout->addWidget(header);
+
+  tabs_ = new QTabWidget(this);
+  tabs_->setStyleSheet("QTabWidget::pane { border: none; }");
+
+  auto *carsTab = new QWidget();
+  auto *carsLayout = new QVBoxLayout(carsTab);
+
+  auto *searchLayout = new QHBoxLayout();
+  searchEdit_ = new QLineEdit();
+  searchEdit_->setPlaceholderText("Поиск по марке, модели...");
+  searchEdit_->setStyleSheet(
+      "QLineEdit { padding: 10px; font-size: 14px; border: 2px solid #e0e0e0; "
+      "border-radius: 5px; }"
+      "QLineEdit:focus { border-color: #2196F3; }");
+  searchLayout->addWidget(searchEdit_);
+
+  engineTypeFilter_ = new QComboBox();
+  engineTypeFilter_->addItem("Любой");
+  engineTypeFilter_->addItem("EV");
+  engineTypeFilter_->addItem("Hybrid");
+  engineTypeFilter_->addItem("ICE");
+  engineTypeFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(engineTypeFilter_);
+
+  seatsMinFilter_ = new QSpinBox();
+  seatsMinFilter_->setRange(0, 9);
+  seatsMinFilter_->setPrefix("Мест ≥ ");
+  seatsMinFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(seatsMinFilter_);
+
+  powerMinFilter_ = new QSpinBox();
+  powerMinFilter_->setRange(0, 2000);
+  powerMinFilter_->setPrefix("ЛС ≥ ");
+  powerMinFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(powerMinFilter_);
+
+  capacityMinFilter_ = new QDoubleSpinBox();
+  capacityMinFilter_->setRange(0.0, 10.0);
+  capacityMinFilter_->setDecimals(1);
+  capacityMinFilter_->setSingleStep(0.1);
+  capacityMinFilter_->setPrefix("Литры ≥ ");
+  capacityMinFilter_->setMinimumHeight(38);
+  searchLayout->addWidget(capacityMinFilter_);
+
+  carsLayout->addLayout(searchLayout);
+
+  scrollArea_ = new QScrollArea();
+  scrollArea_->setWidgetResizable(true);
+  scrollArea_->setStyleSheet(
+      "QScrollArea { border: none; background-color: #f5f5f5; }");
+
+  carsContainer_ = new QWidget();
+  carsContainer_->setStyleSheet("background-color: #f5f5f5;");
+  auto *gridLayout = new QGridLayout(carsContainer_);
+  gridLayout->setSpacing(20);
+  gridLayout->setContentsMargins(20, 20, 20, 20);
+
+  for (int i = 0; i < 3; ++i) {
+    gridLayout->setColumnStretch(i, 0);
+    gridLayout->setColumnMinimumWidth(i, 320);
+  }
+
+  scrollArea_->setWidget(carsContainer_);
+  carsLayout->addWidget(scrollArea_);
+
+  tabs_->addTab(carsTab, "Автомобили");
+
+  bookmarksContainer_ = new QWidget();
+  auto *bmLayoutOuter = new QVBoxLayout(bookmarksContainer_);
+  auto *bmScroll = new QScrollArea();
+  bmScroll->setWidgetResizable(true);
+  bmScroll->setStyleSheet(
+      "QScrollArea { border: none; background-color: white; }");
+  bmInner_ = new QWidget();
+  bmInner_->setStyleSheet("background-color: white;");
+  auto *bmGrid = new QGridLayout(bmInner_);
+  bmGrid->setSpacing(20);
+  bmGrid->setContentsMargins(20, 20, 20, 20);
+
+  for (int i = 0; i < 3; ++i) {
+    bmGrid->setColumnStretch(i, 0);
+    bmGrid->setColumnMinimumWidth(i, 320);
+  }
+  bmScroll->setWidget(bmInner_);
+  bmLayoutOuter->addWidget(bmScroll);
+  tabs_->addTab(bookmarksContainer_, "Закладки");
+
+  rentalsWidget_ = new QWidget();
+  auto *rentalsLayout = new QVBoxLayout(rentalsWidget_);
+  rentalsTable_ = new QTableView();
+  rentalsTable_->setStyleSheet("QTableView { border: none; }");
+  rentalsLayout->addWidget(rentalsTable_);
+  tabs_->addTab(rentalsWidget_, "Мои аренды");
+
+  mainLayout->addWidget(tabs_);
+
+  carsView_ = std::make_unique<CarCardsView>(carsContainer_, 3);
+  carsView_->setCurrency(currentCurrency_);
+  bookmarksView_ = std::make_unique<CarCardsView>(bmInner_, 3);
+  bookmarksView_->setCurrency(currentCurrency_);
+
+  connect(currencyBox_, &QComboBox::currentTextChanged, this,
+          &MainWindow::onCurrencyChanged);
+  connect(myRentalsBtn_, &QPushButton::clicked, this,
+          &MainWindow::onShowMyRentals);
+  connect(tabs_, &QTabWidget::currentChanged, this, [this](int idx) {
+    if (tabs_->tabText(idx) == "Закладки")
+      loadBookmarks();
+    else if (tabs_->tabText(idx) == "Мои аренды")
+      onShowMyRentals();
+  });
+  connect(logoutBtn_, &QPushButton::clicked, this, &MainWindow::onLogout);
+  connectFilters();
+}
+
+void MainWindow::tryAutoLogin() {
+  SessionManager::SessionData session;
+  if (SessionManager::instance().loadSession(session) &&
+      session.customerId > 0) {
+    currentCustomerId_ = session.customerId;
+    currentCustomerName_ = session.name;
+    welcomeLabel_->setText(
+        QString("Добро пожаловать, %1!").arg(currentCustomerName_));
+    tabs_->setVisible(true);
+    myRentalsBtn_->setVisible(true);
+    logoutBtn_->setVisible(true);
+    loadCars();
+    Database::instance().updateExpiredRentals();
+    if (rentalsModel_) {
+      delete rentalsModel_;
+      rentalsModel_ = nullptr;
+    }
+    rentalsModel_ = new RentalsModel(this);
+    rentalsModel_->setCurrency(currentCurrency_);
+    rentalsModel_->refresh(currentCustomerId_);
+    rentalsTable_->setModel(rentalsModel_);
+    rentalsTable_->resizeColumnsToContents();
+    rentalsTable_->horizontalHeader()->setStretchLastSection(true);
+    tabs_->setCurrentIndex(0);
+    this->show();
+  } else {
+    showLogin();
+  }
+}
+
+void MainWindow::showLogin() {
+  this->hide();
+  LoginDialog dialog(this);
+  if (dialog.exec() == QDialog::Accepted) {
+    currentCustomerId_ = dialog.customerId();
+    currentCustomerName_ = dialog.customerName();
+    welcomeLabel_->setText(
+        QString("Добро пожаловать, %1!").arg(currentCustomerName_));
+    SessionManager::instance().saveSession(currentCustomerId_,
+                                           currentCustomerName_);
+    tabs_->setVisible(true);
+    myRentalsBtn_->setVisible(true);
+    logoutBtn_->setVisible(true);
+    loadCars();
+
+    Database::instance().updateExpiredRentals();
+    if (rentalsModel_) {
+      delete rentalsModel_;
+      rentalsModel_ = nullptr;
+    }
+    rentalsModel_ = new RentalsModel(this);
+    rentalsModel_->setCurrency(currentCurrency_);
+    rentalsModel_->refresh(currentCustomerId_);
+    rentalsTable_->setModel(rentalsModel_);
+    rentalsTable_->resizeColumnsToContents();
+    rentalsTable_->horizontalHeader()->setStretchLastSection(true);
+
+    tabs_->setCurrentIndex(0);
+    this->show();
+  } else {
+
+    QApplication::quit();
+  }
+}
+
+void MainWindow::loadCars() {
+  if (!catalogController_)
+    catalogController_ = std::make_unique<CarsCatalogController>();
+
+  if (currentCustomerId_ <= 0)
+        return;
+
+  catalogController_->setFilters(currentFilters());
+  const QList<CarInfo> cars =
+      catalogController_->loadAvailable(currentCustomerId_);
+
+  carsView_->setCurrency(currentCurrency_);
+  carsView_->showCars(cars, [this](CarCardWidget *card) {
+    connect(card, &CarCardWidget::rentClicked, this,
+            &MainWindow::onCarRentClicked);
+    connect(card, &CarCardWidget::bookmarkToggled, this,
+            &MainWindow::onBookmarkToggled);
+  });
+}
+
+void MainWindow::loadBookmarks() {
+  if (!catalogController_)
+    catalogController_ = std::make_unique<CarsCatalogController>();
+
+  if (currentCustomerId_ <= 0)
+    return;
+
+  catalogController_->setFilters(currentFilters());
+  const QList<CarInfo> cars =
+      catalogController_->loadBookmarked(currentCustomerId_);
+
+  bookmarksView_->setCurrency(currentCurrency_);
+  bookmarksView_->showCars(cars, [this](CarCardWidget *card) {
+    connect(card, &CarCardWidget::rentClicked, this,
+            &MainWindow::onCarRentClicked);
+    connect(card, &CarCardWidget::bookmarkToggled, this,
+            &MainWindow::onBookmarkToggled);
+  });
+}
+
+void MainWindow::onCarRentClicked(int carId) {
+  CarInfo car = Database::instance().getCar(carId, currentCustomerId_);
+  if (car.id <= 0)
+    return;
+
+  RentalDialog dialog(car, currentCustomerId_, currentCurrency_, this);
+  if (dialog.exec() == QDialog::Accepted) {
+    loadCars();
+
+    Database::instance().updateExpiredRentals();
+    if (rentalsModel_) {
+      rentalsModel_->refresh(currentCustomerId_);
+    } else {
+      rentalsModel_ = new RentalsModel(this);
+      rentalsModel_->setCurrency(currentCurrency_);
+      rentalsModel_->refresh(currentCustomerId_);
+      rentalsTable_->setModel(rentalsModel_);
+    }
+    onShowMyRentals();
+  }
+}
+
+void MainWindow::onBookmarkToggled(int carId, bool bookmarked) {
+  Database::instance().setBookmarked(carId, currentCustomerId_, bookmarked);
+  carsView_->forEachCard([&](CarCardWidget *card) {
+    if (card->carId() == carId)
+      card->updateBookmarkStatus(bookmarked);
+  });
+
+  loadBookmarks();
+}
+
+void MainWindow::onShowMyRentals() {
+  int rentalsIdx = tabs_->indexOf(rentalsWidget_);
+  if (rentalsIdx >= 0) {
+    tabs_->setCurrentIndex(rentalsIdx);
+  }
+
+  Database::instance().updateExpiredRentals();
+  if (rentalsModel_) {
+    delete rentalsModel_;
+    rentalsModel_ = nullptr;
+  }
+  rentalsModel_ = new RentalsModel(this);
+  rentalsModel_->setCurrency(currentCurrency_);
+  rentalsModel_->refresh(currentCustomerId_);
+  rentalsTable_->setModel(rentalsModel_);
+  rentalsTable_->resizeColumnsToContents();
+  rentalsTable_->horizontalHeader()->setStretchLastSection(true);
+}
+
+void MainWindow::onShowBookmarks() { loadBookmarks(); }
+
+void MainWindow::onCurrencyChanged() {
+  currentCurrency_ = currencyBox_->currentText();
+  updateCurrencyForAllCards();
+
+  if (rentalsModel_) {
+    rentalsModel_->setCurrency(currentCurrency_);
+  }
+}
+
+void MainWindow::updateCurrencyForAllCards() {
+  if (carsView_)
+    carsView_->setCurrency(currentCurrency_);
+  if (bookmarksView_)
+    bookmarksView_->setCurrency(currentCurrency_);
+}
+
+void MainWindow::onLogout() {
+  currentCustomerId_ = -1;
+  currentCustomerName_.clear();
+  tabs_->setVisible(false);
+  myRentalsBtn_->setVisible(false);
+  logoutBtn_->setVisible(false);
+  if (rentalsModel_) {
+    delete rentalsModel_;
+    rentalsModel_ = nullptr;
+  }
+  SessionManager::instance().clearSession();
+  this->hide();
+  showLogin();
+}
+void MainWindow::connectFilters() {
+  auto applyFilters = [this]() {
+    loadCars();
+    if (tabs_->currentWidget() == bookmarksContainer_)
+      loadBookmarks();
+  };
+
+  connect(searchEdit_, &QLineEdit::textChanged, this,
+          [applyFilters](const QString &) { applyFilters(); });
+  connect(engineTypeFilter_, &QComboBox::currentTextChanged, this,
+          [applyFilters](const QString &) { applyFilters(); });
+  connect(seatsMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
+          [applyFilters](int) { applyFilters(); });
+  connect(powerMinFilter_, qOverload<int>(&QSpinBox::valueChanged), this,
+          [applyFilters](int) { applyFilters(); });
+  connect(capacityMinFilter_, qOverload<double>(&QDoubleSpinBox::valueChanged),
+          this, [applyFilters](double) { applyFilters(); });
+}
+
+CatalogFilters MainWindow::currentFilters() const {
+  CatalogFilters getFilters;
+  getFilters.searchText = searchEdit_->text();
+  getFilters.engineType = engineTypeFilter_->currentText();
+  getFilters.seatsMin = seatsMinFilter_->value();
+  getFilters.powerMin = powerMinFilter_->value();
+  getFilters.capacityMin = capacityMinFilter_->value();
+  return getFilters;
+}
+
+
+================================================================================
+Файл: src/LoginDialog.h
+================================================================================
+
+#pragma once
+
+#include <QDialog>
+
+class QLineEdit;
+class QPushButton;
+class QLabel;
+
+class LoginDialog : public QDialog {
+Q_OBJECT
+
+public:
+  explicit LoginDialog(QWidget *parent = nullptr);
+  ~LoginDialog() override;
+
+  QString customerName() const { return name_; }
+  int customerId() const { return customerId_; }
+
+private slots:
+  void onLogin();
+  void onRegister();
+
+private:
+  QLineEdit *nameEdit_;
+  QLineEdit *phoneEdit_;
+  QLineEdit *passwordEdit_;
+  QLineEdit *passwordRepeatEdit_;
+  QLabel *nameLabel_ = nullptr;
+  QLabel *passwordRepeatLabel_ = nullptr;
+  QPushButton *loginBtn_;
+  QPushButton *registerBtn_;
+
+  QString name_;
+  QString phone_;
+  int customerId_ = -1;
+};
+
+
+================================================================================
+Файл: src/LoginDialog.cpp
+================================================================================
+
+#include "LoginDialog.h"
+#include "db/Database.h"
+
+#include <QCryptographicHash>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QRegularExpression>
+#include <QSqlQuery>
+#include <QStyle>
+#include <QVBoxLayout>
+
+LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
+  setWindowTitle("Вход / Регистрация");
+  setModal(true);
+  resize(400, 300);
+
+  auto *layout = new QVBoxLayout(this);
+
+  auto *title = new QLabel("Аренда автомобилей", this);
+  title->setStyleSheet(
+      "font-size: 20px; font-weight: bold; margin-bottom: 20px;");
+  title->setAlignment(Qt::AlignCenter);
+  layout->addWidget(title);
+
+  auto *welcome = new QLabel(
+      "Доброго времени суток, уважаемый пользователь!\n\nВыберите действие:",
+      this);
+  welcome->setStyleSheet(
+      "font-size: 16px; font-weight: normal; margin-bottom: 10px;");
+  welcome->setAlignment(Qt::AlignCenter);
+  layout->addWidget(welcome);
+
+
+  auto *tabsLayout = new QHBoxLayout();
+  QPushButton *tabLogin = new QPushButton("Войти", this);
+  QPushButton *tabRegister = new QPushButton("Зарегистрироваться", this);
+  tabLogin->setCheckable(true);
+  tabRegister->setCheckable(true);
+  tabLogin->setChecked(true);
+
+  const QString tabBtnStyle =
+      "QPushButton { font-size: 15px; padding: 10px 24px; border: 1px solid "
+      "#555; border-radius: 6px; }"
+      "QPushButton:hover { background: #3a3a3a; }"
+      "QPushButton:checked { background:rgb(0, 46, 115); color: white; "
+      "border-color: "
+      "#2d7ef7; }";
+  tabLogin->setStyleSheet(tabBtnStyle);
+  tabRegister->setStyleSheet(tabBtnStyle);
+  tabLogin->setIcon(style()->standardIcon(QStyle::SP_DialogOkButton));
+  tabRegister->setIcon(style()->standardIcon(QStyle::SP_DialogApplyButton));
+  tabLogin->setMinimumHeight(40);
+  tabRegister->setMinimumHeight(40);
+  tabsLayout->addWidget(tabLogin);
+  tabsLayout->addWidget(tabRegister);
+  layout->addLayout(tabsLayout);
+
+
+  auto *formLayout = new QFormLayout();
+  phoneEdit_ = new QLineEdit(this);
+  phoneEdit_->setPlaceholderText("+375xxxxxxxxx");
+  passwordEdit_ = new QLineEdit(this);
+  passwordEdit_->setEchoMode(QLineEdit::Password);
+  nameEdit_ = new QLineEdit(this);
+  nameEdit_->setPlaceholderText("Имя");
+  passwordRepeatEdit_ = new QLineEdit(this);
+  passwordRepeatEdit_->setEchoMode(QLineEdit::Password);
+
+  nameLabel_ = new QLabel("Имя:", this);
+  passwordRepeatLabel_ = new QLabel("Повторите пароль:", this);
+
+  formLayout->addRow("Телефон:", phoneEdit_);
+  formLayout->addRow("Пароль:", passwordEdit_);
+
+  formLayout->addRow(nameLabel_, nameEdit_);
+  formLayout->addRow(passwordRepeatLabel_, passwordRepeatEdit_);
+  layout->addLayout(formLayout);
+
+  loginBtn_ = new QPushButton("Войти", this);
+  registerBtn_ = new QPushButton("Зарегистрироваться", this);
+  loginBtn_->setIcon(style()->standardIcon(QStyle::SP_DialogOkButton));
+  registerBtn_->setIcon(style()->standardIcon(QStyle::SP_DialogApplyButton));
+
+  const QString actionBtnStyle =
+      "QPushButton { padding: 12px 18px; font-size: 15px; border-radius: 8px; }"
+      "QPushButton:hover { filter: brightness(1.08); }"
+      "QPushButton:pressed { transform: translateY(1px); }";
+  loginBtn_->setStyleSheet(actionBtnStyle +
+                           "QPushButton { background:#2d7ef7; color:white; }");
+  registerBtn_->setStyleSheet(
+      actionBtnStyle + "QPushButton { background:#4CAF50; color:white; }");
+  loginBtn_->setMinimumHeight(44);
+  registerBtn_->setMinimumHeight(44);
+  layout->addWidget(loginBtn_);
+  layout->addWidget(registerBtn_);
+
+  nameLabel_->setVisible(false);
+  nameEdit_->setVisible(false);
+  passwordRepeatLabel_->setVisible(false);
+  passwordRepeatEdit_->setVisible(false);
+  registerBtn_->setVisible(false);
+
+  auto setLoginMode = [=]() {
+    tabLogin->setChecked(true);
+    tabRegister->setChecked(false);
+    nameLabel_->setVisible(false);
+    nameEdit_->setVisible(false);
+    passwordRepeatLabel_->setVisible(false);
+    passwordRepeatEdit_->setVisible(false);
+    loginBtn_->setVisible(true);
+    registerBtn_->setVisible(false);
+  };
+  auto setRegisterMode = [=]() {
+    tabLogin->setChecked(false);
+    tabRegister->setChecked(true);
+    nameLabel_->setVisible(true);
+    nameEdit_->setVisible(true);
+    passwordRepeatLabel_->setVisible(true);
+    passwordRepeatEdit_->setVisible(true);
+    loginBtn_->setVisible(false);
+    registerBtn_->setVisible(true);
+  };
+  connect(tabLogin, &QPushButton::clicked, setLoginMode);
+  connect(tabRegister, &QPushButton::clicked, setRegisterMode);
+
+  connect(loginBtn_, &QPushButton::clicked, this, &LoginDialog::onLogin);
+  connect(registerBtn_, &QPushButton::clicked, this, &LoginDialog::onRegister);
+}
+
+LoginDialog::~LoginDialog() {}
+
+void LoginDialog::onLogin() {
+  QString phone = phoneEdit_->text().trimmed();
+  QString password = passwordEdit_->text();
+  if (phone.isEmpty()) {
+    QMessageBox::warning(this, "Ошибка", "Введите телефон");
+    return;
+  }
+
+  QRegularExpression re("^\\+375\\d{9}$");
+  if (!re.match(phone).hasMatch()) {
+    QMessageBox::warning(
+        this, "Ошибка",
+        "Телефон должен быть в формате +375xxxxxxxxx (11 цифр после +375)");
+        return;
+    }
+  if (password.isEmpty()) {
+    QMessageBox::warning(this, "Ошибка", "Введите пароль");
+    return;
+  }
+
+
+
+  auto &db = Database::instance();
+  QByteArray passHash =
+      QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
+          .toHex();
+  int id = Database::instance().findCustomerByPhoneAndPassword(
+      phone, QString::fromUtf8(passHash));
+  if (id > 0) {
+    customerId_ = id;
+
+    QSqlDatabase dbConn = QSqlDatabase::database("carrental");
+    QSqlQuery q(dbConn);
+    q.prepare("SELECT name FROM customers WHERE id = ?");
+    q.addBindValue(id);
+    if (q.exec() && q.next())
+      name_ = q.value(0).toString();
+    phone_ = phone;
+    accept();
+  } else {
+    QMessageBox::information(this, "Не найден",
+                             "Неверный телефон или пароль. Если вы не "
+                             "зарегистрированы, выполните регистрацию.");
+  }
+}
+
+void LoginDialog::onRegister() {
+  name_ = nameEdit_->text().trimmed();
+  phone_ = phoneEdit_->text().trimmed();
+  QString password = passwordEdit_->text();
+  QString password2 = passwordRepeatEdit_->text();
+
+  if (name_.isEmpty()) {
+    QMessageBox::warning(this, "Ошибка", "Введите имя");
+    return;
+  }
+  QRegularExpression re("^\\+375\\d{9}$");
+  if (!re.match(phone_).hasMatch()) {
+    QMessageBox::warning(
+        this, "Ошибка",
+        "Телефон должен быть в формате +375xxxxxxxxx (11 цифр после +375)");
+    return;
+  }
+
+  {
+    QSqlDatabase dbConn = QSqlDatabase::database("carrental");
+    QSqlQuery query(dbConn);
+    query.prepare("SELECT COUNT(*) FROM customers WHERE phone = ?");
+    query.addBindValue(phone_);
+    if (query.exec() && query.next() && query.value(0).toInt() > 0) {
+      QMessageBox::warning(
+          this, "Аккаунт существует",
+          "Пользователь с таким номером телефона уже зарегистрирован!");
+      return;
+    }
+  }
+  if (password.size() < 6) {
+    QMessageBox::warning(this, "Ошибка",
+                         "Пароль должен содержать минимум 6 символов");
+    return;
+  }
+  if (password != password2) {
+    QMessageBox::warning(this, "Ошибка", "Пароли не совпадают");
+    return;
+  }
+
+  QByteArray passHash =
+      QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
+          .toHex();
+  customerId_ = Database::instance().addCustomer(name_, phone_,
+                                                 QString::fromUtf8(passHash));
+  if (customerId_ > 0) {
+    accept();
+  } else {
+    QMessageBox::warning(this, "Ошибка", "Не удалось зарегистрировать клиента");
+  }
+}
+
+
+================================================================================
+Файл: src/utils/RentalCalculator.h
+================================================================================
+
+#pragma once
+
+#include "db/CarInfo.h"
+
+#include <QDate>
+#include <QString>
+
+class RentalCalculator {
+public:
+  struct DateNormalization {
+    QDate start;
+    QDate end;
+    bool startClamped = false;
+    bool endClamped = false;
+    bool endAdjusted = false;
+  };
+
+  DateNormalization normalizeDates(const QDate &start, const QDate &end,
+                                   const QDate &current,
+                                   const QDate &max) const;
+  int rentalDays(const QDate &start, const QDate &end) const;
+  double totalBasePrice(const CarInfo &car, int days) const;
+  QString formattedTotal(const CarInfo &car, int days,
+                         const QString &currencyCode) const;
+
+private:
+  QString dayLabel(int days) const;
+};
+
+
+================================================================================
+Файл: src/utils/RentalCalculator.cpp
+================================================================================
+
+#include "RentalCalculator.h"
+
+#include "CurrencyConverter.h"
+
+RentalCalculator::DateNormalization
+RentalCalculator::normalizeDates(const QDate &start, const QDate &end,
+                                 const QDate &current, const QDate &max) const {
+  DateNormalization result{start, end, false, false, false};
+
+  if (result.start > max) {
+    result.start = current;
+    result.startClamped = true;
+  }
+
+  if (result.end > max) {
+    result.end = max;
+    result.endClamped = true;
+  }
+
+  if (result.end <= result.start) {
+    result.end = result.start.addDays(1);
+    result.endAdjusted = true;
+  }
+
+  return result;
+}
+
+int RentalCalculator::rentalDays(const QDate &start, const QDate &end) const {
+  int days = start.daysTo(end);
+  return days <= 0 ? 1 : days;
+}
+
+double RentalCalculator::totalBasePrice(const CarInfo &car, int days) const {
+  return days * car.pricePerDay;
+}
+
+QString RentalCalculator::formattedTotal(const CarInfo &car, int days,
+                                         const QString &currencyCode) const {
+  auto &converter = CurrencyConverter::instance();
+  const auto currency = CurrencyConverter::fromString(currencyCode);
+  const double converted = converter.fromBase(car.pricePerDay, currency) * days;
+  const QString symbol = converter.symbol(currency);
+  return QString("Итого: %1 %2 (%3 %4)")
+      .arg(converted, 0, 'f', 2)
+      .arg(symbol)
+      .arg(days)
+      .arg(dayLabel(days));
+}
+
+QString RentalCalculator::dayLabel(int days) const {
+  if (days == 1)
+    return "день";
+  if (days >= 2 && days <= 4)
+    return "дня";
+  return "дней";
+}
+
+
+================================================================================
+Файл: src/db/SchemaManager.h
+================================================================================
+
+#pragma once
+
+#include <QSqlDatabase>
+
+class SchemaManager {
+public:
+  bool ensureSchema(QSqlDatabase &db);
+
+private:
+  bool createTables(QSqlDatabase &db);
+  void createIndexes(QSqlDatabase &db);
+};
+
+
+================================================================================
+Файл: src/db/SchemaManager.cpp
+================================================================================
+
+#include "SchemaManager.h"
+
+#include <QSqlQuery>
+
+bool SchemaManager::ensureSchema(QSqlDatabase &db) {
+  if (!createTables(db))
+    return false;
+  createIndexes(db);
+  return true;
+}
+
+bool SchemaManager::createTables(QSqlDatabase &db) {
+  QSqlQuery q(db);
+
+  if (!q.exec("CREATE TABLE IF NOT EXISTS cars ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "brand TEXT NOT NULL,"
+              "model TEXT NOT NULL,"
+              "year INTEGER NOT NULL,"
+              "price_per_day REAL NOT NULL,"
+              "quantity INTEGER DEFAULT 1,"
+              "description TEXT,"
+              "available INTEGER DEFAULT 1,"
+              "image_path TEXT,"
+              "bookmarked INTEGER DEFAULT 0,"
+              "engine_type TEXT DEFAULT '',"
+              "engine_capacity REAL DEFAULT 0,"
+              "power_hp INTEGER DEFAULT 0,"
+              "seats INTEGER DEFAULT 0"
+              ")")) {
+    return false;
+  }
+
+  if (!q.exec("CREATE TABLE IF NOT EXISTS customers ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "name TEXT NOT NULL,"
+              "phone TEXT NOT NULL,"
+              "password_hash TEXT"
+              ")")) {
+    return false;
+  }
+
+  if (!q.exec("CREATE TABLE IF NOT EXISTS bookmarks ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "customer_id INTEGER NOT NULL,"
+              "car_id INTEGER NOT NULL,"
+              "UNIQUE(customer_id, car_id),"
+              "FOREIGN KEY(customer_id) REFERENCES customers(id),"
+              "FOREIGN KEY(car_id) REFERENCES cars(id)"
+              ")")) {
+    return false;
+  }
+
+  if (!q.exec("CREATE TABLE IF NOT EXISTS rentals ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "car_id INTEGER NOT NULL,"
+              "customer_id INTEGER NOT NULL,"
+              "start_date TEXT NOT NULL,"
+              "end_date TEXT NOT NULL,"
+              "total_price REAL NOT NULL,"
+              "status TEXT DEFAULT 'active',"
+              "FOREIGN KEY(car_id) REFERENCES cars(id),"
+              "FOREIGN KEY(customer_id) REFERENCES customers(id)"
+              ")")) {
+    return false;
+  }
+
+  return true;
+}
+
+void SchemaManager::createIndexes(QSqlDatabase &db) {
+  QSqlQuery uq(db);
+  uq.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_customers_phone_unique ON "
+          "customers(phone)");
+}
+
+
+================================================================================
+Файл: src/db/CarSeeder.h
+================================================================================
+
+#pragma once
+
+#include <QSqlDatabase>
+
+class CarSeeder {
+public:
+  void seedIfEmpty(QSqlDatabase &db);
+  void populateSpecs(QSqlDatabase &db);
+
+private:
+  bool hasCars(QSqlDatabase &db) const;
+  bool insertCar(QSqlDatabase &db, const QString &brand, const QString &model,
+                 int year, double pricePerDay, int quantity,
+                 const QString &description, const QString &imagePath);
+};
+
+
+================================================================================
+Файл: src/db/CarSeeder.cpp
+================================================================================
+
+#include "CarSeeder.h"
+
+#include <QSqlQuery>
+#include <QStringList>
+#include <QtGlobal>
+
+void CarSeeder::seedIfEmpty(QSqlDatabase &db) {
+  if (hasCars(db))
+    return;
+
+  int qtyCounter = 1;
+
+  insertCar(db, "BMW", "3 Series", 2024, 10.8, qtyCounter++ % 10 + 1,
+            "Спортивный седан премиум класса",
+            ":/images/cars/bmw_3_series.jpg");
+  insertCar(db, "BMW", "5 Series", 2024, 13.75, qtyCounter++ % 10 + 1,
+            "Роскошный бизнес-седан", ":/images/cars/bmw_5_series.jpg");
+  insertCar(db, "BMW", "X5", 2023, 16.69, qtyCounter++ % 10 + 1,
+            "Премиум внедорожник", ":/images/cars/bmw_x5.jpg");
+  insertCar(db, "Mercedes-Benz", "C-Class", 2023, 11.78, qtyCounter++ % 10 + 1,
+            "Элегантность и комфорт", ":/images/cars/mercedes_c_class.jpg");
+  insertCar(db, "Mercedes-Benz", "E-Class", 2024, 14.73, qtyCounter++ % 10 + 1,
+            "Бизнес-класс высшего уровня",
+            ":/images/cars/mercedes_e_class.jpeg");
+  insertCar(db, "Mercedes-Benz", "GLE", 2023, 17.67, qtyCounter++ % 10 + 1,
+            "Премиум кроссовер", ":/images/cars/mercedes_gle.jpeg");
+  insertCar(db, "Audi", "A4", 2024, 9.82, qtyCounter++ % 10 + 1,
+            "Динамика и стиль", ":/images/cars/audi_a4.jpg");
+  insertCar(db, "Audi", "A6", 2024, 12.76, qtyCounter++ % 10 + 1,
+            "Премиум седан", ":/images/cars/audi_a6.jpg");
+  insertCar(db, "Audi", "Q5", 2023, 14.14, qtyCounter++ % 10 + 1,
+            "Спортивный кроссовер", ":/images/cars/audi_q5.jpeg");
+  insertCar(db, "Lexus", "ES", 2024, 12.17, qtyCounter++ % 10 + 1,
+            "Японская роскошь", ":/images/cars/lexus_es.jpeg");
+  insertCar(db, "Lexus", "RX", 2023, 15.32, qtyCounter++ % 10 + 1,
+            "Премиум внедорожник", ":/images/cars/lexus_rx.jpeg");
+
+  insertCar(db, "Toyota", "Camry", 2023, 5.89, qtyCounter++ % 10 + 1,
+            "Комфортный седан для длительных поездок",
+            ":/images/cars/toyota_camry.jpg");
+  insertCar(db, "Toyota", "RAV4", 2024, 7.85, qtyCounter++ % 10 + 1,
+            "Надежный кроссовер", ":/images/cars/toyota_rav4.jpg");
+  insertCar(db, "Toyota", "Corolla", 2023, 4.91, qtyCounter++ % 10 + 1,
+            "Экономичный и практичный", ":/images/cars/toyota_corolla.jpg");
+  insertCar(db, "Honda", "Accord", 2023, 6.28, qtyCounter++ % 10 + 1,
+            "Проверенная надежность", ":/images/cars/honda_accord.jpeg");
+  insertCar(db, "Honda", "CR-V", 2024, 7.46, qtyCounter++ % 10 + 1,
+            "Компактный внедорожник", ":/images/cars/honda_cr_v.jpg");
+  insertCar(db, "Honda", "Civic", 2023, 5.5, qtyCounter++ % 10 + 1,
+            "Спортивный седан", ":/images/cars/honda_civic.jpg");
+  insertCar(db, "Volkswagen", "Passat", 2023, 6.87, qtyCounter++ % 10 + 1,
+            "Надежный семейный автомобиль", ":/images/cars/vw_passat.jpg");
+  insertCar(db, "Volkswagen", "Tiguan", 2024, 8.25, qtyCounter++ % 10 + 1,
+            "Семейный кроссовер", ":/images/cars/vw_tiguan.jpeg");
+  insertCar(db, "Volkswagen", "Golf", 2023, 5.89, qtyCounter++ % 10 + 1,
+            "Компактный хетчбек", ":/images/cars/vw_golf.jpeg");
+  insertCar(db, "Ford", "Focus", 2023, 5.5, qtyCounter++ % 10 + 1,
+            "Компактный и экономичный", ":/images/cars/ford_focus.jpeg");
+  insertCar(db, "Ford", "Escape", 2024, 7.07, qtyCounter++ % 10 + 1,
+            "Городской кроссовер", ":/images/cars/ford_escape.jpg");
+  insertCar(db, "Ford", "Mustang", 2023, 12.76, qtyCounter++ % 10 + 1,
+            "Легендарный спорткар", ":/images/cars/ford_mustang.jpg");
+
+  insertCar(db, "Hyundai", "Elantra", 2024, 5.69, qtyCounter++ % 10 + 1,
+            "Современный дизайн, отличная цена",
+            ":/images/cars/hyundai_elantra.jpg");
+  insertCar(db, "Hyundai", "Tucson", 2023, 6.68, qtyCounter++ % 10 + 1,
+            "Практичный кроссовер", ":/images/cars/hyundai_tucson.jpg");
+  insertCar(db, "Hyundai", "Sonata", 2024, 6.09, qtyCounter++ % 10 + 1,
+            "Стильный седан", ":/images/cars/hyundai_sonata.jpeg");
+  insertCar(db, "Kia", "Optima", 2023, 5.89, qtyCounter++ % 10 + 1,
+            "Комфортный седан", ":/images/cars/kia_optima.jpeg");
+  insertCar(db, "Kia", "Sportage", 2024, 6.87, qtyCounter++ % 10 + 1,
+            "Универсальный кроссовер", ":/images/cars/kia_sportage.jpeg");
+  insertCar(db, "Kia", "Rio", 2023, 4.71, qtyCounter++ % 10 + 1,
+            "Экономичный городской автомобиль", ":/images/cars/kia_rio.jpeg");
+  insertCar(db, "Nissan", "Altima", 2024, 6.28, qtyCounter++ % 10 + 1,
+            "Надежный седан", ":/images/cars/nissan_altima.jpeg");
+  insertCar(db, "Nissan", "Rogue", 2023, 7.27, qtyCounter++ % 10 + 1,
+            "Популярный кроссовер", ":/images/cars/nissan_rogue.jpeg");
+  insertCar(db, "Nissan", "Sentra", 2024, 5.11, qtyCounter++ % 10 + 1,
+            "Компактный седан", ":/images/cars/nissan_sentra.jpeg");
+  insertCar(db, "Mazda", "CX-5", 2023, 7.66, qtyCounter++ % 10 + 1,
+            "Спортивный кроссовер", ":/images/cars/mazda_cx5.jpeg");
+  insertCar(db, "Mazda", "Mazda6", 2024, 6.68, qtyCounter++ % 10 + 1,
+            "Элегантный седан", ":/images/cars/mazda_mazda6.jpeg");
+  insertCar(db, "Mazda", "CX-3", 2023, 6.28, qtyCounter++ % 10 + 1,
+            "Компактный кроссовер", ":/images/cars/mazda_cx3.jpeg");
+
+  insertCar(db, "Porsche", "911", 2024, 29.45, qtyCounter++ % 10 + 1,
+            "Икона спортивных автомобилей", ":/images/cars/porsche_911.jpeg");
+  insertCar(db, "Porsche", "Cayenne", 2023, 23.56, qtyCounter++ % 10 + 1,
+            "Роскошный внедорожник", ":/images/cars/porsche_cayenne.jpeg");
+  insertCar(db, "Tesla", "Model 3", 2024, 15.71, qtyCounter++ % 10 + 1,
+            "Электрический седан", ":/images/cars/tesla_model3.jpeg");
+  insertCar(db, "Tesla", "Model Y", 2024, 18.65, qtyCounter++ % 10 + 1,
+            "Электрический кроссовер", ":/images/cars/tesla_modely.jpg");
+  insertCar(db, "Tesla", "Model S", 2024, 27.49, qtyCounter++ % 10 + 1,
+            "Премиум электромобиль", ":/images/cars/tesla_models.jpeg");
+  insertCar(db, "Jaguar", "XF", 2023, 15.32, qtyCounter++ % 10 + 1,
+            "Британская роскошь", ":/images/cars/jaguar_xf.jpeg");
+  insertCar(db, "Jaguar", "F-Pace", 2024, 16.69, qtyCounter++ % 10 + 1,
+            "Премиум внедорожник", ":/images/cars/jaguar_fpace.jpeg");
+  insertCar(db, "Range Rover", "Evoque", 2023, 19.64, qtyCounter++ % 10 + 1,
+            "Компактный премиум внедорожник",
+            ":/images/cars/rangerover_evoque.jpeg");
+  insertCar(db, "Range Rover", "Sport", 2024, 25.53, qtyCounter++ % 10 + 1,
+            "Спортивный премиум внедорожник",
+            ":/images/cars/rangerover_sport.jpeg");
+  insertCar(db, "Volvo", "XC60", 2023, 11.39, qtyCounter++ % 10 + 1,
+            "Безопасный кроссовер", ":/images/cars/volvo_xc60.jpeg");
+  insertCar(db, "Volvo", "S90", 2024, 12.17, qtyCounter++ % 10 + 1,
+            "Премиум седан", ":/images/cars/volvo_s90.jpeg");
+  insertCar(db, "Genesis", "G80", 2024, 13.35, qtyCounter++ % 10 + 1,
+            "Роскошный седан", ":/images/cars/genesis_g80.jpeg");
+  insertCar(db, "Genesis", "GV70", 2023, 14.14, qtyCounter++ % 10 + 1,
+            "Премиум кроссовер", ":/images/cars/genesis_gv70.jpeg");
+  insertCar(db, "Infiniti", "Q50", 2024, 10.8, qtyCounter++ % 10 + 1,
+            "Спортивный премиум седан", ":/images/cars/infiniti_q50.jpeg");
+  insertCar(db, "Infiniti", "QX50", 2023, 11.78, qtyCounter++ % 10 + 1,
+            "Премиум кроссовер", "");
+
+  insertCar(db, "Chevrolet", "Camaro", 2024, 14.73, qtyCounter++ % 10 + 1,
+            "Американский мускул-кар", ":/images/cars/chevrolet_camaro.jpeg");
+  insertCar(db, "Chevrolet", "Corvette", 2024, 24.55, qtyCounter++ % 10 + 1,
+            "Легендарный спорткар", ":/images/cars/chevrolet_corvette.jpeg");
+  insertCar(db, "Dodge", "Challenger", 2023, 13.75, qtyCounter++ % 10 + 1,
+            "Мощный спорткар", ":/images/cars/dodge_challenger.jpg");
+  insertCar(db, "Subaru", "WRX", 2024, 9.82, qtyCounter++ % 10 + 1,
+            "Спортивный седан с полным приводом",
+            ":/images/cars/subaru_wrx.jpeg");
+  insertCar(db, "Subaru", "Outback", 2023, 8.25, qtyCounter++ % 10 + 1,
+            "Универсал для путешествий", ":/images/cars/subaru_outback.jpeg");
+  insertCar(db, "Mitsubishi", "Outlander", 2024, 7.07, qtyCounter++ % 10 + 1,
+            "Семейный внедорожник", ":/images/cars/mitsubishi_outlander.jpg");
+}
+
+void CarSeeder::populateSpecs(QSqlDatabase &db) {
+  struct Spec {
+    const char *brand;
+    const char *model;
+    const char *type;
+    double cap;
+    int hp;
+    int seats;
+  };
+
+  const Spec specs[] = {{"Audi", "A4", "ICE", 2.0, 190, 5},
+                        {"Audi", "A6", "ICE", 2.0, 204, 5},
+                        {"Audi", "Q5", "ICE", 2.0, 249, 5},
+                        {"BMW", "3 Series", "Hybrid", 2.0, 292, 5},
+                        {"BMW", "5 Series", "Hybrid", 2.0, 308, 5},
+                        {"BMW", "X5", "Hybrid", 3.0, 340, 5},
+                        {"Tesla", "Model 3", "EV", 0.0, 283, 5},
+                        {"Tesla", "Model S", "EV", 0.0, 670, 5},
+                        {"Toyota", "Camry", "ICE", 2.5, 206, 5},
+                        {"Toyota", "Corolla", "ICE", 1.6, 132, 5},
+                        {"Toyota", "RAV4", "Hybrid", 2.5, 222, 5},
+                        {"Mercedes", "C-Class", "ICE", 1.5, 204, 5},
+                        {"Mercedes", "E-Class", "ICE", 2.0, 258, 5},
+                        {"Volkswagen", "Golf", "ICE", 1.4, 150, 5},
+                        {"Volkswagen", "Passat", "ICE", 2.0, 190, 5}};
+
+  for (const auto &s : specs) {
+    QSqlQuery up(db);
+    up.prepare("UPDATE cars SET engine_type=?, engine_capacity=?, power_hp=?, "
+               "seats=? WHERE brand=? AND model=?");
+    up.addBindValue(QString::fromUtf8(s.type));
+    up.addBindValue(s.cap);
+    up.addBindValue(s.hp);
+    up.addBindValue(s.seats);
+    up.addBindValue(QString::fromUtf8(s.brand));
+    up.addBindValue(QString::fromUtf8(s.model));
+    up.exec();
+  }
+
+  QSqlQuery sel(db);
+  sel.exec("SELECT id, brand, model FROM cars WHERE engine_type IS NULL OR "
+           "engine_type='' OR seats=0");
+  const QStringList suvKeys = {
+      "Q",       "X",     "RX",       "GL", "Tiguan", "RAV", "Outlander",
+      "Cayenne", "Rogue", "Sportage", "CX", "GV",     "QX",  "XC"};
+
+  while (sel.next()) {
+    int id = sel.value(0).toInt();
+    QString brand = sel.value(1).toString();
+    QString model = sel.value(2).toString();
+
+    QString type = "ICE";
+    double cap = 2.0;
+    int hp = 170;
+    int seats = 5;
+
+    if (brand.contains("Tesla", Qt::CaseInsensitive)) {
+      type = "EV";
+      cap = 0.0;
+      hp = model.contains("S", Qt::CaseInsensitive) ? 670 : 283;
+    } else if (brand.contains("Toyota", Qt::CaseInsensitive) &&
+               model.contains("RAV", Qt::CaseInsensitive)) {
+      type = "Hybrid";
+      cap = 2.5;
+      hp = 222;
+    } else if (brand.contains("BMW", Qt::CaseInsensitive) &&
+               (model.contains("5", Qt::CaseInsensitive) ||
+                model.contains("X5", Qt::CaseInsensitive))) {
+      type = "Hybrid";
+      cap = model.contains("X5") ? 3.0 : 2.0;
+      hp = model.contains("X5") ? 340 : 308;
+    } else if (brand.contains("Mercedes", Qt::CaseInsensitive) &&
+               model.contains("E", Qt::CaseInsensitive)) {
+      type = "ICE";
+      cap = 2.0;
+      hp = 258;
+    } else {
+      bool isSUV = false;
+      for (const auto &k : suvKeys) {
+        if (model.contains(k, Qt::CaseInsensitive)) {
+          isSUV = true;
+          break;
+        }
+      }
+      if (isSUV) {
+        cap = 2.0;
+        hp = 180;
+      } else {
+        cap = 1.6;
+        hp = 130;
+      }
+    }
+
+    QSqlQuery up(db);
+    up.prepare("UPDATE cars SET engine_type=?, engine_capacity=?, power_hp=?, "
+               "seats=? WHERE id=?");
+    up.addBindValue(type);
+    up.addBindValue(cap);
+    up.addBindValue(hp);
+    up.addBindValue(seats);
+    up.addBindValue(id);
+    up.exec();
+  }
+}
+
+bool CarSeeder::hasCars(QSqlDatabase &db) const {
+  QSqlQuery q(db);
+  q.exec("SELECT COUNT(*) FROM cars");
+  if (q.next())
+    return q.value(0).toInt() > 0;
+  return false;
+}
+
+bool CarSeeder::insertCar(QSqlDatabase &db, const QString &brand,
+                          const QString &model, int year, double pricePerDay,
+                          int quantity, const QString &description,
+                          const QString &imagePath) {
+  QSqlQuery query(db);
+  query.prepare(
+      "INSERT INTO cars (brand, model, year, price_per_day, quantity, "
+      "description, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)");
+  query.addBindValue(brand);
+  query.addBindValue(model);
+  query.addBindValue(year);
+  query.addBindValue(pricePerDay);
+  query.addBindValue(qBound(1, quantity, 10));
+  query.addBindValue(description);
+  query.addBindValue(imagePath);
+  return query.exec();
+}
+
+
+================================================================================
+Файл: src/controllers/CarsCatalogController.h
+================================================================================
+
+#pragma once
+
+#include "db/CarInfo.h"
+
+#include <QList>
+#include <QString>
+
+class QSqlQueryModel;
+
+struct CatalogFilters {
+  QString searchText;
+  QString engineType;
+  int seatsMin = 0;
+  int powerMin = 0;
+  double capacityMin = 0.0;
+};
+
+class CarsCatalogController {
+public:
+  void setFilters(const CatalogFilters &filters);
+  CatalogFilters getFilters() const;
+
+  QList<CarInfo> loadAvailable(int customerId) const;
+  QList<CarInfo> loadBookmarked(int customerId) const;
+
+private:
+  QList<CarInfo> mapModelToCars(QSqlQueryModel *model) const;
+  bool passesFilters(const CarInfo &car) const;
+
+  CatalogFilters filters_;
+};
+
+
+================================================================================
+Файл: src/controllers/CarsCatalogController.cpp
+================================================================================
+
+#include "CarsCatalogController.h"
+
+#include "db/Database.h"
+
+#include <QSqlQueryModel>
+#include <memory>
+
+void CarsCatalogController::setFilters(const CatalogFilters &filters) {
+  filters_ = filters;
+}
+
+CatalogFilters CarsCatalogController::getFilters() const { return filters_; }
+
+QList<CarInfo> CarsCatalogController::loadAvailable(int customerId) const {
+  std::unique_ptr<QSqlQueryModel> model(
+      Database::instance().getAvailableCars(customerId));
+  return mapModelToCars(model.get());
+}
+
+QList<CarInfo> CarsCatalogController::loadBookmarked(int customerId) const {
+  std::unique_ptr<QSqlQueryModel> model(
+      Database::instance().getBookmarked(customerId));
+  return mapModelToCars(model.get());
+}
+
+QList<CarInfo>
+CarsCatalogController::mapModelToCars(QSqlQueryModel *model) const {
+  QList<CarInfo> cars;
+  if (!model)
+    return cars;
+
+  for (int i = 0; i < model->rowCount(); ++i) {
+    CarInfo car;
+    car.id = model->data(model->index(i, 0)).toInt();
+    car.brand = model->data(model->index(i, 1)).toString();
+    car.model = model->data(model->index(i, 2)).toString();
+    car.year = model->data(model->index(i, 3)).toInt();
+    car.pricePerDay = model->data(model->index(i, 4)).toDouble();
+    car.description = model->data(model->index(i, 5)).toString();
+    car.available = model->data(model->index(i, 6)).toBool();
+    car.imagePath = model->data(model->index(i, 7)).toString();
+    const int columnCount = model->columnCount();
+    if (columnCount > 8)
+      car.bookmarked = model->data(model->index(i, 8)).toInt() != 0;
+    if (columnCount > 9)
+      car.engineType = model->data(model->index(i, 9)).toString();
+    if (columnCount > 10)
+      car.engineCapacityL = model->data(model->index(i, 10)).toDouble();
+    if (columnCount > 11)
+      car.powerHp = model->data(model->index(i, 11)).toInt();
+    if (columnCount > 12)
+      car.seats = model->data(model->index(i, 12)).toInt();
+    if (columnCount > 13)
+      car.quantity = model->data(model->index(i, 13)).toInt();
+    if (passesFilters(car))
+      cars.append(car);
+  }
+  return cars;
+}
+
+bool CarsCatalogController::passesFilters(const CarInfo &car) const {
+  const QString carText = QString("%1 %2 %3")
+                              .arg(car.brand, car.model)
+                              .arg(QString::number(car.year))
+                              .toLower();
+
+  if (!filters_.searchText.isEmpty() &&
+      !carText.contains(filters_.searchText.toLower()))
+    return false;
+
+  if (!filters_.engineType.isEmpty() && filters_.engineType != "Любой" &&
+      !car.engineType.isEmpty() && car.engineType != filters_.engineType)
+    return false;
+
+  if (filters_.seatsMin > 0 && car.seats < filters_.seatsMin)
+    return false;
+
+  if (filters_.powerMin > 0 && car.powerHp < filters_.powerMin)
+    return false;
+
+  if (filters_.capacityMin > 0.0 && car.engineCapacityL < filters_.capacityMin)
+    return false;
+
+  return true;
+}
+
+
+================================================================================
+Файл: src/views/CarCardsView.h
+================================================================================
+
+#pragma once
+
+#include "db/CarInfo.h"
+
+#include <QGridLayout>
+#include <QList>
+#include <QObject>
+#include <QString>
+
+#include <functional>
+
+class CarCardWidget;
+
+class CarCardsView : public QObject {
+Q_OBJECT
+
+public:
+  CarCardsView(QWidget *container, int columns = 3);
+
+  void setCurrency(const QString &currency);
+  void showCars(const QList<CarInfo> &cars,
+                const std::function<void(CarCardWidget *)> &binder = nullptr);
+  void clear();
+
+  void forEachCard(const std::function<void(CarCardWidget *)> &visitor) const;
+
+private:
+  QWidget *container_;
+  QGridLayout *layout_;
+  int columns_;
+  QString currentCurrency_;
+  QList<CarCardWidget *> cards_;
+};
+
+
+================================================================================
+Файл: src/views/CarCardsView.cpp
+================================================================================
+
+#include "CarCardsView.h"
+
+#include "CarCardWidget.h"
+
+#include <QLayoutItem>
+
+CarCardsView::CarCardsView(QWidget *container, int columns)
+    : QObject(container), container_(container), layout_(nullptr),
+      columns_(columns) {
+  layout_ = qobject_cast<QGridLayout *>(container_->layout());
+  if (!layout_) {
+    layout_ = new QGridLayout(container_);
+    layout_->setSpacing(20);
+    layout_->setContentsMargins(20, 20, 20, 20);
+  }
+
+  for (int i = 0; i < columns_; ++i) {
+    layout_->setColumnStretch(i, 0);
+    layout_->setColumnMinimumWidth(i, 320);
+  }
+}
+
+void CarCardsView::setCurrency(const QString &currency) {
+  currentCurrency_ = currency;
+  forEachCard([&](CarCardWidget *card) { card->updateCurrency(currency); });
+}
+
+void CarCardsView::showCars(
+    const QList<CarInfo> &cars,
+    const std::function<void(CarCardWidget *)> &binder) {
+  clear();
+
+  int row = 0;
+  int col = 0;
+  for (const auto &car : cars) {
+    auto *card = new CarCardWidget(car, currentCurrency_, container_);
+    if (binder)
+      binder(card);
+    layout_->addWidget(card, row, col, 1, 1, Qt::AlignLeft | Qt::AlignTop);
+    cards_.append(card);
+
+    ++col;
+    if (col >= columns_) {
+      col = 0;
+      ++row;
+    }
+  }
+}
+
+void CarCardsView::clear() {
+  while (QLayoutItem *item = layout_->takeAt(0)) {
+    if (auto *widget = item->widget()) {
+      widget->deleteLater();
+    }
+    delete item;
+  }
+  cards_.clear();
+}
+
+void CarCardsView::forEachCard(
+    const std::function<void(CarCardWidget *)> &visitor) const {
+  for (auto *card : cards_) {
+    visitor(card);
+  }
+}
+
+
+================================================================================
+Файл: src/RentalsModel.h
+================================================================================
+
+#pragma once
+
+#include <QModelIndex>
+#include <QSqlQueryModel>
+#include <QString>
+#include <QVariant>
+
+class CurrencyConverter;
+
+class RentalsModel : public QSqlQueryModel {
+    Q_OBJECT
+
+public:
+  explicit RentalsModel(QObject *parent = nullptr);
+  void setCurrency(const QString &currency);
+  void refresh(int customerId);
+
+  QVariant data(const QModelIndex &index,
+                int role = Qt::DisplayRole) const override;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const override;
+
+private:
+  QString currentCurrency_;
+  CurrencyConverter *converter_;
+};
+
+
+================================================================================
+Файл: src/RentalsModel.cpp
+================================================================================
+
+#include "RentalsModel.h"
+#include "db/Database.h"
+#include "utils/CurrencyConverter.h"
+#include <QDate>
+#include <QSqlQuery>
+#include <QVariant>
+
+RentalsModel::RentalsModel(QObject *parent)
+    : QSqlQueryModel(parent), currentCurrency_("USD"),
+      converter_(&CurrencyConverter::instance()) {
+  setCurrency("USD");
+}
+
+void RentalsModel::setCurrency(const QString &currency) {
+  currentCurrency_ = currency;
+
+  if (rowCount() > 0) {
+    emit headerDataChanged(Qt::Horizontal, 4, 4);
+    emit dataChanged(index(0, 4), index(rowCount() - 1, 4));
+  }
+}
+
+void RentalsModel::refresh(int customerId) {
+  QString query = QString("SELECT r.id, c.brand || ' ' || c.model as car_name, "
+                          "r.start_date, r.end_date, r.total_price, r.status "
+                          "FROM rentals r JOIN cars c ON r.car_id = c.id "
+                          "WHERE r.customer_id = %1 ORDER BY r.start_date DESC")
+                      .arg(customerId);
+  setQuery(query, Database::instance().database());
+
+
+  setHeaderData(1, Qt::Horizontal, "Автомобиль");
+  setHeaderData(2, Qt::Horizontal, "Дата начала");
+  setHeaderData(3, Qt::Horizontal, "Дата окончания");
+  setHeaderData(4, Qt::Horizontal, "Сумма");
+  setHeaderData(5, Qt::Horizontal, "Статус");
+}
+
+QVariant RentalsModel::data(const QModelIndex &index, int role) const {
+  if (!index.isValid())
+    return QVariant();
+
+
+  if (index.column() == 4 && role == Qt::DisplayRole) {
+    QVariant baseValue = QSqlQueryModel::data(index, role);
+    if (baseValue.isValid()) {
+      double priceInUsd = baseValue.toDouble();
+      auto currency = CurrencyConverter::fromString(currentCurrency_);
+      double convertedPrice = converter_->fromBase(priceInUsd, currency);
+      QString symbol = converter_->symbol(currency);
+
+      return QString::number(convertedPrice, 'f', 2) + " " + symbol;
+    }
+  }
+
+
+  if (index.column() == 5 && role == Qt::DisplayRole) {
+    QVariant baseValue = QSqlQueryModel::data(index, Qt::EditRole);
+    QString status = baseValue.toString();
+
+
+    if (status == "active")
+      return "Активна";
+    if (status == "expired")
+      return "Истекла";
+    return status;
+  }
+
+  return QSqlQueryModel::data(index, role);
+}
+
+QVariant RentalsModel::headerData(int section, Qt::Orientation orientation,
+                                  int role) const {
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+    if (section == 4) {
+
+      auto currency = CurrencyConverter::fromString(currentCurrency_);
+      QString symbol = converter_->symbol(currency);
+      QString code = converter_->code(currency);
+      return QString("Сумма (%1)").arg(code);
+    }
+  }
+  return QSqlQueryModel::headerData(section, orientation, role);
+}
+
+
+================================================================================
+Файл: src/CustomCalendarWidget.h
+================================================================================
+
+#pragma once
+
+#include <QCalendarWidget>
+#include <QDate>
+
+class CustomCalendarWidget : public QCalendarWidget {
+Q_OBJECT
+
+public:
+  explicit CustomCalendarWidget(int carId, QWidget *parent = nullptr);
+
+protected:
+  void showEvent(QShowEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+
+private:
+  int carId_;
+  bool isDateBooked(const QDate &date) const;
+};
+
+
+================================================================================
+Файл: src/CustomCalendarWidget.cpp
+================================================================================
+
+#include "CustomCalendarWidget.h"
+#include "db/Database.h"
+
+#include <QDate>
+#include <QMouseEvent>
+#include <QShowEvent>
+#include <QTextCharFormat>
+#include <QToolTip>
+
+CustomCalendarWidget::CustomCalendarWidget(int carId, QWidget *parent)
+    : QCalendarWidget(parent), carId_(carId) {}
+
+void CustomCalendarWidget::showEvent(QShowEvent *event) {
+  QCalendarWidget::showEvent(event);
+
+
+
+  QTextCharFormat availableFormat;
+  availableFormat.setForeground(
+      QBrush(QColor(255, 255, 255)));
+  availableFormat.setBackground(
+      QBrush(QColor(76, 175, 80)));
+
+
+  QTextCharFormat bookedFormat;
+  bookedFormat.setForeground(
+      QBrush(QColor(150, 150, 150)));
+  bookedFormat.setBackground(QBrush(QColor(220, 220, 220)));
+
+
+  QDate today = QDate::currentDate();
+  for (int i = 0; i < 365; ++i) {
+    QDate date = today.addDays(i);
+    if (isDateBooked(date)) {
+      setDateTextFormat(date, bookedFormat);
+    } else {
+      setDateTextFormat(date, availableFormat);
+    }
+  }
+}
+
+void CustomCalendarWidget::mouseMoveEvent(QMouseEvent *event) {
+  QCalendarWidget::mouseMoveEvent(event);
+
+
+  QPoint pos = event->pos();
+
+
+  QDate monthStart = selectedDate();
+  if (monthStart.isValid()) {
+    monthStart = QDate(monthStart.year(), monthStart.month(), 1);
+    QDate monthEnd = monthStart.addMonths(1).addDays(-1);
+
+    for (QDate d = monthStart; d <= monthEnd; d = d.addDays(1)) {
+
+
+
+      int dayOfWeek = d.dayOfWeek();
+      int week = (d.day() - 1) / 7;
+      int headerHeight = 30;
+      int cellHeight = (height() - headerHeight) / 6;
+      int cellWidth = width() / 7;
+
+      QRect cellRect(dayOfWeek * cellWidth, headerHeight + week * cellHeight,
+                     cellWidth, cellHeight);
+
+      if (cellRect.contains(pos) && d >= QDate::currentDate() &&
+          isDateBooked(d)) {
+        QToolTip::showText(
+            event->globalPosition().toPoint(),
+            "Автомобиль забронирован другим пользователем в этот день");
+        return;
+      }
+    }
+  }
+
+  QToolTip::hideText();
+}
+
+bool CustomCalendarWidget::isDateBooked(const QDate &date) const {
+  if (carId_ <= 0)
+    return false;
+
+
+  int availableQty =
+      Database::instance().getAvailableQuantity(carId_, date, date);
+  return availableQty <= 0;
+}
+
+
+================================================================================
+Файл: src/utils/CarDetailsFormatter.h
+================================================================================
+
+#pragma once
+
+#include "db/CarInfo.h"
+
+#include <QString>
+
+class CarDetailsFormatter {
+public:
+  static QString tooltipText(const CarInfo &car);
+  static QString name(const CarInfo &car);
+};
+
+
+================================================================================
+Файл: src/utils/CarDetailsFormatter.cpp
+================================================================================
+
+#include "CarDetailsFormatter.h"
+
+QString CarDetailsFormatter::tooltipText(const CarInfo &car) {
+  QString details;
+     
+  if (!car.engineType.isEmpty())
+    details += QString("Тип двигателя: %1\n").arg(car.engineType);
+  if (car.engineCapacityL > 0.0)
+    details += QString("Объем: %1 л\n")
+                    .arg(QString::number(car.engineCapacityL, 'f', 1));
+  if (car.powerHp > 0)
+    details += QString("Мощность: %1 л.с.\n").arg(car.powerHp);
+  if (car.seats > 0)
+    details += QString("Число мест: %1").arg(car.seats);
+
+  if (details.isEmpty() && !car.description.isEmpty())
+    details = car.description;
+
+  return details.trimmed();
+}
+
+QString CarDetailsFormatter::name(const CarInfo &car) {
+  return QString("%1 %2 (%3)")
+      .arg(car.brand, car.model, QString::number(car.year));
+}
+
+
+================================================================================
+Файл: src/utils/CarImageLoader.h
+================================================================================
+
+#pragma once
+
+#include <QPixmap>
+#include <QSize>
+#include <QString>
+
+class CarImageLoader {
+public:
+  static QPixmap loadCardImage(const QString &resourcePath,
+                               const QSize &targetSize);
+
+private:
+  static QString resolveKey(const QString &resourcePath);
+  static QPixmap roundCorners(const QPixmap &source, int radius);
+};
+
+
+================================================================================
+Файл: src/utils/CarImageLoader.cpp
+================================================================================
+
+#include "CarImageLoader.h"
+#include "PathsConfig.h"
+
+#include <QDir>
+#include <QFile>
+#include <QPainter>
+#include <QPainterPath>
+
+QPixmap CarImageLoader::loadCardImage(const QString &resourcePath,
+                                      const QSize &targetSize) {
+  const QString key = resolveKey(resourcePath);
+  const QString photosBase = PathsConfig::photosDir();
+
+  const QStringList extensions = {".jpg", ".jpeg", ".png"};
+  QPixmap pixmap;
+
+  for (const auto &ext : extensions) {
+    const QString candidate = photosBase + "/" + key + ext;
+    if (QFile::exists(candidate) && pixmap.load(candidate))
+      break;
+  }
+
+  if (pixmap.isNull()) {
+    pixmap.load(PathsConfig::placeholderImage());
+  }
+
+  if (pixmap.isNull())
+    return pixmap;
+
+  QPixmap scaled = pixmap.scaled(targetSize, Qt::KeepAspectRatioByExpanding,
+                                 Qt::SmoothTransformation);
+  const QPoint topLeft((scaled.width() - targetSize.width()) / 2,
+                       (scaled.height() - targetSize.height()) / 2);
+  QPixmap cropped = scaled.copy(QRect(topLeft, targetSize));
+  return roundCorners(cropped, 12);
+}
+
+QString CarImageLoader::resolveKey(const QString &resourcePath) {
+  if (resourcePath.isEmpty())
+    return QString();
+
+  QString key = resourcePath;
+  const int start = key.lastIndexOf('/') + 1;
+  const int end = key.lastIndexOf('.');
+  if (start >= 0 && end > start)
+    return key.mid(start, end - start);
+
+  key = key.section('/', -1);
+  return key.section('.', 0, 0);
+}
+
+QPixmap CarImageLoader::roundCorners(const QPixmap &source, int radius) {
+  if (source.isNull())
+    return source;
+
+  QPixmap target(source.size());
+  target.fill(Qt::transparent);
+
+  QPainter painter(&target);
+  painter.setRenderHint(QPainter::Antialiasing, true);
+  QPainterPath path;
+  path.addRoundedRect(source.rect(), radius, radius);
+  painter.setClipPath(path);
+  painter.drawPixmap(0, 0, source);
+  return target;
+}
+
+
+================================================================================
+Файл: src/utils/PathsConfig.h
+================================================================================
+
+#pragma once
+
+#include <QString>
+
+class PathsConfig {
+public:
+  static QString dataDir();
+  static QString databaseFile();
+  static QString sessionFile();
+  static QString photosDir();
+  static QString placeholderImage();
+};
+
+
+================================================================================
+Файл: src/utils/PathsConfig.cpp
+================================================================================
+
+#include "PathsConfig.h"
+
+#include <QCoreApplication>
+#include <QDir>
+
+QString PathsConfig::dataDir() {
+  const QString dir = QDir::homePath() + "/.carrental";
+  QDir().mkpath(dir);
+  return dir;
+}
+
+QString PathsConfig::databaseFile() { return dataDir() + "/app.db"; }
+
+QString PathsConfig::sessionFile() { return dataDir() + "/session.json"; }
+
+QString PathsConfig::photosDir() {
+  const QString binDir = QCoreApplication::applicationDirPath();
+  return QDir(binDir + "/../../resources/photos/cars/").absolutePath();
+}
+
+QString PathsConfig::placeholderImage() {
+  const QString binDir = QCoreApplication::applicationDirPath();
+  return QDir(binDir + "/../../resources/images/placeholder.svg").absolutePath();
+}
+
+
+================================================================================
+Файл: src/utils/SessionManager.h
+================================================================================
+
+#pragma once
+
+#include <QString>
+
+class SessionManager {
+public:
+  static SessionManager &instance();
+
+  struct SessionData {
+    int customerId = -1;
+    QString name;
+  };
+
+  bool loadSession(SessionData &data);
+  void saveSession(int customerId, const QString &name);
+  void clearSession();
+
+private:
+  SessionManager() = default;
+  QString sessionFilePath() const;
+};
+
+
+================================================================================
+Файл: src/utils/SessionManager.cpp
+================================================================================
+
+#include "SessionManager.h"
+
+#include "PathsConfig.h"
+
+#include <QDir>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+
+SessionManager &SessionManager::instance() {
+  static SessionManager inst;
+  return inst;
+}
+
+QString SessionManager::sessionFilePath() const {
+  return PathsConfig::sessionFile();
+}
+
+bool SessionManager::loadSession(SessionData &data) {
+  QFile sessionFile(sessionFilePath());
+  if (!sessionFile.exists() || !sessionFile.open(QIODevice::ReadOnly)) {
+    return false;
+  }
+
+  auto doc = QJsonDocument::fromJson(sessionFile.readAll());
+  sessionFile.close();
+
+  int sid = doc.object().value("customerId").toInt(-1);
+  QString sname = doc.object().value("name").toString();
+
+  if (sid > 0) {
+    data.customerId = sid;
+    data.name = sname;
+    return true;
+  }
+
+  return false;
+}
+
+void SessionManager::saveSession(int customerId, const QString &name) {
+  QJsonObject obj;
+  obj["customerId"] = customerId;
+  obj["name"] = name;
+
+  QFile sessionFile(sessionFilePath());
+  if (sessionFile.open(QIODevice::WriteOnly)) {
+    QJsonDocument doc(obj);
+    sessionFile.write(doc.toJson());
+    sessionFile.close();
+  }
+}
+
+void SessionManager::clearSession() {
+  QFile::remove(sessionFilePath());
+}
+
+
+================================================================================
+Файл: src/exceptions/AppException.h
+================================================================================
+
+#pragma once
+
+#include <QString>
+#include <exception>
+
+class AppException : public std::exception {
+public:
+  explicit AppException(const QString &message);
+  const char *what() const noexcept override;
+  QString getMessage() const;
+
+protected:
+  QString message_;
+  mutable QByteArray utf8Message_;
+};
+
+
+================================================================================
+Файл: src/exceptions/AppException.cpp
+================================================================================
+
+#include "AppException.h"
+
+AppException::AppException(const QString &message) : message_(message) {}
+
+const char *AppException::what() const noexcept {
+  utf8Message_ = message_.toUtf8();
+  return utf8Message_.constData();
+}
+
+QString AppException::getMessage() const { return message_; }
+
+
+================================================================================
+Файл: src/exceptions/DatabaseException.h
+================================================================================
+
+#pragma once
+
+#include "AppException.h"
+
+class DatabaseException : public AppException {
+public:
+  explicit DatabaseException(const QString &operation, const QString &details);
+  QString getOperation() const { return operation_; }
+
+private:
+  QString operation_;
+};
+
+
+================================================================================
+Файл: src/exceptions/DatabaseException.cpp
+================================================================================
+
+#include "DatabaseException.h"
+
+DatabaseException::DatabaseException(const QString &operation,
+                                     const QString &details)
+    : AppException(QString("Database error during '%1': %2")
+                       .arg(operation, details)),
+      operation_(operation) {}
+
+
+================================================================================
+Файл: src/exceptions/FileLoadException.h
+================================================================================
+
+#pragma once
+
+#include "AppException.h"
+
+class FileLoadException : public AppException {
+public:
+  explicit FileLoadException(const QString &filePath, const QString &reason);
+  QString getFilePath() const { return filePath_; }
+
+private:
+  QString filePath_;
+};
+
+
+================================================================================
+Файл: src/exceptions/FileLoadException.cpp
+================================================================================
+
+#include "FileLoadException.h"
+
+FileLoadException::FileLoadException(const QString &filePath,
+                                     const QString &reason)
+    : AppException(QString("Failed to load file '%1': %2")
+                       .arg(filePath, reason)),
+      filePath_(filePath) {}
+
+
+================================================================================
+Файл: src/exceptions/ValidationException.h
+================================================================================
+
+#pragma once
+
+#include "AppException.h"
+
+class ValidationException : public AppException {
+public:
+  explicit ValidationException(const QString &field, const QString &reason);
+  QString getField() const { return field_; }
+
+private:
+  QString field_;
+};
+
+
+================================================================================
+Файл: src/exceptions/ValidationException.cpp
+================================================================================
+
+#include "ValidationException.h"
+
+ValidationException::ValidationException(const QString &field,
+                                         const QString &reason)
+    : AppException(QString("Validation error for field '%1': %2")
+                       .arg(field, reason)),
+      field_(field) {}
+
+
+================================================================================
+КОНЕЦ ЛИСТИНГОВ

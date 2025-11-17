@@ -2,10 +2,11 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.cpp \
  /usr/include/stdc-predef.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h \
  /usr/include/c++/13/type_traits \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -135,13 +136,6 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/c++/13/tr1/riemann_zeta.tcc \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qtgui-config.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h \
  /usr/include/c++/13/functional /usr/include/c++/13/bits/stl_function.h \
  /usr/include/c++/13/backward/binders.h \
  /usr/include/c++/13/bits/refwrap.h \
@@ -257,6 +251,9 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qutf8stringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringtokenizer.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h \
  /usr/include/c++/13/numeric /usr/include/c++/13/bits/stl_numeric.h \
@@ -311,6 +308,15 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbindingstorage.h \
  /usr/include/c++/13/chrono /usr/include/c++/13/bits/chrono.h \
  /usr/include/c++/13/ratio /usr/include/c++/13/ctime \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtgui-config.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
@@ -351,13 +357,9 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextdocument.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qurl.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/CustomCalendarWidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QCalendarWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcalendarwidget.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlDatabase \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
@@ -368,6 +370,8 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h \

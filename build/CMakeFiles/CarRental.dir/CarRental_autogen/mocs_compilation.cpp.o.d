@@ -374,6 +374,12 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_MainWindow.cpp \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/MainWindow.h \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/controllers/CarsCatalogController.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmainwindow.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
@@ -382,13 +388,12 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_RentalDialog.cpp \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/RentalDialog.h \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/utils/RentalCalculator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_RentalsModel.cpp \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/RentalsModel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QModelIndex \
@@ -401,4 +406,14 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/Z3L7HTGYLD/moc_CarCardsView.cpp \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/Z3L7HTGYLD/../../../src/views/CarCardsView.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGridLayout \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h

@@ -2,7 +2,7 @@
 
 QString CarDetailsFormatter::tooltipText(const CarInfo &car) {
   QString details;
-
+     
   if (!car.engineType.isEmpty())
     details += QString("Тип двигателя: %1\n").arg(car.engineType);
   if (car.engineCapacityL > 0.0)
@@ -23,4 +23,11 @@ QString CarDetailsFormatter::name(const CarInfo &car) {
   return QString("%1 %2 (%3)")
       .arg(car.brand, car.model, QString::number(car.year));
 }
+
+
+
+
+
+
+
 

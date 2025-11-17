@@ -32,3 +32,10 @@ private:
   QList<CarCardWidget *> cards_;
 };
 
+
+
+
+
+
+
+

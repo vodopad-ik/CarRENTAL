@@ -14,3 +14,10 @@ private:
                  const QString &description, const QString &imagePath);
 };
 
+
+
+
+
+
+
+

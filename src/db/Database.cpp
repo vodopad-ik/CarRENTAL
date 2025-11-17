@@ -6,9 +6,11 @@
 #include "repositories/CustomersRepository.h"
 #include "repositories/RentalsRepository.h"
 
+#include "exceptions/DatabaseException.h"
 #include "utils/PathsConfig.h"
 
 #include <QDir>
+#include <QSqlError>
 
 Database &Database::instance() {
   static Database inst;
@@ -17,7 +19,7 @@ Database &Database::instance() {
 
 Database::Database() = default;
 
-bool Database::initialize() {
+void Database::initialize() {
   if (!QSqlDatabase::contains("carrental")) {
     db_ = QSqlDatabase::addDatabase("QSQLITE", "carrental");
   } else {
@@ -29,17 +31,17 @@ bool Database::initialize() {
   db_.setDatabaseName(dbPath);
 
   if (!db_.open()) {
-    return false;
+    throw DatabaseException("database_open", db_.lastError().text());
   }
 
-  if (!createSchema())
-    return false;
+  if (!createSchema()) {
+    throw DatabaseException("schema_creation", "Failed to create database schema");
+  }
 
   seedCars();
   populateCarSpecs();
 
   ensureRepositories();
-  return true;
 }
 
 bool Database::createSchema() {

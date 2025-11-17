@@ -1,6 +1,7 @@
 #include "CarCardWidget.h"
 
 #include "db/CarInfo.h"
+#include "exceptions/FileLoadException.h"
 #include "utils/CarDetailsFormatter.h"
 #include "utils/CarImageLoader.h"
 #include "utils/CurrencyConverter.h"
@@ -10,6 +11,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPixmap>
 #include <QPushButton>
 #include <QToolButton>
@@ -45,12 +47,19 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   shadow->setColor(QColor(0, 0, 0, 80));
   imageLabel_->setGraphicsEffect(shadow);
 
-  const QPixmap cardImage =
-      CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180));
-  if (!cardImage.isNull()) {
-    imageLabel_->setPixmap(cardImage);
-    imageLabel_->setText("");
-  } else {
+  QPixmap cardImage;
+  try {
+    cardImage = CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180));
+    if (!cardImage.isNull()) {
+      imageLabel_->setPixmap(cardImage);
+      imageLabel_->setText("");
+    } else {
+      imageLabel_->setText("🚗");
+      imageLabel_->setStyleSheet(
+          "QLabel { background-color: #e0e0e0; border: none; color: #999; "
+          "font-size: 40px; }");
+    }
+  } catch (const FileLoadException &e) {
     imageLabel_->setText("🚗");
     imageLabel_->setStyleSheet(
         "QLabel { background-color: #e0e0e0; border: none; color: #999; "
@@ -258,8 +267,3 @@ void CarCardWidget::showDetailsTooltip() {
 }
 
 void CarCardWidget::hideDetailsTooltip() { detailsPopup_->hide(); }
-
-void CarCardWidget::hideDetailsTooltip() {
-  
-  detailsPopup_->hide();
-}

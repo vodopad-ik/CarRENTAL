@@ -1,5 +1,7 @@
 /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_MainWindow.cpp: /home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.h \
   /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/moc_predefs.h \
+  /home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.h \
+  /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -283,6 +285,8 @@
   /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qarraydata.h \

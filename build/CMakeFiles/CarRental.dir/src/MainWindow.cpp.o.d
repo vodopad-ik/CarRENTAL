@@ -2,10 +2,11 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.cpp \
  /usr/include/stdc-predef.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/MainWindow.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h \
  /usr/include/c++/13/type_traits \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -135,20 +136,6 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/c++/13/tr1/riemann_zeta.tcc \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qtgui-config.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
- /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qnamespace.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qtmetamacros.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs_impl.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h \
  /usr/include/c++/13/functional /usr/include/c++/13/bits/stl_function.h \
  /usr/include/c++/13/backward/binders.h \
  /usr/include/c++/13/bits/refwrap.h \
@@ -180,6 +167,8 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearray.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qrefcount.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qnamespace.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qtmetamacros.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qarraydata.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qpair.h /usr/include/string.h \
  /usr/include/strings.h \
@@ -262,15 +251,32 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qutf8stringview.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringtokenizer.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /usr/include/c++/13/numeric /usr/include/c++/13/bits/stl_numeric.h \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qiterator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearraylist.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringlist.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringmatcher.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtgui-config.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs_impl.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopedpointer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qmetatype.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare.h \
@@ -361,16 +367,17 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDialog \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDateEdit \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdatetimeedit.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QModelIndex \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
@@ -384,11 +391,20 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlDatabase \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/views/CarCardsView.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGridLayout \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication.h \
@@ -410,12 +426,6 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDoubleSpinBox \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qspinbox.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGridLayout \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
- /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHeaderView \
@@ -428,8 +438,6 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextoption.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMessageBox \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \

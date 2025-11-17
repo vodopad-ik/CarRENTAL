@@ -1,6 +1,7 @@
 #include "RentalDialog.h"
 #include "CustomCalendarWidget.h"
 #include "db/Database.h"
+#include "exceptions/DatabaseException.h"
 #include "utils/CurrencyConverter.h"
 
 #include <QDate>
@@ -29,7 +30,6 @@ RentalDialog::RentalDialog(const CarInfo &car, int customerId,
       "font-size: 18px; font-weight: bold; margin-bottom: 15px;");
   layout->addWidget(carLabel);
 
-
   QString specs;
   if (!car_->engineType.isEmpty())
     specs += QString("Тип двигателя: %1\n").arg(car_->engineType);
@@ -48,8 +48,7 @@ RentalDialog::RentalDialog(const CarInfo &car, int customerId,
 
   auto *formLayout = new QFormLayout();
 
-  QDate maxDate =
-      QDate::currentDate().addYears(1);
+  QDate maxDate = QDate::currentDate().addYears(1);
 
   startDateEdit_ = new QDateEdit(QDate::currentDate(), this);
   startDateEdit_->setMinimumDate(QDate::currentDate());
@@ -146,7 +145,6 @@ void RentalDialog::onRent() {
     return;
   }
 
-
   int availableQty =
       Database::instance().getAvailableQuantity(car_->id, start, end);
   if (availableQty <= 0) {
@@ -159,14 +157,16 @@ void RentalDialog::onRent() {
   const int days = calculator_.rentalDays(start, end);
   const double total = calculator_.totalBasePrice(*car_, days);
 
-  int rentalId = Database::instance().createRental(car_->id, customerId_, start,
-                                                   end, total);
-  if (rentalId > 0) {
+  try {
+    int rentalId = Database::instance().createRental(car_->id, customerId_,
+                                                     start, end, total);
     QMessageBox::information(
         this, "Успешно",
         QString("Аренда оформлена! Номер заказа: %1").arg(rentalId));
     accept();
-  } else {
-    QMessageBox::warning(this, "Ошибка", "Не удалось оформить аренду");
+  } catch (const DatabaseException &e) {
+    QMessageBox::critical(
+        this, "Ошибка базы данных",
+        QString("Не удалось оформить аренду:\n%1").arg(e.getMessage()));
   }
 }

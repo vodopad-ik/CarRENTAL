@@ -11,3 +11,10 @@ public:
   static QString placeholderImage();
 };
 
+
+
+
+
+
+
+

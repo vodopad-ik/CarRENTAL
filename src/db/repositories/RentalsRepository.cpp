@@ -1,5 +1,8 @@
 #include "RentalsRepository.h"
 
+#include "exceptions/DatabaseException.h"
+
+#include <QSqlError>
 #include <QSqlQuery>
 
 RentalsRepository::RentalsRepository(QSqlDatabase &db) : db_(db) {}
@@ -16,8 +19,9 @@ int RentalsRepository::createRental(int carId, int customerId,
   q.addBindValue(startDate.toString("yyyy-MM-dd"));
   q.addBindValue(endDate.toString("yyyy-MM-dd"));
   q.addBindValue(totalPrice);
-  if (!q.exec())
-    return -1;
+  if (!q.exec()) {
+    throw DatabaseException("create_rental", q.lastError().text());
+  }
   return q.lastInsertId().toInt();
 }
 
@@ -27,4 +31,8 @@ void RentalsRepository::updateExpiredRentals() const {
             "date(end_date) < date('now')");
   q.exec();
 }
+
+
+
+
 

@@ -6,7 +6,6 @@ CurrencyConverter &CurrencyConverter::instance() {
 }
 
 CurrencyConverter::CurrencyConverter() {
-
   usdToEur_ = 0.92;
   usdToByn_ = 3.28;
 }

@@ -5,6 +5,8 @@
 #include "RentalsModel.h"
 #include "controllers/CarsCatalogController.h"
 #include "db/Database.h"
+#include "exceptions/AppException.h"
+#include "exceptions/DatabaseException.h"
 #include "utils/SessionManager.h"
 #include "views/CarCardsView.h"
 
@@ -33,9 +35,21 @@ MainWindow::MainWindow(QWidget *parent)
 
   catalogController_ = std::make_unique<CarsCatalogController>();
 
-  if (!Database::instance().initialize()) {
-    QMessageBox::critical(this, "Ошибка",
-                          "Не удалось инициализировать базу данных");
+  try {
+    Database::instance().initialize();
+  } catch (const DatabaseException &e) {
+    QMessageBox::critical(
+        this, "Ошибка базы данных",
+        QString("Не удалось инициализировать базу данных:\n%1")
+            .arg(e.getMessage()));
+    QApplication::quit();
+    return;
+  } catch (const AppException &e) {
+    QMessageBox::critical(
+        this, "Ошибка",
+        QString("Ошибка при инициализации:\n%1").arg(e.getMessage()));
+    QApplication::quit();
+    return;
   }
 
   setupUI();
@@ -431,4 +445,3 @@ CatalogFilters MainWindow::currentFilters() const {
   getFilters.capacityMin = capacityMinFilter_->value();
   return getFilters;
 }
-

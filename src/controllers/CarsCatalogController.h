@@ -5,6 +5,8 @@
 #include <QList>
 #include <QString>
 
+class QSqlQueryModel;
+
 struct CatalogFilters {
   QString searchText;
   QString engineType;
@@ -27,3 +29,4 @@ private:
 
   CatalogFilters filters_;
 };
+

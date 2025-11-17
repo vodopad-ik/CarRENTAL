@@ -19,8 +19,7 @@ class Database {
 public:
   static Database &instance();
 
-  bool initialize();
-
+  void initialize();
 
   QSqlQueryModel *getAvailableCars(int customerId);
   QSqlQueryModel *getBookmarked(int customerId);
@@ -29,16 +28,13 @@ public:
                            const QDate &endDate);
   bool setBookmarked(int carId, int customerId, bool bookmarked);
 
-
   int addCustomer(const QString &name, const QString &phone,
                   const QString &passwordHash);
   int findCustomerByPhoneAndPassword(const QString &phone,
                                      const QString &passwordHash);
 
-
   int createRental(int carId, int customerId, const QDate &startDate,
                    const QDate &endDate, double totalPrice);
-
   void updateExpiredRentals();
 
   QSqlDatabase &database() { return db_; }

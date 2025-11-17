@@ -1,381 +1,468 @@
-@startuml CarRental_Class_Diagram
+@startuml
+!theme plain
 skinparam classAttributeIconSize 0
 skinparam backgroundColor #FFFFFF
-
-struct CarInfo {
-  + int id
-  + QString brand
-  + QString model
-  + int year
-  + double pricePerDay
-  + int quantity
-  + QString description
-  + bool available
-  + QString imagePath
-  + bool bookmarked
-  + QString engineType
-  + double engineCapacityL
-  + int powerHp
-  + int seats
+skinparam linetype ortho
+skinparam roundcorner 5
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam package {
+    BackgroundColor #F0F0F0
+    BorderColor #999999
+    FontStyle bold
+}
+skinparam class {
+    BackgroundColor #E8F4F8
+    BorderColor #2E86AB
+    ArrowColor #2E86AB
+    FontSize 10
+    Padding 8
 }
 
-class MainWindow {
-  - int currentCustomerId_
-  - QString currentCustomerName_
-  - QString currentCurrency_
-  - QWidget* centralWidget_
-  - QTabWidget* tabs_
-  - QScrollArea* scrollArea_
-  - QWidget* carsContainer_
-  - QLineEdit* searchEdit_
-  - QComboBox* currencyBox_
-  - QComboBox* engineTypeFilter_
-  - QSpinBox* seatsMinFilter_
-  - QSpinBox* powerMinFilter_
-  - QDoubleSpinBox* capacityMinFilter_
-  - QPushButton* myRentalsBtn_
-  - QPushButton* logoutBtn_
-  - QLabel* welcomeLabel_
-  - QTableView* rentalsTable_
-  - QWidget* rentalsWidget_
-  - QWidget* bookmarksContainer_
-  - QWidget* bmInner_
-  - std::unique_ptr<CarCardsView> carsView_
-  - std::unique_ptr<CarCardsView> bookmarksView_
-  - std::unique_ptr<CarsCatalogController> catalogController_
-  - RentalsModel* rentalsModel_
-  + MainWindow(parent)
-  + ~MainWindow()
-  - setupUI()
-  - loadCars()
-  - loadBookmarks()
-  - showLogin()
-  - updateCurrencyForAllCards()
-  - tryAutoLogin()
-  - connectFilters()
-  - currentFilters() : CatalogFilters
-  - onCarRentClicked(carId)
-  - onBookmarkToggled(carId, bookmarked)
-  - onShowMyRentals()
-  - onShowBookmarks()
-  - onCurrencyChanged()
-  - onLogout()
+left to right direction
+
+' ============================================
+' QT BASE CLASSES (LEFT TOP)
+' ============================================
+package "Qt Base Classes" #F5F5F5 {
+  class QMainWindow
+  class QDialog
+  class QWidget
+  class QObject
+  class QCalendarWidget
+  class QSqlQueryModel
+  class QSqlDatabase
 }
 
-class LoginDialog {
-  - QLineEdit* nameEdit_
-  - QLineEdit* phoneEdit_
-  - QLineEdit* passwordEdit_
-  - QLineEdit* passwordRepeatEdit_
-  - QLabel* nameLabel_
-  - QLabel* passwordRepeatLabel_
-  - QPushButton* loginBtn_
-  - QPushButton* registerBtn_
-  - QString name_
-  - QString phone_
-  - int customerId_
-  + LoginDialog(parent)
-  + ~LoginDialog()
-  + customerName() : QString
-  + customerId() : int
-  - onLogin()
-  - onRegister()
+' ============================================
+' DATA STRUCTURES (RIGHT TOP)
+' ============================================
+package "Data Structures" #DDDDDD {
+  struct CarInfo {
+    + int id
+    + QString brand
+    + QString model
+    + int year
+    + double pricePerDay
+    + int quantity
+    + QString description
+    + bool available
+    + QString imagePath
+    + bool bookmarked
+    + QString engineType
+    + double engineCapacityL
+    + int powerHp
+    + int seats
+  }
+
+  struct CatalogFilters {
+    + QString searchText
+    + QString engineType
+    + int seatsMin
+    + int powerMin
+    + double capacityMin
+  }
+
+  class "SessionManager::SessionData" as SessionData {
+    + int customerId
+    + QString name
+  }
+
+  class "RentalCalculator::DateNormalization" as DateNormalization {
+    + QDate start
+    + QDate end
+    + bool startClamped
+    + bool endClamped
+    + bool endAdjusted
+  }
 }
 
-class RentalDialog {
-  - CarInfo* car_
-  - int customerId_
-  - QString currentCurrency_
-  - QDateEdit* startDateEdit_
-  - QDateEdit* endDateEdit_
-  - QLabel* totalPriceLabel_
-  - QLabel* specsLabel_
-  - RentalCalculator calculator_
-  + RentalDialog(car, customerId, currency, parent)
-  - onRent()
-  - updatePrice()
+' ============================================
+' EXCEPTIONS (LEFT MIDDLE)
+' ============================================
+package "Exceptions" #FFE6E6 {
+  class AppException {
+    - QString message_
+    - QByteArray utf8Message_
+    + getMessage() : QString
+    + what() : const char*
+  }
+
+  class DatabaseException
+  class FileLoadException
+  class ValidationException
 }
 
-class CarCardWidget {
-  - CarInfo* carData_
-  - QString currentCurrency_
-  - QString shortDescription_
-  - QLabel* imageLabel_
-  - QLabel* nameLabel_
-  - QLabel* priceLabel_
-  - QLabel* descLabel_
-  - QFrame* detailsPopup_
-  - QLabel* detailsLabel_
-  - QPushButton* rentBtn_
-  - QToolButton* bookmarkBtn_
-  + CarCardWidget(car, currency, parent)
-  + updateCurrency(currency)
-  + updateBookmarkStatus(bookmarked)
-  + carId() : int
-  + eventFilter(obj, event) : bool
-  - updatePriceDisplay()
-  - showDetailsTooltip()
-  - hideDetailsTooltip()
-  ..
-  signal rentClicked(carId)
-  signal bookmarkToggled(carId, bookmarked)
+' ============================================
+' UI LAYER (CENTER TOP)
+' ============================================
+package "UI Layer" #E8F4F8 {
+  class MainWindow {
+    - int currentCustomerId_
+    - QString currentCustomerName_
+    - QString currentCurrency_
+    - QWidget* centralWidget_
+    - QTabWidget* tabs_
+    - QScrollArea* scrollArea_
+    - QWidget* carsContainer_
+    - QLineEdit* searchEdit_
+    - QComboBox* currencyBox_
+    - QComboBox* engineTypeFilter_
+    - QSpinBox* seatsMinFilter_
+    - QSpinBox* powerMinFilter_
+    - QDoubleSpinBox* capacityMinFilter_
+    - QPushButton* myRentalsBtn_
+    - QPushButton* logoutBtn_
+    - QLabel* welcomeLabel_
+    - QTableView* rentalsTable_
+    - QWidget* rentalsWidget_
+    - QWidget* bookmarksContainer_
+    - QWidget* bmInner_
+    - std::unique_ptr<CarCardsView> carsView_
+    - std::unique_ptr<CarCardsView> bookmarksView_
+    - std::unique_ptr<CarsCatalogController> catalogController_
+    - RentalsModel* rentalsModel_
+    + MainWindow(parent)
+    + ~MainWindow()
+    - setupUI()
+    - loadCars()
+    - loadBookmarks()
+    - showLogin()
+    - updateCurrencyForAllCards()
+    - tryAutoLogin()
+    - connectFilters()
+    - currentFilters() : CatalogFilters
+    + onCarRentClicked(carId)
+    + onBookmarkToggled(carId, bookmarked)
+    + onShowMyRentals()
+    + onShowBookmarks()
+    + onCurrencyChanged()
+    + onLogout()
+  }
+
+  class CarCardWidget {
+    - CarInfo* carData_
+    - QString currentCurrency_
+    - QString shortDescription_
+    - QLabel* imageLabel_
+    - QLabel* nameLabel_
+    - QLabel* priceLabel_
+    - QLabel* descLabel_
+    - QFrame* detailsPopup_
+    - QLabel* detailsLabel_
+    - QPushButton* rentBtn_
+    - QToolButton* bookmarkBtn_
+    + CarCardWidget(car, currency, parent)
+    + updateCurrency(currency)
+    + updateBookmarkStatus(bookmarked)
+    + carId() : int
+    + eventFilter(obj, event) : bool
+    - updatePriceDisplay()
+    - showDetailsTooltip()
+    - hideDetailsTooltip()
+    --
+    signal rentClicked(carId)
+    signal bookmarkToggled(carId, bookmarked)
+  }
+
+  class CarCardsView {
+    - QWidget* container_
+    - QGridLayout* layout_
+    - int columns_
+    - QString currentCurrency_
+    - QList<CarCardWidget*> cards_
+    + CarCardsView(container, columns)
+    + setCurrency(currency)
+    + showCars(cars, binder)
+    + clear()
+    + forEachCard(visitor)
+  }
+
+  class RentalDialog {
+    - CarInfo* car_
+    - int customerId_
+    - QString currentCurrency_
+    - QDateEdit* startDateEdit_
+    - QDateEdit* endDateEdit_
+    - QLabel* totalPriceLabel_
+    - QLabel* specsLabel_
+    - RentalCalculator calculator_
+    + RentalDialog(car, customerId, currency, parent)
+    - onRent()
+    - updatePrice()
+  }
+
+  class LoginDialog {
+    - QLineEdit* nameEdit_
+    - QLineEdit* phoneEdit_
+    - QLineEdit* passwordEdit_
+    - QLineEdit* passwordRepeatEdit_
+    - QLabel* nameLabel_
+    - QLabel* passwordRepeatLabel_
+    - QPushButton* loginBtn_
+    - QPushButton* registerBtn_
+    - QString name_
+    - QString phone_
+    - int customerId_
+    + LoginDialog(parent)
+    + ~LoginDialog()
+    + customerName() : QString
+    + customerId() : int
+    - onLogin()
+    - onRegister()
+  }
+
+  class CustomCalendarWidget {
+    - int carId_
+    + CustomCalendarWidget(carId, parent)
+    # showEvent(event)
+    # mouseMoveEvent(event)
+    - isDateBooked(date) : bool
+  }
+
+  class RentalsModel {
+    - QString currentCurrency_
+    - CurrencyConverter* converter_
+    + RentalsModel(parent)
+    + setCurrency(currency)
+    + refresh(customerId)
+    + data(index, role) : QVariant
+    + headerData(section, orientation, role) : QVariant
+  }
 }
 
-class CustomCalendarWidget {
-  - int carId_
-  + CustomCalendarWidget(carId, parent)
-  # showEvent(event)
-  # mouseMoveEvent(event)
-  - isDateBooked(date) : bool
+' ============================================
+' BUSINESS LOGIC (CENTER MIDDLE)
+' ============================================
+package "Business Logic" #FFF4E6 {
+  class CarsCatalogController {
+    - CatalogFilters filters_
+    + setFilters(filters)
+    + getFilters() : CatalogFilters
+    + loadAvailable(customerId) : QList<CarInfo>
+    + loadBookmarked(customerId) : QList<CarInfo>
+    - mapModelToCars(model) : QList<CarInfo>
+    - passesFilters(car) : bool
+  }
+
+  class RentalCalculator {
+    + normalizeDates(start, end, current, max) : DateNormalization
+    + rentalDays(start, end) : int
+    + totalBasePrice(car, days) : double
+    + formattedTotal(car, days, currency) : QString
+    - dayLabel(days) : QString
+  }
 }
 
-class Database {
-  - QSqlDatabase db_
-  - std::unique_ptr<SchemaManager> schemaManager_
-  - std::unique_ptr<CarSeeder> carSeeder_
-  - std::unique_ptr<CarsRepository> carsRepository_
-  - std::unique_ptr<CustomersRepository> customersRepository_
-  - std::unique_ptr<RentalsRepository> rentalsRepository_
-  + {static} instance() : Database
-  + initialize() : bool
-  + getAvailableCars(customerId) : QSqlQueryModel*
-  + getBookmarked(customerId) : QSqlQueryModel*
-  + getCar(id, customerId) : CarInfo
-  + getAvailableQuantity(carId, startDate, endDate) : int
-  + setBookmarked(carId, customerId, bookmarked) : bool
-  + addCustomer(name, phone, passwordHash) : int
-  + findCustomerByPhoneAndPassword(phone, passwordHash) : int
-  + createRental(carId, customerId, startDate, endDate, totalPrice) : int
-  + updateExpiredRentals()
-  + database() : QSqlDatabase&
-  - createSchema() : bool
-  - seedCars()
-  - populateCarSpecs()
-  - ensureRepositories()
+' ============================================
+' DATABASE LAYER (RIGHT MIDDLE)
+' ============================================
+package "Database Layer" #E6F3E6 {
+  class Database {
+    - QSqlDatabase db_
+    - std::unique_ptr<SchemaManager> schemaManager_
+    - std::unique_ptr<CarSeeder> carSeeder_
+    - std::unique_ptr<CarsRepository> carsRepository_
+    - std::unique_ptr<CustomersRepository> customersRepository_
+    - std::unique_ptr<RentalsRepository> rentalsRepository_
+    + {static} instance() : Database&
+    + initialize()
+    + getAvailableCars(customerId) : QSqlQueryModel*
+    + getBookmarked(customerId) : QSqlQueryModel*
+    + getCar(id, customerId) : CarInfo
+    + getAvailableQuantity(carId, startDate, endDate) : int
+    + setBookmarked(carId, customerId, bookmarked) : bool
+    + addCustomer(name, phone, passwordHash) : int
+    + findCustomerByPhoneAndPassword(phone, passwordHash) : int
+    + createRental(carId, customerId, startDate, endDate, totalPrice) : int
+    + updateExpiredRentals()
+    + database() : QSqlDatabase&
+    - createSchema() : bool
+    - seedCars()
+    - populateCarSpecs()
+    - ensureRepositories()
+  }
+
+  class CarsRepository {
+    - QSqlDatabase& db_
+    + CarsRepository(db)
+    + fetchAvailableCars(customerId) : QSqlQueryModel*
+    + fetchBookmarkedCars(customerId) : QSqlQueryModel*
+    + findCar(id, customerId) : CarInfo
+    + availableQuantity(carId, startDate, endDate) : int
+    + setBookmarked(carId, customerId, bookmarked) : bool
+  }
+
+  class CustomersRepository {
+    - QSqlDatabase& db_
+    + CustomersRepository(db)
+    + addCustomer(name, phone, passwordHash) : int
+    + findCustomerByPhoneAndPassword(phone, passwordHash) : int
+  }
+
+  class RentalsRepository {
+    - QSqlDatabase& db_
+    + RentalsRepository(db)
+    + createRental(carId, customerId, startDate, endDate, totalPrice) : int
+    + updateExpiredRentals()
+  }
+
+  class SchemaManager {
+    + ensureSchema(db) : bool
+    - createTables(db) : bool
+    - createIndexes(db)
+  }
+
+  class CarSeeder {
+    + seedIfEmpty(db)
+    + populateSpecs(db)
+    - hasCars(db) : bool
+    - insertCar(db, brand, model, year, pricePerDay, quantity, description, imagePath) : bool
+  }
 }
 
-class SchemaManager {
-  + ensureSchema(db) : bool
-  - createTables(db) : bool
-  - createIndexes(db)
+' ============================================
+' UTILITIES (RIGHT BOTTOM)
+' ============================================
+package "Utilities" #F0E6FF {
+  class CurrencyConverter {
+    - double usdToEur_
+    - double usdToByn_
+    + {static} instance() : CurrencyConverter&
+    + fromBase(usdAmount, to) : double
+    + toBase(amount, from) : double
+    + symbol(currency) : QString
+    + code(currency) : QString
+    + {static} fromString(str) : Currency
+  }
+
+  class SessionManager {
+    + {static} instance() : SessionManager&
+    + loadSession(data) : bool
+    + saveSession(customerId, name)
+    + clearSession()
+    - sessionFilePath() : QString
+  }
+
+  class CarImageLoader {
+    + {static} loadCardImage(resourcePath, targetSize) : QPixmap
+    - resolveKey(resourcePath) : QString
+    - roundCorners(source, radius) : QPixmap
+  }
+
+  class CarDetailsFormatter {
+    + {static} tooltipText(car) : QString
+    + {static} name(car) : QString
+  }
+
+  class PathsConfig {
+    + {static} dataDir() : QString
+    + {static} databaseFile() : QString
+    + {static} sessionFile() : QString
+    + {static} photosDir() : QString
+    + {static} placeholderImage() : QString
+  }
 }
 
-class CarSeeder {
-  + seedIfEmpty(db)
-  + populateSpecs(db)
-  - hasCars(db) : bool
-  - insertCar(db, brand, model, year, pricePerDay, quantity, description, imagePath) : bool
-}
-
-class CarsRepository {
-  - QSqlDatabase& db_
-  + CarsRepository(db)
-  + fetchAvailableCars(customerId) : QSqlQueryModel*
-  + fetchBookmarkedCars(customerId) : QSqlQueryModel*
-  + findCar(id, customerId) : CarInfo
-  + availableQuantity(carId, startDate, endDate) : int
-  + setBookmarked(carId, customerId, bookmarked) : bool
-}
-
-class CustomersRepository {
-  - QSqlDatabase& db_
-  + CustomersRepository(db)
-  + addCustomer(name, phone, passwordHash) : int
-  + findCustomerByPhoneAndPassword(phone, passwordHash) : int
-}
-
-class RentalsRepository {
-  - QSqlDatabase& db_
-  + RentalsRepository(db)
-  + createRental(carId, customerId, startDate, endDate, totalPrice) : int
-  + updateExpiredRentals()
-}
-
-class CurrencyConverter {
-  - double usdToEur_
-  - double usdToByn_
-  + {static} instance() : CurrencyConverter
-  + fromBase(usdAmount, to) : double
-  + toBase(amount, from) : double
-  + symbol(currency) : QString
-  + code(currency) : QString
-  + {static} fromString(str) : Currency
-}
-
-enum "CurrencyConverter::Currency" as CurrencyConverterCurrency {
-  USD
-  EUR
-  BYN
-}
-
-class SessionManager {
-  + {static} instance() : SessionManager
-  + loadSession(data) : bool
-  + saveSession(customerId, name)
-  + clearSession()
-  - sessionFilePath() : QString
-}
-
-class "SessionManager::SessionData" as SessionManagerSessionData {
-  + int customerId
-  + QString name
-}
-
-class CarsCatalogController {
-  - CatalogFilters filters_
-  + setFilters(filters)
-  + filters() : CatalogFilters
-  + loadAvailable(customerId) : QList<CarInfo>
-  + loadBookmarked(customerId) : QList<CarInfo>
-  - mapModelToCars(model) : QList<CarInfo>
-  - passesFilters(car) : bool
-}
-
-struct CatalogFilters {
-  + QString searchText
-  + QString engineType
-  + int seatsMin
-  + int powerMin
-  + double capacityMin
-}
-
-class CarCardsView {
-  - QWidget* container_
-  - QGridLayout* layout_
-  - int columns_
-  - QString currentCurrency_
-  - QList<CarCardWidget*> cards_
-  + CarCardsView(container, columns)
-  + setCurrency(currency)
-  + showCars(cars, binder)
-  + clear()
-  + forEachCard(visitor)
-}
-
-class CarImageLoader {
-  + {static} loadCardImage(resourcePath, targetSize) : QPixmap
-  - resolveKey(resourcePath) : QString
-  - roundCorners(source, radius) : QPixmap
-}
-
-class CarDetailsFormatter {
-  + {static} tooltipText(car) : QString
-  + {static} name(car) : QString
-}
-
-class PathsConfig {
-  + {static} dataDir() : QString
-  + {static} databaseFile() : QString
-  + {static} sessionFile() : QString
-  + {static} photosDir() : QString
-  + {static} placeholderImage() : QString
-}
-
-class RentalCalculator {
-  + normalizeDates(start, end, current, max) : DateNormalization
-  + rentalDays(start, end) : int
-  + totalBasePrice(car, days) : double
-  + formattedTotal(car, days, currency) : QString
-  - dayLabel(days) : QString
-}
-
-class "RentalCalculator::DateNormalization" as RentalCalculatorDateNormalization {
-  + QDate start
-  + QDate end
-  + bool startClamped
-  + bool endClamped
-  + bool endAdjusted
-}
-
-class RentalsModel {
-  - QString currentCurrency_
-  - CurrencyConverter* converter_
-  + RentalsModel(parent)
-  + setCurrency(currency)
-  + refresh(customerId)
-  + data(index, role) : QVariant
-  + headerData(section, orientation, role) : QVariant
-}
-
-class QMainWindow {
-  + QMainWindow(parent)
-}
-
-class QDialog {
-  + QDialog(parent)
-}
-
-class QWidget {
-  + QWidget(parent)
-}
-
-class QCalendarWidget {
-  + QCalendarWidget(parent)
-}
-
-class QSqlQueryModel {
-  + QSqlQueryModel(parent)
-}
-
+' ============================================
+' INHERITANCE
+' ============================================
 MainWindow --|> QMainWindow
 LoginDialog --|> QDialog
 RentalDialog --|> QDialog
 CarCardWidget --|> QWidget
+CarCardsView --|> QObject
 CustomCalendarWidget --|> QCalendarWidget
 RentalsModel --|> QSqlQueryModel
+DatabaseException --|> AppException
+FileLoadException --|> AppException
+ValidationException --|> AppException
 
-MainWindow *-- CarCardsView : manages grid
-MainWindow *-- RentalsModel : contains
-MainWindow ..> LoginDialog : uses
-MainWindow ..> RentalDialog : uses
-MainWindow ..> Database : uses
-MainWindow ..> CurrencyConverter : uses
-MainWindow ..> SessionManager : uses
-MainWindow ..> CarsCatalogController : orchestrates
-MainWindow ..> CatalogFilters : builds filters
-CarCardsView ..> CarCardWidget : creates
+' ============================================
+' COMPOSITION
+' ============================================
+MainWindow *-- CarCardsView
+MainWindow *-- CarsCatalogController
+MainWindow *-- RentalsModel
+RentalDialog *-- CustomCalendarWidget
+RentalDialog *-- RentalCalculator
+Database *-- SchemaManager
+Database *-- CarSeeder
+Database *-- CarsRepository
+Database *-- CustomersRepository
+Database *-- RentalsRepository
+CarsCatalogController *-- CatalogFilters
+CarCardWidget *-- CarInfo
+RentalDialog *-- CarInfo
+RentalsModel *-- CurrencyConverter
 
-RentalDialog ..> CarInfo : uses
-RentalDialog *-- CustomCalendarWidget : contains
-RentalDialog ..> Database : uses
-RentalDialog ..> CurrencyConverter : uses
-RentalDialog ..> RentalCalculator : uses
+' ============================================
+' ASSOCIATIONS
+' ============================================
+MainWindow --> LoginDialog : uses
+MainWindow --> RentalDialog : opens
+MainWindow --> Database : uses
+MainWindow --> CurrencyConverter : uses
+MainWindow --> SessionManager : uses
+MainWindow --> DatabaseException : catches
+MainWindow --> AppException : catches
 
-CarCardWidget ..> CarInfo : uses
-CarCardWidget ..> CurrencyConverter : uses
-CarCardWidget ..> CarImageLoader : uses
-CarCardWidget ..> CarDetailsFormatter : uses
+CarCardsView --> CarCardWidget : creates
 
-CustomCalendarWidget ..> Database : uses
+CarCardWidget --> CurrencyConverter : uses
+CarCardWidget --> CarImageLoader : uses
+CarCardWidget --> CarDetailsFormatter : uses
+CarCardWidget --> CarInfo : uses
+CarCardWidget --> FileLoadException : catches
 
-LoginDialog ..> Database : uses
+RentalDialog --> Database : uses
+RentalDialog --> CurrencyConverter : uses
+RentalDialog --> CarInfo : uses
+RentalDialog --> RentalCalculator : uses
+RentalDialog --> DatabaseException : catches
 
-RentalsModel ..> Database : uses
-RentalsModel ..> CurrencyConverter : uses
-CurrencyConverter ..> CurrencyConverterCurrency : uses
-SessionManager ..> SessionManagerSessionData : uses
-SessionManager ..> PathsConfig : uses
-CarImageLoader ..> PathsConfig : uses
-CarsCatalogController ..> Database : uses
-CarsCatalogController *-- CatalogFilters : state
-Database ..> CarInfo : returns
-Database *-- SchemaManager : delegates schema
-Database *-- CarSeeder : seeds data
-Database *-- CarsRepository : delegates queries
-Database *-- CustomersRepository : delegates queries
-Database *-- RentalsRepository : delegates queries
-CarsRepository ..> CarInfo : returns
-CarsRepository ..> QSqlQueryModel : creates
-CarSeeder ..> QSqlDatabase : uses
-SchemaManager ..> QSqlDatabase : uses
-CustomersRepository ..> QSqlDatabase : uses
-RentalsRepository ..> QSqlDatabase : uses
-RentalCalculator ..> CurrencyConverter : uses
-RentalCalculator ..> RentalCalculatorDateNormalization : returns
-PathsConfig ..> PathsConfig : singleton-like statics
+CustomCalendarWidget --> Database : uses
 
-Database ..> Database : singleton
-CurrencyConverter ..> CurrencyConverter : singleton
-SessionManager ..> SessionManager : singleton
+LoginDialog --> Database : uses
+LoginDialog --> SessionManager : uses
+LoginDialog --> DatabaseException : catches
+
+CarsCatalogController --> Database : uses
+CarsCatalogController --> CarInfo : returns
+CarsCatalogController --> CatalogFilters : uses
+
+Database --> CarsRepository : delegates
+Database --> CustomersRepository : delegates
+Database --> RentalsRepository : delegates
+Database --> SchemaManager : uses
+Database --> CarSeeder : uses
+Database --> DatabaseException : throws
+
+CarsRepository --> QSqlQueryModel : returns
+CarsRepository --> QSqlDatabase : uses
+CarsRepository --> CarInfo : returns
+
+CustomersRepository --> QSqlDatabase : uses
+CustomersRepository --> DatabaseException : throws
+
+RentalsRepository --> QSqlDatabase : uses
+RentalsRepository --> DatabaseException : throws
+
+SchemaManager --> QSqlDatabase : uses
+SchemaManager --> DatabaseException : throws
+
+CarSeeder --> QSqlDatabase : uses
+
+RentalCalculator --> CurrencyConverter : uses
+RentalCalculator --> CarInfo : uses
+RentalCalculator --> DateNormalization : returns
+
+SessionManager --> SessionData : uses
+SessionManager --> PathsConfig : uses
+
+CarImageLoader --> PathsConfig : uses
+CarImageLoader --> FileLoadException : throws
+
+CarDetailsFormatter --> CarInfo : uses
 
 @enduml

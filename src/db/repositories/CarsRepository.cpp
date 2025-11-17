@@ -96,3 +96,10 @@ bool CarsRepository::setBookmarked(int carId, int customerId,
   return q.exec();
 }
 
+
+
+
+
+
+
+

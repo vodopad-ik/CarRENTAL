@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #include "db/CarInfo.h"
 
@@ -26,4 +26,11 @@ public:
 private:
   QString dayLabel(int days) const;
 };
+
+
+
+
+
+
+
 

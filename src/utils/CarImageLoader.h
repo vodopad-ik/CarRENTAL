@@ -14,3 +14,10 @@ private:
   static QPixmap roundCorners(const QPixmap &source, int radius);
 };
 
+
+
+
+
+
+
+

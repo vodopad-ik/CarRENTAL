@@ -337,6 +337,9 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qcursor.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/db/CarInfo.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDate \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
@@ -350,8 +353,8 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QCryptographicHash \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcryptographichash.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout \

@@ -10,3 +10,10 @@ public:
   static QString name(const CarInfo &car);
 };
 
+
+
+
+
+
+
+

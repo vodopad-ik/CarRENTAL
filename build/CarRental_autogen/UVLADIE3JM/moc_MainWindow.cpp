@@ -1,4 +1,10 @@
-
+/****************************************************************************
+** Meta object code from reading C++ file 'MainWindow.h'
+**
+** Created by: The Qt Meta Object Compiler version 68 (Qt 6.4.2)
+**
+** WARNING! All changes made in this file will be lost!
+*****************************************************************************/
 
 #include <memory>
 #include "../../../src/MainWindow.h"
@@ -21,7 +27,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_MainWindow_t {
-    uint offsetsAndSizes[22];
+    uint offsetsAndSizes[20];
     char stringdata0[11];
     char stringdata1[17];
     char stringdata2[1];
@@ -30,25 +36,23 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata5[11];
     char stringdata6[16];
     char stringdata7[16];
-    char stringdata8[16];
-    char stringdata9[18];
-    char stringdata10[9];
+    char stringdata8[18];
+    char stringdata9[9];
 };
 #define QT_MOC_LITERAL(ofs, len) \
-    uint(sizeof(qt_meta_stringdata_MainWindow_t::offsetsAndSizes) + ofs), len
+    uint(sizeof(qt_meta_stringdata_MainWindow_t::offsetsAndSizes) + ofs), len 
 Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
-        QT_MOC_LITERAL(0, 10),
-        QT_MOC_LITERAL(11, 16),
-        QT_MOC_LITERAL(28, 0),
-        QT_MOC_LITERAL(29, 5),
-        QT_MOC_LITERAL(35, 17),
-        QT_MOC_LITERAL(53, 10),
-        QT_MOC_LITERAL(64, 15),
-        QT_MOC_LITERAL(80, 15),
-        QT_MOC_LITERAL(96, 15),
-        QT_MOC_LITERAL(112, 17),
-        QT_MOC_LITERAL(130, 8)
+        QT_MOC_LITERAL(0, 10),  // "MainWindow"
+        QT_MOC_LITERAL(11, 16),  // "onCarRentClicked"
+        QT_MOC_LITERAL(28, 0),  // ""
+        QT_MOC_LITERAL(29, 5),  // "carId"
+        QT_MOC_LITERAL(35, 17),  // "onBookmarkToggled"
+        QT_MOC_LITERAL(53, 10),  // "bookmarked"
+        QT_MOC_LITERAL(64, 15),  // "onShowMyRentals"
+        QT_MOC_LITERAL(80, 15),  // "onShowBookmarks"
+        QT_MOC_LITERAL(96, 17),  // "onCurrencyChanged"
+        QT_MOC_LITERAL(114, 8)   // "onLogout"
     },
     "MainWindow",
     "onCarRentClicked",
@@ -58,45 +62,42 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
     "bookmarked",
     "onShowMyRentals",
     "onShowBookmarks",
-    "onSearchChanged",
     "onCurrencyChanged",
     "onLogout"
 };
 #undef QT_MOC_LITERAL
-}
+} // unnamed namespace
 
 Q_CONSTINIT static const uint qt_meta_data_MainWindow[] = {
 
+ // content:
+      10,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       6,   14, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
 
-      10,
-       0,
-       0,    0,
-       7,   14,
-       0,    0,
-       0,    0,
-       0,    0,
-       0,
-       0,
+ // slots: name, argc, parameters, tag, flags, initial metatype offsets
+       1,    1,   50,    2, 0x08,    1 /* Private */,
+       4,    2,   53,    2, 0x08,    3 /* Private */,
+       6,    0,   58,    2, 0x08,    6 /* Private */,
+       7,    0,   59,    2, 0x08,    7 /* Private */,
+       8,    0,   60,    2, 0x08,    8 /* Private */,
+       9,    0,   61,    2, 0x08,    9 /* Private */,
 
-
-       1,    1,   56,    2, 0x08,    1 ,
-       4,    2,   59,    2, 0x08,    3 ,
-       6,    0,   64,    2, 0x08,    6 ,
-       7,    0,   65,    2, 0x08,    7 ,
-       8,    0,   66,    2, 0x08,    8 ,
-       9,    0,   67,    2, 0x08,    9 ,
-      10,    0,   68,    2, 0x08,   10 ,
-
-
+ // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
     QMetaType::Void, QMetaType::Int, QMetaType::Bool,    3,    5,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
 
-       0
+       0        // eod
 };
 
 Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
@@ -106,24 +107,22 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
     qt_incomplete_metaTypeArray<qt_meta_stringdata_MainWindow_t,
-
+        // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<MainWindow, std::true_type>,
-
+        // method 'onCarRentClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-
+        // method 'onBookmarkToggled'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
-
+        // method 'onShowMyRentals'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-
+        // method 'onShowBookmarks'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-
+        // method 'onCurrencyChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-
+        // method 'onLogout'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -139,9 +138,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 1: _t->onBookmarkToggled((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[2]))); break;
         case 2: _t->onShowMyRentals(); break;
         case 3: _t->onShowBookmarks(); break;
-        case 4: _t->onSearchChanged(); break;
-        case 5: _t->onCurrencyChanged(); break;
-        case 6: _t->onLogout(); break;
+        case 4: _t->onCurrencyChanged(); break;
+        case 5: _t->onLogout(); break;
         default: ;
         }
     }
@@ -166,13 +164,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 6)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 6;
     }
     return _id;
 }

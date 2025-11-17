@@ -515,6 +515,102 @@ src/db/repositories/RentalsRepository.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/db/repositories/RentalsRepository.cpp.s
 .PHONY : src/db/repositories/RentalsRepository.cpp.s
 
+src/exceptions/AppException.o: src/exceptions/AppException.cpp.o
+.PHONY : src/exceptions/AppException.o
+
+# target to build an object file
+src/exceptions/AppException.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/AppException.cpp.o
+.PHONY : src/exceptions/AppException.cpp.o
+
+src/exceptions/AppException.i: src/exceptions/AppException.cpp.i
+.PHONY : src/exceptions/AppException.i
+
+# target to preprocess a source file
+src/exceptions/AppException.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/AppException.cpp.i
+.PHONY : src/exceptions/AppException.cpp.i
+
+src/exceptions/AppException.s: src/exceptions/AppException.cpp.s
+.PHONY : src/exceptions/AppException.s
+
+# target to generate assembly for a file
+src/exceptions/AppException.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/AppException.cpp.s
+.PHONY : src/exceptions/AppException.cpp.s
+
+src/exceptions/DatabaseException.o: src/exceptions/DatabaseException.cpp.o
+.PHONY : src/exceptions/DatabaseException.o
+
+# target to build an object file
+src/exceptions/DatabaseException.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/DatabaseException.cpp.o
+.PHONY : src/exceptions/DatabaseException.cpp.o
+
+src/exceptions/DatabaseException.i: src/exceptions/DatabaseException.cpp.i
+.PHONY : src/exceptions/DatabaseException.i
+
+# target to preprocess a source file
+src/exceptions/DatabaseException.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/DatabaseException.cpp.i
+.PHONY : src/exceptions/DatabaseException.cpp.i
+
+src/exceptions/DatabaseException.s: src/exceptions/DatabaseException.cpp.s
+.PHONY : src/exceptions/DatabaseException.s
+
+# target to generate assembly for a file
+src/exceptions/DatabaseException.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/DatabaseException.cpp.s
+.PHONY : src/exceptions/DatabaseException.cpp.s
+
+src/exceptions/FileLoadException.o: src/exceptions/FileLoadException.cpp.o
+.PHONY : src/exceptions/FileLoadException.o
+
+# target to build an object file
+src/exceptions/FileLoadException.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.o
+.PHONY : src/exceptions/FileLoadException.cpp.o
+
+src/exceptions/FileLoadException.i: src/exceptions/FileLoadException.cpp.i
+.PHONY : src/exceptions/FileLoadException.i
+
+# target to preprocess a source file
+src/exceptions/FileLoadException.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.i
+.PHONY : src/exceptions/FileLoadException.cpp.i
+
+src/exceptions/FileLoadException.s: src/exceptions/FileLoadException.cpp.s
+.PHONY : src/exceptions/FileLoadException.s
+
+# target to generate assembly for a file
+src/exceptions/FileLoadException.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.s
+.PHONY : src/exceptions/FileLoadException.cpp.s
+
+src/exceptions/ValidationException.o: src/exceptions/ValidationException.cpp.o
+.PHONY : src/exceptions/ValidationException.o
+
+# target to build an object file
+src/exceptions/ValidationException.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.o
+.PHONY : src/exceptions/ValidationException.cpp.o
+
+src/exceptions/ValidationException.i: src/exceptions/ValidationException.cpp.i
+.PHONY : src/exceptions/ValidationException.i
+
+# target to preprocess a source file
+src/exceptions/ValidationException.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.i
+.PHONY : src/exceptions/ValidationException.cpp.i
+
+src/exceptions/ValidationException.s: src/exceptions/ValidationException.cpp.s
+.PHONY : src/exceptions/ValidationException.s
+
+# target to generate assembly for a file
+src/exceptions/ValidationException.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.s
+.PHONY : src/exceptions/ValidationException.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -763,6 +859,18 @@ help:
 	@echo "... src/db/repositories/RentalsRepository.o"
 	@echo "... src/db/repositories/RentalsRepository.i"
 	@echo "... src/db/repositories/RentalsRepository.s"
+	@echo "... src/exceptions/AppException.o"
+	@echo "... src/exceptions/AppException.i"
+	@echo "... src/exceptions/AppException.s"
+	@echo "... src/exceptions/DatabaseException.o"
+	@echo "... src/exceptions/DatabaseException.i"
+	@echo "... src/exceptions/DatabaseException.s"
+	@echo "... src/exceptions/FileLoadException.o"
+	@echo "... src/exceptions/FileLoadException.i"
+	@echo "... src/exceptions/FileLoadException.s"
+	@echo "... src/exceptions/ValidationException.o"
+	@echo "... src/exceptions/ValidationException.i"
+	@echo "... src/exceptions/ValidationException.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

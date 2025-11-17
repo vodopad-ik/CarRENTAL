@@ -1,5 +1,8 @@
 #include "SchemaManager.h"
 
+#include "exceptions/DatabaseException.h"
+
+#include <QSqlError>
 #include <QSqlQuery>
 
 bool SchemaManager::ensureSchema(QSqlDatabase &db) {
@@ -28,7 +31,7 @@ bool SchemaManager::createTables(QSqlDatabase &db) {
               "power_hp INTEGER DEFAULT 0,"
               "seats INTEGER DEFAULT 0"
               ")")) {
-    return false;
+    throw DatabaseException("create_table_cars", q.lastError().text());
   }
 
   if (!q.exec("CREATE TABLE IF NOT EXISTS customers ("
@@ -37,7 +40,7 @@ bool SchemaManager::createTables(QSqlDatabase &db) {
               "phone TEXT NOT NULL,"
               "password_hash TEXT"
               ")")) {
-    return false;
+    throw DatabaseException("create_table_customers", q.lastError().text());
   }
 
   if (!q.exec("CREATE TABLE IF NOT EXISTS bookmarks ("
@@ -48,7 +51,7 @@ bool SchemaManager::createTables(QSqlDatabase &db) {
               "FOREIGN KEY(customer_id) REFERENCES customers(id),"
               "FOREIGN KEY(car_id) REFERENCES cars(id)"
               ")")) {
-    return false;
+    throw DatabaseException("create_table_bookmarks", q.lastError().text());
   }
 
   if (!q.exec("CREATE TABLE IF NOT EXISTS rentals ("
@@ -62,7 +65,7 @@ bool SchemaManager::createTables(QSqlDatabase &db) {
               "FOREIGN KEY(car_id) REFERENCES cars(id),"
               "FOREIGN KEY(customer_id) REFERENCES customers(id)"
               ")")) {
-    return false;
+    throw DatabaseException("create_table_rentals", q.lastError().text());
   }
 
   return true;
@@ -73,4 +76,8 @@ void SchemaManager::createIndexes(QSqlDatabase &db) {
   uq.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_customers_phone_unique ON "
           "customers(phone)");
 }
+
+
+
+
 

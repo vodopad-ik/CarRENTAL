@@ -23,3 +23,10 @@ QString PathsConfig::placeholderImage() {
   return QDir(binDir + "/../../resources/images/placeholder.svg").absolutePath();
 }
 
+
+
+
+
+
+
+

@@ -3,59 +3,64 @@
 CurrencyConverter::CurrencyConverter() = default;
 
 double CurrencyConverter::fromBase(double usdAmount, Currency to) const {
+  using enum Currency;
   switch (to) {
-  case Currency::USD:
+  case USD:
     return usdAmount;
-  case Currency::EUR:
+  case EUR:
     return usdAmount * usdToEur_;
-  case Currency::BYN:
+  case BYN:
     return usdAmount * usdToByn_;
   }
   return usdAmount;
 }
 
 double CurrencyConverter::toBase(double amount, Currency from) const {
+  using enum Currency;
   switch (from) {
-  case Currency::USD:
+  case USD:
     return amount;
-  case Currency::EUR:
+  case EUR:
     return amount / usdToEur_;
-  case Currency::BYN:
+  case BYN:
     return amount / usdToByn_;
   }
   return amount;
 }
 
 QString CurrencyConverter::symbol(Currency currency) const {
+  using enum Currency;
   switch (currency) {
-  case Currency::USD:
+  case USD:
     return QString("$");
-  case Currency::EUR:
+  case EUR:
     return QString("€");
-  case Currency::BYN:
+  case BYN:
     return QString("Br");
   }
   return QString("$");
 }
 
 QString CurrencyConverter::code(Currency currency) const {
+  using enum Currency;
   switch (currency) {
-  case Currency::USD:
+  case USD:
     return QString("USD");
-  case Currency::EUR:
+  case EUR:
     return QString("EUR");
-  case Currency::BYN:
+  case BYN:
     return QString("BYN");
   }
   return QString("USD");
 }
 
 CurrencyConverter::Currency CurrencyConverter::fromString(const QString &str) {
+  using enum Currency;
   if (str == "USD")
-    return Currency::USD;
+    return USD;
   if (str == "EUR")
-    return Currency::EUR;
+    return EUR;
   if (str == "BYN")
-    return Currency::BYN;
-  return Currency::USD;
+    return BYN;
+  return USD;
 }

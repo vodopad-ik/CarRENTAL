@@ -3721,6 +3721,7 @@ CMakeFiles/CarRental.dir/src/db/CarSeeder.cpp.o: /home/vladius/Desktop/apps/CarR
   /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QStringList \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QtGlobal \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \

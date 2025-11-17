@@ -6,17 +6,17 @@
 #include <QVariant>
 
 RentalsModel::RentalsModel(QObject *parent)
-    : QSqlQueryModel(parent), currentCurrency_("USD"),
-      converter_(&CurrencyConverter::instance()) {
+    : QSqlQueryModel(parent), converter_(&CurrencyConverter::instance()) {
   setCurrency("USD");
 }
 
 void RentalsModel::setCurrency(const QString &currency) {
   currentCurrency_ = currency;
 
-  if (rowCount() > 0) {
+  const int rows = QSqlQueryModel::rowCount();
+  if (rows > 0) {
     emit headerDataChanged(Qt::Horizontal, 4, 4);
-    emit dataChanged(index(0, 4), index(rowCount() - 1, 4));
+    emit dataChanged(index(0, 4), index(rows - 1, 4));
   }
 }
 
@@ -71,14 +71,11 @@ QVariant RentalsModel::data(const QModelIndex &index, int role) const {
 
 QVariant RentalsModel::headerData(int section, Qt::Orientation orientation,
                                   int role) const {
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-    if (section == 4) {
-
-      auto currency = CurrencyConverter::fromString(currentCurrency_);
-      QString symbol = converter_->symbol(currency);
-      QString code = converter_->code(currency);
-      return QString("Сумма (%1)").arg(code);
-    }
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole && section == 4) {
+    auto currency = CurrencyConverter::fromString(currentCurrency_);
+    QString symbol = converter_->symbol(currency);
+    QString code = converter_->code(currency);
+    return QString("Сумма (%1)").arg(code);
   }
   return QSqlQueryModel::headerData(section, orientation, role);
 }

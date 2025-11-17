@@ -12,12 +12,9 @@
 #include <QDir>
 #include <QSqlError>
 
-Database &Database::instance() {
-  static Database inst;
-  return inst;
-}
-
 Database::Database() = default;
+
+Database::~Database() = default;
 
 void Database::initialize() {
   if (!QSqlDatabase::contains("carrental")) {

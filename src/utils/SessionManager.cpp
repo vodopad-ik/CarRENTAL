@@ -7,16 +7,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-SessionManager &SessionManager::instance() {
-  static SessionManager inst;
-  return inst;
-}
-
 QString SessionManager::sessionFilePath() const {
   return PathsConfig::sessionFile();
 }
 
-bool SessionManager::loadSession(SessionData &data) {
+bool SessionManager::loadSession(SessionData &data) const {
   QFile sessionFile(sessionFilePath());
   if (!sessionFile.exists() || !sessionFile.open(QIODevice::ReadOnly)) {
     return false;
@@ -37,7 +32,7 @@ bool SessionManager::loadSession(SessionData &data) {
   return false;
 }
 
-void SessionManager::saveSession(int customerId, const QString &name) {
+void SessionManager::saveSession(int customerId, const QString &name) const {
   QJsonObject obj;
   obj["customerId"] = customerId;
   obj["name"] = name;
@@ -50,7 +45,7 @@ void SessionManager::saveSession(int customerId, const QString &name) {
   }
 }
 
-void SessionManager::clearSession() {
+void SessionManager::clearSession() const {
   QFile::remove(sessionFilePath());
 }
 

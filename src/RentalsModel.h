@@ -21,6 +21,6 @@ public:
                       int role = Qt::DisplayRole) const override;
 
 private:
-  QString currentCurrency_;
+  QString currentCurrency_ = "USD";
   CurrencyConverter *converter_;
 };

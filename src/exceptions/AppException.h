@@ -9,7 +9,7 @@ public:
   const char *what() const noexcept override;
   QString getMessage() const;
 
-protected:
+private:
   QString message_;
   mutable QByteArray utf8Message_;
 };

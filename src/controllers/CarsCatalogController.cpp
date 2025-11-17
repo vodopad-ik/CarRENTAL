@@ -12,19 +12,19 @@ void CarsCatalogController::setFilters(const CatalogFilters &filters) {
 CatalogFilters CarsCatalogController::getFilters() const { return filters_; }
 
 QList<CarInfo> CarsCatalogController::loadAvailable(int customerId) const {
-  std::unique_ptr<QSqlQueryModel> model(
+  auto model = std::unique_ptr<QSqlQueryModel>(
       Database::instance().getAvailableCars(customerId));
   return mapModelToCars(model.get());
 }
 
 QList<CarInfo> CarsCatalogController::loadBookmarked(int customerId) const {
-  std::unique_ptr<QSqlQueryModel> model(
+  auto model = std::unique_ptr<QSqlQueryModel>(
       Database::instance().getBookmarked(customerId));
   return mapModelToCars(model.get());
 }
 
 QList<CarInfo>
-CarsCatalogController::mapModelToCars(QSqlQueryModel *model) const {
+CarsCatalogController::mapModelToCars(const QSqlQueryModel *model) const {
   QList<CarInfo> cars;
   if (!model)
     return cars;
@@ -59,14 +59,14 @@ CarsCatalogController::mapModelToCars(QSqlQueryModel *model) const {
 }
 
 bool CarsCatalogController::passesFilters(const CarInfo &car) const {
-  const QString carText = QString("%1 %2 %3")
-                              .arg(car.brand, car.model)
-                              .arg(QString::number(car.year))
-                              .toLower();
-
-  if (!filters_.searchText.isEmpty() &&
-      !carText.contains(filters_.searchText.toLower()))
+  if (const QString carText = QString("%1 %2 %3")
+                                  .arg(car.brand, car.model)
+                                  .arg(QString::number(car.year))
+                                  .toLower();
+      !filters_.searchText.isEmpty() &&
+      !carText.contains(filters_.searchText.toLower())) {
     return false;
+  }
 
   if (!filters_.engineType.isEmpty() && filters_.engineType != "Любой" &&
       !car.engineType.isEmpty() && car.engineType != filters_.engineType)

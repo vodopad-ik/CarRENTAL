@@ -5,8 +5,7 @@
 #include <QLayoutItem>
 
 CarCardsView::CarCardsView(QWidget *container, int columns)
-    : QObject(container), container_(container), layout_(nullptr),
-      columns_(columns) {
+    : QObject(container), container_(container), columns_(columns) {
   layout_ = qobject_cast<QGridLayout *>(container_->layout());
   if (!layout_) {
     layout_ = new QGridLayout(container_);
@@ -22,7 +21,7 @@ CarCardsView::CarCardsView(QWidget *container, int columns)
 
 void CarCardsView::setCurrency(const QString &currency) {
   currentCurrency_ = currency;
-  forEachCard([&](CarCardWidget *card) { card->updateCurrency(currency); });
+  forEachCard([currency](CarCardWidget *card) { card->updateCurrency(currency); });
 }
 
 void CarCardsView::showCars(

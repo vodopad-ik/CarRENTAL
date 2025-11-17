@@ -1,22 +1,14 @@
 #include "CurrencyConverter.h"
 
-CurrencyConverter &CurrencyConverter::instance() {
-  static CurrencyConverter inst;
-  return inst;
-}
-
-CurrencyConverter::CurrencyConverter() {
-  usdToEur_ = 0.92;
-  usdToByn_ = 3.28;
-}
+CurrencyConverter::CurrencyConverter() = default;
 
 double CurrencyConverter::fromBase(double usdAmount, Currency to) const {
   switch (to) {
-  case USD:
+  case Currency::USD:
     return usdAmount;
-  case EUR:
+  case Currency::EUR:
     return usdAmount * usdToEur_;
-  case BYN:
+  case Currency::BYN:
     return usdAmount * usdToByn_;
   }
   return usdAmount;
@@ -24,11 +16,11 @@ double CurrencyConverter::fromBase(double usdAmount, Currency to) const {
 
 double CurrencyConverter::toBase(double amount, Currency from) const {
   switch (from) {
-  case USD:
+  case Currency::USD:
     return amount;
-  case EUR:
+  case Currency::EUR:
     return amount / usdToEur_;
-  case BYN:
+  case Currency::BYN:
     return amount / usdToByn_;
   }
   return amount;
@@ -36,11 +28,11 @@ double CurrencyConverter::toBase(double amount, Currency from) const {
 
 QString CurrencyConverter::symbol(Currency currency) const {
   switch (currency) {
-  case USD:
+  case Currency::USD:
     return QString("$");
-  case EUR:
+  case Currency::EUR:
     return QString("€");
-  case BYN:
+  case Currency::BYN:
     return QString("Br");
   }
   return QString("$");
@@ -48,11 +40,11 @@ QString CurrencyConverter::symbol(Currency currency) const {
 
 QString CurrencyConverter::code(Currency currency) const {
   switch (currency) {
-  case USD:
+  case Currency::USD:
     return QString("USD");
-  case EUR:
+  case Currency::EUR:
     return QString("EUR");
-  case BYN:
+  case Currency::BYN:
     return QString("BYN");
   }
   return QString("USD");
@@ -60,10 +52,10 @@ QString CurrencyConverter::code(Currency currency) const {
 
 CurrencyConverter::Currency CurrencyConverter::fromString(const QString &str) {
   if (str == "USD")
-    return USD;
+    return Currency::USD;
   if (str == "EUR")
-    return EUR;
+    return Currency::EUR;
   if (str == "BYN")
-    return BYN;
-  return USD;
+    return Currency::BYN;
+  return Currency::USD;
 }

@@ -305,7 +305,7 @@ void MainWindow::loadCars() {
       catalogController_->loadAvailable(currentCustomerId_);
 
   carsView_->setCurrency(currentCurrency_);
-  carsView_->showCars(cars, [this](CarCardWidget *const card) {
+  carsView_->showCars(cars, [this](const CarCardWidget *card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
@@ -325,7 +325,7 @@ void MainWindow::loadBookmarks() {
       catalogController_->loadBookmarked(currentCustomerId_);
 
   bookmarksView_->setCurrency(currentCurrency_);
-  bookmarksView_->showCars(cars, [this](CarCardWidget *const card) {
+  bookmarksView_->showCars(cars, [this](const CarCardWidget *card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,

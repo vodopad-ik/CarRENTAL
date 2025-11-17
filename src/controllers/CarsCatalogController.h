@@ -24,7 +24,7 @@ public:
   QList<CarInfo> loadBookmarked(int customerId) const;
 
 private:
-  QList<CarInfo> mapModelToCars(QSqlQueryModel *model) const;
+  QList<CarInfo> mapModelToCars(const QSqlQueryModel *model) const;
   bool passesFilters(const CarInfo &car) const;
 
   CatalogFilters filters_;

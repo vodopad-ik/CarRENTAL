@@ -36,7 +36,7 @@ double RentalCalculator::totalBasePrice(const CarInfo &car, int days) const {
 
 QString RentalCalculator::formattedTotal(const CarInfo &car, int days,
                                          const QString &currencyCode) const {
-  auto &converter = CurrencyConverter::instance();
+  const auto &converter = CurrencyConverter::instance();
   const auto currency = CurrencyConverter::fromString(currencyCode);
   const double converted = converter.fromBase(car.pricePerDay, currency) * days;
   const QString symbol = converter.symbol(currency);

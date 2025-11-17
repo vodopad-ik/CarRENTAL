@@ -74,7 +74,7 @@ CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp: CMakeFiles/CarRental_autogen.dir
 CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp: /home/vladius/Desktop/apps/CarRENTAL/resources/images/placeholder.svg
 CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp: /usr/lib/qt6/libexec/rcc
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic RCC for resources/resources.qrc"
-	/usr/bin/cmake -E cmake_autorcc /home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json Debug
+	/usr/bin/cmake -E cmake_autorcc /home/vladius/Desktop/apps/CarRENTAL/build/CMakeFiles/CarRental_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json 
 
 CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: CMakeFiles/CarRental.dir/flags.make
 CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: CarRental_autogen/mocs_compilation.cpp

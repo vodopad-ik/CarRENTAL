@@ -47,8 +47,7 @@ QString CarImageLoader::resolveKey(const QString &resourcePath) {
 
   QString key = resourcePath;
   const int start = key.lastIndexOf('/') + 1;
-  const int end = key.lastIndexOf('.');
-  if (start >= 0 && end > start)
+  if (const int end = key.lastIndexOf('.'); start >= 0 && end > start)
     return key.mid(start, end - start);
 
   key = key.section('/', -1);

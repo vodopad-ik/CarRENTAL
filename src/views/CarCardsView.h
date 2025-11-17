@@ -15,7 +15,7 @@ class CarCardsView : public QObject {
   Q_OBJECT
 
 public:
-  CarCardsView(QWidget *container, int columns = 3);
+  explicit CarCardsView(QWidget *container, int columns = 3);
 
   void setCurrency(const QString &currency);
   void showCars(const QList<CarInfo> &cars,
@@ -26,7 +26,7 @@ public:
 
 private:
   QWidget *container_;
-  QGridLayout *layout_;
+  QGridLayout *layout_ = nullptr;
   int columns_;
   QString currentCurrency_;
   QList<CarCardWidget *> cards_;

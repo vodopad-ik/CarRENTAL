@@ -17,7 +17,7 @@ class RentalsRepository;
 
 class Database {
 public:
-  static inline Database &instance() {
+  static Database &instance() {
     static Database inst;
     return inst;
   }

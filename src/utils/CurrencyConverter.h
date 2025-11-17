@@ -5,7 +5,7 @@
 class CurrencyConverter {
 public:
   enum class Currency { USD, EUR, BYN };
-  static inline CurrencyConverter &instance() {
+  static CurrencyConverter &instance() {
     static CurrencyConverter inst;
     return inst;
   }

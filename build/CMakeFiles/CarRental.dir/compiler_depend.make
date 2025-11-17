@@ -12,6 +12,7 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: CarRental_aut
   /home/vladius/Desktop/apps/CarRENTAL/src/RentalDialog.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/controllers/CarsCatalogController.h \
+  /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.h \
   CarRental_autogen/UVLADIE3JM/moc_CarCardWidget.cpp \
   CarRental_autogen/UVLADIE3JM/moc_CustomCalendarWidget.cpp \
@@ -1780,6 +1781,7 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: /home/vladius/Desktop/apps/CarREN
   /home/vladius/Desktop/apps/CarRENTAL/src/db/Database.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
+  /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.h \
   /home/vladius/Desktop/apps/CarRENTAL/src/views/CarCardsView.h \
@@ -10093,8 +10095,6 @@ CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.o: /home/vladius/Desktop/app
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow:
 
-/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
-
 /usr/include/x86_64-linux-gnu/bits/timex.h:
 
 /usr/include/c++/13/bits/locale_conv.h:
@@ -10279,6 +10279,12 @@ CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.o: /home/vladius/Desktop/app
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h:
 
+/usr/include/c++/13/cwchar:
+
+/usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
 /usr/include/c++/13/bits/hashtable.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
@@ -10325,6 +10331,10 @@ CarRental_autogen/UVLADIE3JM/moc_LoginDialog.cpp:
 
 /usr/include/c++/13/bits/chrono.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
+
+/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h:
+
 /usr/include/alloca.h:
 
 /usr/include/c++/13/bits/invoke.h:
@@ -10340,6 +10350,10 @@ CarRental_autogen/UVLADIE3JM/moc_LoginDialog.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication:
 
 /usr/include/stdc-predef.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qpolygon.h:
+
+/usr/include/c++/13/bit:
 
 /usr/include/c++/13/bits/allocated_ptr.h:
 
@@ -10358,6 +10372,14 @@ CarRental_autogen/UVLADIE3JM/moc_LoginDialog.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTableView:
 
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/c++/13/bits/locale_classes.tcc:
+
+/usr/include/c++/13/bits/uniform_int_dist.h:
+
+/usr/include/c++/13/optional:
+
+/usr/include/c++/13/backward/binders.h:
 
 CarRental_autogen/UVLADIE3JM/moc_CarCardWidget.cpp:
 
@@ -10393,6 +10415,10 @@ CarRental_autogen/UVLADIE3JM/moc_MainWindow.cpp:
 
 /home/vladius/Desktop/apps/CarRENTAL/src/utils/RentalCalculator.h:
 
+/usr/include/c++/13/bits/exception_ptr.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtooltip.h:
 
 /usr/include/asm-generic/errno-base.h:
@@ -10404,20 +10430,6 @@ CarRental_autogen/UVLADIE3JM/moc_MainWindow.cpp:
 /usr/include/c++/13/bits/hash_bytes.h:
 
 /usr/include/c++/13/array:
-
-/usr/include/c++/13/cwchar:
-
-/usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h:
-
-CarRental_autogen/UVLADIE3JM/moc_CustomCalendarWidget.cpp:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/QJsonDocument:
-
-/usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQueryModel:
 
 /usr/include/c++/13/debug/assertions.h:
 
@@ -10471,6 +10483,14 @@ CarRental_autogen/3YJK5W5UP7/qrc_resources.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h:
+
+CarRental_autogen/UVLADIE3JM/moc_CustomCalendarWidget.cpp:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/QJsonDocument:
+
+/usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQueryModel:
+
 /usr/include/x86_64-linux-gnu/bits/time64.h:
 
 /usr/include/c++/13/ext/type_traits.h:
@@ -10513,33 +10533,21 @@ CarRental_autogen/UVLADIE3JM/moc_RentalDialog.cpp:
 
 /home/vladius/Desktop/apps/CarRENTAL/src/utils/SessionManager.h:
 
-/usr/include/math.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
 
+/usr/include/math.h:
+
 /usr/include/c++/13/cstdio:
+
+/usr/include/c++/13/bits/vector.tcc:
+
+/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QString:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h:
-
-/usr/include/c++/13/bits/locale_classes.tcc:
-
-/usr/include/c++/13/bits/uniform_int_dist.h:
-
-/usr/include/c++/13/optional:
-
-/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h:
-
-/usr/include/c++/13/bits/vector.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
-
-/usr/include/c++/13/bits/exception_ptr.h:
-
-/usr/include/c++/13/backward/binders.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
@@ -11028,12 +11036,6 @@ CarRental_autogen/UVLADIE3JM/moc_RentalsModel.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qpixelformat.h:
-
-/usr/include/c++/13/bit:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qpolygon.h:
-
-/home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextcursor.h:
 

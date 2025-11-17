@@ -379,6 +379,7 @@ CMakeFiles/CarRental.dir/src/MainWindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/RentalsModel.h \
+ /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QModelIndex \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQueryModel \

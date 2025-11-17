@@ -1,11 +1,11 @@
 #pragma once
 
+#include "utils/CurrencyConverter.h"
+
 #include <QModelIndex>
 #include <QSqlQueryModel>
 #include <QString>
 #include <QVariant>
-
-class CurrencyConverter;
 
 class RentalsModel : public QSqlQueryModel {
   Q_OBJECT
@@ -22,5 +22,5 @@ public:
 
 private:
   QString currentCurrency_ = "USD";
-  CurrencyConverter *converter_;
+  CurrencyConverter *converter_ = &CurrencyConverter::instance();
 };

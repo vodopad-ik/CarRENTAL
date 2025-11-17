@@ -4,7 +4,7 @@
 
 class SessionManager {
 public:
-  static inline SessionManager &instance() {
+  static SessionManager &instance() {
     static SessionManager inst;
     return inst;
   }
@@ -20,6 +20,7 @@ public:
 
 private:
   SessionManager() = default;
+  
   QString sessionFilePath() const;
 };
 

@@ -58,7 +58,9 @@ private:
     QWidget *rentalsWidget_ = nullptr;
     QWidget *bookmarksContainer_ = nullptr;
     QWidget *bmInner_ = nullptr;
-  } ui_;
+  };
+  
+  UIWidgets ui_;
 
   struct UIFilters {
     QLineEdit *searchEdit_ = nullptr;
@@ -66,16 +68,22 @@ private:
     QSpinBox *seatsMinFilter_ = nullptr;
     QSpinBox *powerMinFilter_ = nullptr;
     QDoubleSpinBox *capacityMinFilter_ = nullptr;
-  } filters_;
+  };
+  
+  UIFilters filters_;
 
   struct UIButtons {
     QPushButton *myRentalsBtn_ = nullptr;
     QPushButton *logoutBtn_ = nullptr;
-  } buttons_;
+  };
+  
+  UIButtons buttons_;
 
   struct UILabels {
     QLabel *welcomeLabel_ = nullptr;
-  } labels_;
+  };
+  
+  UILabels labels_;
 
   QComboBox *currencyBox_ = nullptr;
   QTableView *rentalsTable_ = nullptr;

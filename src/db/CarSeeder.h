@@ -9,9 +9,16 @@ public:
 
 private:
   bool hasCars(const QSqlDatabase &db) const;
-  bool insertCar(const QSqlDatabase &db, const QString &brand, const QString &model,
-                 int year, double pricePerDay, int quantity,
-                 const QString &description, const QString &imagePath);
+  struct CarData {
+    QString brand;
+    QString model;
+    int year;
+    double pricePerDay;
+    int quantity;
+    QString description;
+    QString imagePath;
+  };
+  bool insertCar(const QSqlDatabase &db, const CarData &data);
   struct CarSpecs {
     QString type;
     double capacity;

@@ -396,6 +396,7 @@ CMakeFiles/CarRental.dir/CarRental_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/moc_RentalsModel.cpp \
  /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/RentalsModel.h \
+ /home/vladius/Desktop/apps/CarRENTAL/build/CarRental_autogen/UVLADIE3JM/../../../src/utils/CurrencyConverter.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QModelIndex \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQueryModel \

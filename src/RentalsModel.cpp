@@ -5,8 +5,7 @@
 #include <QSqlQuery>
 #include <QVariant>
 
-RentalsModel::RentalsModel(QObject *parent)
-    : QSqlQueryModel(parent), converter_(&CurrencyConverter::instance()) {
+RentalsModel::RentalsModel(QObject *parent) : QSqlQueryModel(parent) {
   setCurrency("USD");
 }
 

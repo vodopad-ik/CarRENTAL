@@ -12,14 +12,14 @@ void CarsCatalogController::setFilters(const CatalogFilters &filters) {
 CatalogFilters CarsCatalogController::getFilters() const { return filters_; }
 
 QList<CarInfo> CarsCatalogController::loadAvailable(int customerId) const {
-  auto model = std::unique_ptr<QSqlQueryModel>(
-      Database::instance().getAvailableCars(customerId));
+  QSqlQueryModel *rawModel = Database::instance().getAvailableCars(customerId);
+  auto model = std::unique_ptr<QSqlQueryModel>(rawModel);
   return mapModelToCars(model.get());
 }
 
 QList<CarInfo> CarsCatalogController::loadBookmarked(int customerId) const {
-  auto model = std::unique_ptr<QSqlQueryModel>(
-      Database::instance().getBookmarked(customerId));
+  QSqlQueryModel *rawModel = Database::instance().getBookmarked(customerId);
+  std::unique_ptr<QSqlQueryModel> model(rawModel);
   return mapModelToCars(model.get());
 }
 

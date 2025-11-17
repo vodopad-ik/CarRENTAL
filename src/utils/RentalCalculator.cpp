@@ -62,3 +62,4 @@ QString RentalCalculator::dayLabel(int days) const {
 
 
 
+

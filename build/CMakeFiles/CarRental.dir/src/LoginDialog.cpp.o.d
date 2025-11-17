@@ -353,8 +353,6 @@ CMakeFiles/CarRental.dir/src/LoginDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
- /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
- /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QCryptographicHash \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcryptographichash.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout \

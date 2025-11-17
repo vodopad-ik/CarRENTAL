@@ -1,6 +1,5 @@
 #include "LoginDialog.h"
 #include "db/Database.h"
-#include "exceptions/DatabaseException.h"
 
 #include <QCryptographicHash>
 #include <QFormLayout>
@@ -35,6 +34,7 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
   welcome->setAlignment(Qt::AlignCenter);
   layout->addWidget(welcome);
 
+
   auto *tabsLayout = new QHBoxLayout();
   QPushButton *tabLogin = new QPushButton("Войти", this);
   QPushButton *tabRegister = new QPushButton("Зарегистрироваться", this);
@@ -58,6 +58,7 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), customerId_(-1) {
   tabsLayout->addWidget(tabLogin);
   tabsLayout->addWidget(tabRegister);
   layout->addLayout(tabsLayout);
+
 
   auto *formLayout = new QFormLayout();
   phoneEdit_ = new QLineEdit(this);
@@ -152,6 +153,8 @@ void LoginDialog::onLogin() {
     return;
   }
 
+
+
   auto &db = Database::instance();
   QByteArray passHash =
       QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
@@ -219,13 +222,11 @@ void LoginDialog::onRegister() {
   QByteArray passHash =
       QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)
           .toHex();
-  try {
-    customerId_ = Database::instance().addCustomer(name_, phone_,
-                                                   QString::fromUtf8(passHash));
+  customerId_ = Database::instance().addCustomer(name_, phone_,
+                                                 QString::fromUtf8(passHash));
+  if (customerId_ > 0) {
     accept();
-  } catch (const DatabaseException &e) {
-    QMessageBox::critical(this, "Ошибка базы данных",
-                          QString("Не удалось зарегистрировать клиента:\n%1")
-                              .arg(e.getMessage()));
+  } else {
+    QMessageBox::warning(this, "Ошибка", "Не удалось зарегистрировать клиента");
   }
 }

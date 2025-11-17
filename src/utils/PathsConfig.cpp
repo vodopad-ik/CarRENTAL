@@ -30,3 +30,4 @@ QString PathsConfig::placeholderImage() {
 
 
 
+

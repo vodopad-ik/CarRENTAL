@@ -10,3 +10,4 @@ const char *AppException::what() const noexcept {
 QString AppException::getMessage() const { return message_; }
 
 
+

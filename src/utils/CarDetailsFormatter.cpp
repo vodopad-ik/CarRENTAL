@@ -31,3 +31,4 @@ QString CarDetailsFormatter::name(const CarInfo &car) {
 
 
 
+

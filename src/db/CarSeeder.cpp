@@ -5,7 +5,7 @@
 #include <QtGlobal>
 #include <array>
 
-void CarSeeder::seedIfEmpty(const QSqlDatabase &db) {
+void CarSeeder::seedIfEmpty(const QSqlDatabase &db) const {
   if (hasCars(db))
     return;
 
@@ -136,7 +136,7 @@ void CarSeeder::seedIfEmpty(const QSqlDatabase &db) {
             "Семейный внедорожник", ":/images/cars/mitsubishi_outlander.jpg"});
 }
 
-void CarSeeder::populateSpecs(const QSqlDatabase &db) {
+void CarSeeder::populateSpecs(const QSqlDatabase &db) const {
   struct Spec {
     const char *brand;
     const char *model;
@@ -209,7 +209,7 @@ bool CarSeeder::hasCars(const QSqlDatabase &db) const {
   return false;
 }
 
-bool CarSeeder::insertCar(const QSqlDatabase &db, const CarData &data) {
+bool CarSeeder::insertCar(const QSqlDatabase &db, const CarData &data) const {
   QSqlQuery query(db);
   query.prepare(
       "INSERT INTO cars (brand, model, year, price_per_day, quantity, "

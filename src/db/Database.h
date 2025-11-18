@@ -17,10 +17,7 @@ class RentalsRepository;
 
 class Database {
 public:
-  static inline Database &instance() {
-    static Database inst;
-    return inst;
-  }
+  static Database &instance();
 
   ~Database();
 
@@ -59,3 +56,8 @@ private:
   std::unique_ptr<CustomersRepository> customersRepository_;
   std::unique_ptr<RentalsRepository> rentalsRepository_;
 };
+
+inline Database &Database::instance() {
+  static Database inst;
+  return inst;
+}

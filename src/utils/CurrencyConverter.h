@@ -5,10 +5,7 @@
 class CurrencyConverter {
 public:
   enum class Currency { USD, EUR, BYN };
-  static inline CurrencyConverter &instance() {
-    static CurrencyConverter inst;
-    return inst;
-  }
+  static CurrencyConverter &instance();
 
   double fromBase(double usdAmount, Currency to) const;
   double toBase(double amount, Currency from) const;
@@ -24,4 +21,9 @@ private:
   double usdToEur_ = 0.92;
   double usdToByn_ = 3.28;
 };
+
+inline CurrencyConverter &CurrencyConverter::instance() {
+  static CurrencyConverter inst;
+  return inst;
+}
 

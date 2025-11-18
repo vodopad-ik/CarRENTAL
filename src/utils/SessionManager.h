@@ -4,10 +4,7 @@
 
 class SessionManager {
 public:
-  static inline SessionManager &instance() {
-    static SessionManager inst;
-    return inst;
-  }
+  static SessionManager &instance();
 
   struct SessionData {
     int customerId = -1;
@@ -23,6 +20,11 @@ private:
   
   QString sessionFilePath() const;
 };
+
+inline SessionManager &SessionManager::instance() {
+  static SessionManager inst;
+  return inst;
+}
 
 
 

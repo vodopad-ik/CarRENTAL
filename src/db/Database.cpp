@@ -13,7 +13,6 @@
 #include <QSqlError>
 
 Database::Database() = default;
-
 Database::~Database() = default;
 
 void Database::initialize() {

@@ -85,8 +85,7 @@ void MainWindow::setupUI() {
   const QString headerBtnStyle =
       "QPushButton { background-color: white; color: #2196F3; padding: 8px "
       "16px; border-radius: 6px; }"
-      "QPushButton:hover { filter: brightness(0.95); }"
-      "QPushButton:pressed { transform: translateY(1px); }";
+      "QPushButton:hover { background-color: #F5F5F5; }";
   buttons_.myRentalsBtn_->setStyleSheet(headerBtnStyle);
   buttons_.myRentalsBtn_->setIcon(
       style()->standardIcon(QStyle::SP_FileDialogListView));
@@ -361,7 +360,7 @@ void MainWindow::onCarRentClicked(int carId) {
 void MainWindow::onBookmarkToggled(int carId, bool bookmarked) {
   Database::instance().setBookmarked(carId, currentCustomerId_, bookmarked);
   carsView_->forEachCard([carId, bookmarked](CarCardWidget *card) {
-    if (card->carId() == carId)
+    if (card->getCarId() == carId)
       card->updateBookmarkStatus(bookmarked);
   });
 

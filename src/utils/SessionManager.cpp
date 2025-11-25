@@ -4,8 +4,10 @@
 
 #include <QDir>
 #include <QFile>
+#include <QIODevice>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 
 QString SessionManager::sessionFilePath() const {
   return PathsConfig::sessionFile();
@@ -45,10 +47,4 @@ void SessionManager::saveSession(int customerId, const QString &name) const {
   }
 }
 
-void SessionManager::clearSession() const {
-  QFile::remove(sessionFilePath());
-}
-
-
-
-
+void SessionManager::clearSession() const { QFile::remove(sessionFilePath()); }

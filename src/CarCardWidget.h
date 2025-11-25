@@ -16,7 +16,7 @@ public:
                          QWidget *parent = nullptr);
   void updateCurrency(const QString &currency);
   void updateBookmarkStatus(bool bookmarked);
-  int carId() const;
+  int getCarId() const;
   bool eventFilter(QObject *obj, QEvent *event) override;
 
 signals:
@@ -27,10 +27,10 @@ private:
   void updatePriceDisplay();
   void showDetailsTooltip();
   void hideDetailsTooltip();
+  void updateBookmarkButton();
 
   CarInfo *carData_;
   QString currentCurrency_;
-  QString shortDescription_;
   QLabel *imageLabel_;
   QLabel *nameLabel_;
   QLabel *priceLabel_;

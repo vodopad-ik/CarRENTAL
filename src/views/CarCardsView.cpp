@@ -1,7 +1,6 @@
 #include "CarCardsView.h"
-
 #include "CarCardWidget.h"
-
+ 
 #include <QLayoutItem>
 
 CarCardsView::CarCardsView(QWidget *container, int columns)

@@ -76,8 +76,3 @@ void SchemaManager::createIndexes(const QSqlDatabase &db) const {
   uq.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_customers_phone_unique ON "
           "customers(phone)");
 }
-
-
-
-
-

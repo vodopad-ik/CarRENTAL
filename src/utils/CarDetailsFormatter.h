@@ -7,10 +7,5 @@
 class CarDetailsFormatter {
 public:
   static QString tooltipText(const CarInfo &car);
-  static QString name(const CarInfo &car);
+  static QString getName(const CarInfo &car);
 };
-
-
-
-
-

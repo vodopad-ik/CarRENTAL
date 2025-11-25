@@ -11013,6 +11013,7 @@ CMakeFiles/CarRental.dir/src/utils/SessionManager.cpp.o: /home/vladius/Desktop/a
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QDir \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QFile \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QIODevice \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QJsonDocument \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QJsonObject \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
@@ -12147,6 +12148,8 @@ CarRental_autogen/UVLADIE3JM/moc_MainWindow.cpp:
 /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/QIODevice:
 
 /usr/include/asm-generic/errno-base.h:
 

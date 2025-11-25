@@ -17,7 +17,6 @@ public:
 
 private:
   SessionManager() = default;
-  
   QString sessionFilePath() const;
 };
 

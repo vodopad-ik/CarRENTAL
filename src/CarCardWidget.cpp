@@ -11,7 +11,6 @@
 #include <QGraphicsDropShadowEffect>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QPixmap>
 #include <QPushButton>
 #include <QToolButton>
@@ -48,16 +47,10 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
 
   QPixmap cardImage;
   try {
-    cardImage = CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180));
-    if (!cardImage.isNull()) {
-      imageLabel_->setPixmap(cardImage);
-      imageLabel_->setText("");
-    } else {
-      imageLabel_->setText("🚗");
-      imageLabel_->setStyleSheet(
-          "QLabel { background-color: #e0e0e0; border: none; color: #999; "
-          "font-size: 40px; }");
-    }
+    cardImage =
+        CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180));
+    imageLabel_->setPixmap(cardImage);
+    imageLabel_->setText("");
   } catch (const FileLoadException &) {
     imageLabel_->setText("🚗");
     imageLabel_->setStyleSheet(
@@ -70,7 +63,7 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   imageLabel_->installEventFilter(this);
   setMouseTracking(true);
 
-  const QString carName = CarDetailsFormatter::name(*carData_);
+  const QString carName = CarDetailsFormatter::getName(*carData_);
   nameLabel_ = new QLabel(carName, this);
   nameLabel_->setStyleSheet(
       "QLabel { background-color: transparent; border: none; padding: 0px; "
@@ -90,8 +83,7 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   priceLabel_->setTextFormat(Qt::PlainText);
   layout->addWidget(priceLabel_);
 
-  shortDescription_ = carData_->description;
-  descLabel_ = new QLabel(shortDescription_, this);
+  descLabel_ = new QLabel(carData_->description, this);
   descLabel_->setWordWrap(true);
   descLabel_->setMaximumHeight(40);
   descLabel_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
@@ -128,8 +120,6 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   popupShadow->setColor(QColor(0, 0, 0, 100));
   detailsPopup_->setGraphicsEffect(popupShadow);
 
-  layout->addSpacing(10);
-
   auto *btnLayout = new QHBoxLayout();
   btnLayout->setContentsMargins(0, -20, 0, 0);
 
@@ -137,24 +127,14 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   rentBtn_->setStyleSheet(
       "QPushButton { background-color: #2196F3; color: white; "
       "padding: 10px 14px; border-radius: 6px; font-size: 14px; }"
-      "QPushButton:hover { background-color: #1976D2; }"
-      "QPushButton:pressed { transform: translateY(1px); }");
+      "QPushButton:hover { background-color: #1976D2; }");
   rentBtn_->setMinimumHeight(38);
   btnLayout->addWidget(rentBtn_);
 
   bookmarkBtn_ = new QToolButton(this);
-  bookmarkBtn_->setText(carData_->bookmarked ? "★" : "☆");
-  bookmarkBtn_->setToolTip(carData_->bookmarked ? "Убрать из закладок"
-                                                : "В закладки");
-  bookmarkBtn_->setStyleSheet(
-      QString("QToolButton { background-color: %1; border: none; "
-              "border-radius: 6px; padding: 6px; font-size: 20px; color: %2; }"
-              "QToolButton:hover { filter: brightness(0.97); }"
-              "QToolButton:pressed { transform: translateY(1px); }")
-          .arg(carData_->bookmarked ? "#FFC107" : "#E0E0E0")
-          .arg(carData_->bookmarked ? "#FF6F00" : "#757575"));
   bookmarkBtn_->setMinimumSize(38, 38);
   bookmarkBtn_->setMaximumSize(38, 38);
+  updateBookmarkButton();
   btnLayout->addWidget(bookmarkBtn_);
 
   layout->addLayout(btnLayout);
@@ -164,17 +144,7 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
 
   connect(bookmarkBtn_, &QToolButton::clicked, [this]() {
     carData_->bookmarked = !carData_->bookmarked;
-    bookmarkBtn_->setText(carData_->bookmarked ? "★" : "☆");
-    bookmarkBtn_->setToolTip(carData_->bookmarked ? "Убрать из закладок"
-                                                  : "В закладки");
-    bookmarkBtn_->setStyleSheet(
-        QString(
-            "QToolButton { background-color: %1; border: none; "
-            "border-radius: 6px; padding: 6px; font-size: 20px; color: %2; }"
-            "QToolButton:hover { filter: brightness(0.97); }"
-            "QToolButton:pressed { transform: translateY(1px); }")
-            .arg(carData_->bookmarked ? "#FFC107" : "#E0E0E0")
-            .arg(carData_->bookmarked ? "#FF6F00" : "#757575"));
+    updateBookmarkButton();
     emit bookmarkToggled(carData_->id, carData_->bookmarked);
   });
 }
@@ -184,21 +154,29 @@ void CarCardWidget::updateCurrency(const QString &currency) {
   updatePriceDisplay();
 }
 
-int CarCardWidget::carId() const { return carData_ ? carData_->id : -1; }
+int CarCardWidget::getCarId() const { return carData_ ? carData_->id : -1; }
 
 void CarCardWidget::updateBookmarkStatus(bool bookmarked) {
   if (!carData_)
     return;
   carData_->bookmarked = bookmarked;
-  bookmarkBtn_->setText(bookmarked ? "★" : "☆");
-  bookmarkBtn_->setToolTip(bookmarked ? "Убрать из закладок" : "В закладки");
+  updateBookmarkButton();
+}
+
+void CarCardWidget::updateBookmarkButton() {
+  if (!carData_ || !bookmarkBtn_)
+    return;
+
+  bookmarkBtn_->setText(carData_->bookmarked ? "★" : "☆");
+  bookmarkBtn_->setToolTip(carData_->bookmarked ? "Удалить из закладок"
+                                                : "В закладки");
   bookmarkBtn_->setStyleSheet(
       QString("QToolButton { background-color: %1; border: none; "
               "border-radius: 6px; padding: 6px; font-size: 20px; color: %2; }"
-              "QToolButton:hover { filter: brightness(0.97); }"
-              "QToolButton:pressed { transform: translateY(1px); }")
-          .arg(bookmarked ? "#FFC107" : "#E0E0E0")
-          .arg(bookmarked ? "#FF6F00" : "#757575"));
+              "QToolButton:hover { background-color: %3; }")
+          .arg(carData_->bookmarked ? "#FFC107" : "#E0E0E0")
+          .arg(carData_->bookmarked ? "#FF6F00" : "#757575")
+          .arg(carData_->bookmarked ? "#FFB300" : "#D0D0D0"));
 }
 
 void CarCardWidget::updatePriceDisplay() {
@@ -248,13 +226,11 @@ void CarCardWidget::showDetailsTooltip() {
   int popupHeight = labelHeight + 32;
 
   int popupX = imageX + imageWidth + 8;
-
   int popupY = imageY + imageHeight - popupHeight - 8;
 
   if (popupX + popupWidth > cardWidth - margin) {
     popupX = cardWidth - popupWidth - margin;
   }
-
   if (popupY < imageY) {
     popupY = imageY + imageHeight - popupHeight - 5;
   }

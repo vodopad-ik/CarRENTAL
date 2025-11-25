@@ -18,9 +18,8 @@ class RentalsRepository;
 class Database {
 public:
   static Database &instance();
-
   ~Database();
-
+  
   void initialize();
 
   std::unique_ptr<QSqlQueryModel> getAvailableCars(int customerId);

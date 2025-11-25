@@ -22,8 +22,7 @@ public:
   void showCars(const QList<CarInfo> &cars, Binder &&binder = nullptr);
   void clear();
 
-  template <typename Visitor>
-  void forEachCard(Visitor &&visitor) const;
+  template <typename Visitor> void forEachCard(Visitor &&visitor) const;
 
 private:
   QWidget *container_;
@@ -37,7 +36,7 @@ template <typename Binder>
 void CarCardsView::showCars(const QList<CarInfo> &cars, Binder &&binder) {
   clear();
 
-  int row = 0;
+  int row = 0; 
   int col = 0;
   for (const auto &car : cars) {
     auto *card = new CarCardWidget(car, currentCurrency_, container_);
@@ -61,12 +60,3 @@ void CarCardsView::forEachCard(Visitor &&visitor) const {
     visitor(card);
   }
 }
-
-
-
-
-
-
-
-
-

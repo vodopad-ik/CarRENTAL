@@ -32,6 +32,16 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   layout->setSpacing(6);
   layout->setContentsMargins(12, 12, 12, 12);
 
+  setupImageLabel(layout);
+  setupNameLabel(layout);
+  setupPriceLabel(layout);
+  setupDescLabel(layout);
+  setupDetailsPopup();
+  setupButtons(layout);
+  connectSignals();
+}
+
+void CarCardWidget::setupImageLabel(QVBoxLayout *layout) {
   imageLabel_ = new QLabel(this);
   imageLabel_->setFixedHeight(180);
   imageLabel_->setAlignment(Qt::AlignCenter);
@@ -45,11 +55,9 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   shadow->setColor(QColor(0, 0, 0, 80));
   imageLabel_->setGraphicsEffect(shadow);
 
-  QPixmap cardImage;
   try {
-    cardImage =
-        CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180));
-    imageLabel_->setPixmap(cardImage);
+    imageLabel_->setPixmap(
+        CarImageLoader::loadCardImage(carData_->imagePath, QSize(320, 180)));
     imageLabel_->setText("");
   } catch (const FileLoadException &) {
     imageLabel_->setText("🚗");
@@ -62,9 +70,10 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   imageLabel_->setMouseTracking(true);
   imageLabel_->installEventFilter(this);
   setMouseTracking(true);
+}
 
-  const QString carName = CarDetailsFormatter::getName(*carData_);
-  nameLabel_ = new QLabel(carName, this);
+void CarCardWidget::setupNameLabel(QVBoxLayout *layout) {
+  nameLabel_ = new QLabel(CarDetailsFormatter::getName(*carData_), this);
   nameLabel_->setStyleSheet(
       "QLabel { background-color: transparent; border: none; padding: 0px; "
       "font-size: 16px; font-weight: bold; color: #333; }");
@@ -72,7 +81,9 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   nameLabel_->setWordWrap(false);
   nameLabel_->setTextFormat(Qt::PlainText);
   layout->addWidget(nameLabel_);
+}
 
+void CarCardWidget::setupPriceLabel(QVBoxLayout *layout) {
   priceLabel_ = new QLabel(this);
   updatePriceDisplay();
   priceLabel_->setStyleSheet(
@@ -82,7 +93,9 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   priceLabel_->setWordWrap(false);
   priceLabel_->setTextFormat(Qt::PlainText);
   layout->addWidget(priceLabel_);
+}
 
+void CarCardWidget::setupDescLabel(QVBoxLayout *layout) {
   descLabel_ = new QLabel(carData_->description, this);
   descLabel_->setWordWrap(true);
   descLabel_->setMaximumHeight(40);
@@ -93,7 +106,9 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   descLabel_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
   descLabel_->setTextFormat(Qt::PlainText);
   layout->addWidget(descLabel_);
+}
 
+void CarCardWidget::setupDetailsPopup() {
   detailsPopup_ = new QFrame(this);
   detailsPopup_->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
   detailsPopup_->setStyleSheet("QFrame { background-color: black; "
@@ -119,7 +134,9 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   popupShadow->setOffset(0, 2);
   popupShadow->setColor(QColor(0, 0, 0, 100));
   detailsPopup_->setGraphicsEffect(popupShadow);
+}
 
+void CarCardWidget::setupButtons(QVBoxLayout *layout) {
   auto *btnLayout = new QHBoxLayout();
   btnLayout->setContentsMargins(0, -20, 0, 0);
 
@@ -138,7 +155,9 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
   btnLayout->addWidget(bookmarkBtn_);
 
   layout->addLayout(btnLayout);
+}
 
+void CarCardWidget::connectSignals() {
   connect(rentBtn_, &QPushButton::clicked,
           [this]() { emit rentClicked(carData_->id); });
 
@@ -184,9 +203,7 @@ void CarCardWidget::updatePriceDisplay() {
   auto currency = CurrencyConverter::fromString(currentCurrency_);
   double price = converter.fromBase(carData_->pricePerDay, currency);
   QString symbol = converter.symbol(currency);
-
-  QString priceText = QString::number(price, 'f', 2) + " " + symbol + "/день";
-  priceLabel_->setText(priceText);
+  priceLabel_->setText(QString::number(price, 'f', 2) + " " + symbol + "/день");
 }
 
 bool CarCardWidget::eventFilter(QObject *obj, QEvent *event) {

@@ -13,20 +13,13 @@ CustomCalendarWidget::CustomCalendarWidget(int carId, QWidget *parent)
 void CustomCalendarWidget::showEvent(QShowEvent *event) {
   QCalendarWidget::showEvent(event);
 
-
-
   QTextCharFormat availableFormat;
-  availableFormat.setForeground(
-      QBrush(QColor(255, 255, 255)));
-  availableFormat.setBackground(
-      QBrush(QColor(76, 175, 80)));
-
+  availableFormat.setForeground(QBrush(QColor(255, 255, 255)));
+  availableFormat.setBackground(QBrush(QColor(76, 175, 80)));
 
   QTextCharFormat bookedFormat;
-  bookedFormat.setForeground(
-      QBrush(QColor(150, 150, 150)));
+  bookedFormat.setForeground(QBrush(QColor(150, 150, 150)));
   bookedFormat.setBackground(QBrush(QColor(220, 220, 220)));
-
 
   QDate today = QDate::currentDate();
   for (int i = 0; i < 365; ++i) {
@@ -42,7 +35,6 @@ void CustomCalendarWidget::showEvent(QShowEvent *event) {
 void CustomCalendarWidget::mouseMoveEvent(QMouseEvent *event) {
   QCalendarWidget::mouseMoveEvent(event);
 
-
   QPoint pos = event->pos();
 
   if (QDate monthStart = selectedDate(); monthStart.isValid()) {
@@ -50,8 +42,6 @@ void CustomCalendarWidget::mouseMoveEvent(QMouseEvent *event) {
     QDate monthEnd = monthStart.addMonths(1).addDays(-1);
 
     for (QDate d = monthStart; d <= monthEnd; d = d.addDays(1)) {
-
-
 
       int dayOfWeek = d.dayOfWeek();
       int week = (d.day() - 1) / 7;
@@ -78,7 +68,6 @@ void CustomCalendarWidget::mouseMoveEvent(QMouseEvent *event) {
 bool CustomCalendarWidget::isDateBooked(const QDate &date) const {
   if (carId_ <= 0)
     return false;
-
 
   int availableQty =
       Database::instance().getAvailableQuantity(carId_, date, date);

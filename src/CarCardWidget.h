@@ -6,6 +6,7 @@
 #include <QToolButton>
 #include <QWidget>
 
+class QVBoxLayout;
 struct CarInfo;
 
 class CarCardWidget : public QWidget {
@@ -24,6 +25,13 @@ signals:
   void bookmarkToggled(int carId, bool bookmarked);
 
 private:
+  void setupImageLabel(QVBoxLayout *layout);
+  void setupNameLabel(QVBoxLayout *layout);
+  void setupPriceLabel(QVBoxLayout *layout);
+  void setupDescLabel(QVBoxLayout *layout);
+  void setupDetailsPopup();
+  void setupButtons(QVBoxLayout *layout);
+  void connectSignals();
   void updatePriceDisplay();
   void showDetailsTooltip();
   void hideDetailsTooltip();

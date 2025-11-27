@@ -223,20 +223,27 @@ Zipcar — каршеринг с поведением pay-as-you-go. Прило�
 
 Методы:
 ‒ `static CurrencyConverter& instance()`.
-‒ `double convert(double amount, Currency from, Currency to) const`.
-‒ `QString symbol(Currency currency) const`.
-‒ `Currency fromString(const QString& code) const`.
+‒ `double fromBase(double usdAmount, Currency to) const` — конвертация из базовой валюты (USD) в целевую.
+‒ `double toBase(double amount, Currency from) const` — конвертация из указанной валюты в базовую (USD).
+‒ `QString symbol(Currency currency) const` — получение символа валюты ($, €, Br).
+‒ `QString code(Currency currency) const` — получение кода валюты (USD, EUR, BYN).
+‒ `static Currency fromString(const QString& str)` — преобразование строки в enum Currency.
 
 3 Класс: `Database`.
-Инкапсулирует подключение к SQLite и операции с данными.
+Инкапсулирует подключение к SQLite и операции с данными. Использует паттерн Singleton.
 
 Методы:
-‒ `bool initialize()` — настройка подключения, создание схемы.
+‒ `static Database& instance()` — получение единственного экземпляра.
+‒ `void initialize()` — настройка подключения, создание схемы, заполнение данными.
+‒ `std::unique_ptr<QSqlQueryModel> getAvailableCars(int customerId)` — получение модели доступных автомобилей.
+‒ `std::unique_ptr<QSqlQueryModel> getBookmarked(int customerId)` — получение модели закладок.
 ‒ `CarInfo getCar(int id, int customerId)` — получение карточки для выбранного клиента.
-‒ Методы выборки каталога реализованы через внутренние репозитории и вызываются контроллером каталога.
+‒ `int getAvailableQuantity(int carId, const QDate& startDate, const QDate& endDate)` — проверка доступности.
+‒ `bool setBookmarked(int carId, int customerId, bool bookmarked)` — управление закладками.
 ‒ `int createRental(...)`, `int addCustomer(...)`, `int findCustomerByPhoneAndPassword(...)`.
 ‒ `void updateExpiredRentals()` — актуализация статусов аренд.
-‒ Приватные `createSchema()` и `seedCars()` автоматически создают БД и добавляют 50 автомобилей с реальными фотографиями.
+‒ Приватные `createSchema()`, `seedCars()`, `populateCarSpecs()` автоматически создают БД и добавляют 50 автомобилей с реальными фотографиями.
+‒ Использует репозитории: `CarsRepository`, `CustomersRepository`, `RentalsRepository` для инкапсуляции SQL-запросов.
 
 4 Класс: `CarsCatalogController`.
 Применяет фильтры, загружает доступные автомобили и закладки.
@@ -249,16 +256,21 @@ Zipcar — каршеринг с поведением pay-as-you-go. Прило�
 5 Класс: `CarCardWidget`.
 Виджет, отображающий информацию об автомобиле.
 
-Поля и методы:
-‒ `void setCar(const CarInfo& car)`.
-‒ `void updateCurrency(const QString& currency)` и приватный `updatePriceDisplay()`.
+Конструктор и методы:
+‒ `CarCardWidget(const CarInfo& car, const QString& currency = "USD", QWidget* parent = nullptr)` — конструктор принимает данные автомобиля и валюту.
+‒ `void updateCurrency(const QString& currency)` — обновление валюты и пересчет цены.
+‒ `void updateBookmarkStatus(bool bookmarked)` — обновление статуса закладки.
+‒ `int getCarId() const` — получение идентификатора автомобиля.
+‒ `bool eventFilter(QObject* obj, QEvent* event) override` — обработка событий для всплывающей подсказки.
+‒ Приватный `updatePriceDisplay()` — пересчет и отображение цены в текущей валюте.
 ‒ Сигналы `rentClicked(int carId)` и `bookmarkToggled(int carId, bool)`.
-‒ UI-элементы: `imageLabel_`, `nameLabel_`, `priceLabel_`, `descLabel_`, кнопки «Арендовать» и «Закладка».
+‒ UI-элементы: `imageLabel_`, `nameLabel_`, `priceLabel_`, `descLabel_`, `detailsPopup_`, кнопки «Арендовать» и «Закладка».
 
 Особенности:
-‒ Масштабирование фотографии с `Qt::KeepAspectRatio`.
-‒ Минимальные отступы (12 px рамка, 0 px между элементами).
-‒ Единый курсор `Qt::ArrowCursor`.
+‒ Загрузка изображений через `CarImageLoader::loadCardImage()`.
+‒ Масштабирование фотографии с сохранением пропорций.
+‒ Всплывающая подсказка с детальными характеристиками при наведении на изображение.
+‒ Отступы 12 px, интервал между элементами 6 px.
 
 6 Класс: `CarCardsView`.
 Организует сетку карточек, управляет их созданием и обновлением.

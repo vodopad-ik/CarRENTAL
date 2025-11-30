@@ -3,26 +3,37 @@
 skinparam classAttributeIconSize 0
 skinparam backgroundColor #FFFFFF
 skinparam linetype ortho
-skinparam roundcorner 5
+skinparam roundcorner 4
 skinparam shadowing false
 skinparam packageStyle rectangle
 skinparam package {
     BackgroundColor #F0F0F0
     BorderColor #999999
     FontStyle bold
+    FontSize 10
+    Padding 2
 }
 skinparam class {
     BackgroundColor #E8F4F8
     BorderColor #2E86AB
     ArrowColor #2E86AB
-    FontSize 10
-    Padding 8
+    FontSize 9
+    Padding 4
+    AttributeFontSize 8
+    MethodFontSize 8
 }
 
-left to right direction
+skinparam arrow {
+    Thickness 1
+    FontSize 8
+}
+
+skinparam maxMessageSize 60
+
+top to bottom direction
 
 ' ============================================
-' QT BASE CLASSES (LEFT TOP)
+' QT BASE CLASSES (LEFT)
 ' ============================================
 package "Qt Base Classes" #F5F5F5 {
   class QMainWindow
@@ -35,7 +46,7 @@ package "Qt Base Classes" #F5F5F5 {
 }
 
 ' ============================================
-' DATA STRUCTURES (RIGHT TOP)
+' DATA STRUCTURES (LEFT CENTER)
 ' ============================================
 package "Data Structures" #DDDDDD {
   struct CarInfo {
@@ -78,7 +89,7 @@ package "Data Structures" #DDDDDD {
 }
 
 ' ============================================
-' EXCEPTIONS (LEFT MIDDLE)
+' EXCEPTIONS (LEFT BOTTOM)
 ' ============================================
 package "Exceptions" #FFE6E6 {
   class AppException {
@@ -94,30 +105,15 @@ package "Exceptions" #FFE6E6 {
 }
 
 ' ============================================
-' UI LAYER (CENTER TOP)
+' UI LAYER (CENTER)
 ' ============================================
 package "UI Layer" #E8F4F8 {
   class MainWindow {
     - int currentCustomerId_
     - QString currentCustomerName_
     - QString currentCurrency_
-    - QWidget* centralWidget_
-    - QTabWidget* tabs_
-    - QScrollArea* scrollArea_
-    - QWidget* carsContainer_
-    - QLineEdit* searchEdit_
-    - QComboBox* currencyBox_
-    - QComboBox* engineTypeFilter_
-    - QSpinBox* seatsMinFilter_
-    - QSpinBox* powerMinFilter_
-    - QDoubleSpinBox* capacityMinFilter_
-    - QPushButton* myRentalsBtn_
-    - QPushButton* logoutBtn_
-    - QLabel* welcomeLabel_
-    - QTableView* rentalsTable_
-    - QWidget* rentalsWidget_
-    - QWidget* bookmarksContainer_
-    - QWidget* bmInner_
+    - UIWidgets ui_
+    - UIFilters filters_
     - std::unique_ptr<CarCardsView> carsView_
     - std::unique_ptr<CarCardsView> bookmarksView_
     - std::unique_ptr<CarsCatalogController> catalogController_
@@ -127,11 +123,6 @@ package "UI Layer" #E8F4F8 {
     - setupUI()
     - loadCars()
     - loadBookmarks()
-    - showLogin()
-    - updateCurrencyForAllCards()
-    - tryAutoLogin()
-    - connectFilters()
-    - currentFilters() : CatalogFilters
     + onCarRentClicked(carId)
     + onBookmarkToggled(carId, bookmarked)
     + onShowMyRentals()
@@ -143,23 +134,22 @@ package "UI Layer" #E8F4F8 {
   class CarCardWidget {
     - CarInfo* carData_
     - QString currentCurrency_
-    - QString shortDescription_
     - QLabel* imageLabel_
     - QLabel* nameLabel_
     - QLabel* priceLabel_
-    - QLabel* descLabel_
-    - QFrame* detailsPopup_
-    - QLabel* detailsLabel_
     - QPushButton* rentBtn_
     - QToolButton* bookmarkBtn_
     + CarCardWidget(car, currency, parent)
     + updateCurrency(currency)
     + updateBookmarkStatus(bookmarked)
-    + carId() : int
+    + getCarId() : int
     + eventFilter(obj, event) : bool
+    - setupImageLabel(layout)
+    - setupNameLabel(layout)
+    - setupPriceLabel(layout)
+    - setupButtons(layout)
     - updatePriceDisplay()
-    - showDetailsTooltip()
-    - hideDetailsTooltip()
+    - updateBookmarkButton()
     --
     signal rentClicked(carId)
     signal bookmarkToggled(carId, bookmarked)
@@ -185,7 +175,6 @@ package "UI Layer" #E8F4F8 {
     - QDateEdit* startDateEdit_
     - QDateEdit* endDateEdit_
     - QLabel* totalPriceLabel_
-    - QLabel* specsLabel_
     - RentalCalculator calculator_
     + RentalDialog(car, customerId, currency, parent)
     - onRent()
@@ -193,12 +182,8 @@ package "UI Layer" #E8F4F8 {
   }
 
   class LoginDialog {
-    - QLineEdit* nameEdit_
     - QLineEdit* phoneEdit_
     - QLineEdit* passwordEdit_
-    - QLineEdit* passwordRepeatEdit_
-    - QLabel* nameLabel_
-    - QLabel* passwordRepeatLabel_
     - QPushButton* loginBtn_
     - QPushButton* registerBtn_
     - QString name_
@@ -232,7 +217,7 @@ package "UI Layer" #E8F4F8 {
 }
 
 ' ============================================
-' BUSINESS LOGIC (CENTER MIDDLE)
+' BUSINESS LOGIC (CENTER RIGHT)
 ' ============================================
 package "Business Logic" #FFF4E6 {
   class CarsCatalogController {
@@ -255,7 +240,7 @@ package "Business Logic" #FFF4E6 {
 }
 
 ' ============================================
-' DATABASE LAYER (RIGHT MIDDLE)
+' DATABASE LAYER (RIGHT)
 ' ============================================
 package "Database Layer" #E6F3E6 {
   class Database {
@@ -266,9 +251,10 @@ package "Database Layer" #E6F3E6 {
     - std::unique_ptr<CustomersRepository> customersRepository_
     - std::unique_ptr<RentalsRepository> rentalsRepository_
     + {static} instance() : Database&
+    + ~Database()
     + initialize()
-    + getAvailableCars(customerId) : QSqlQueryModel*
-    + getBookmarked(customerId) : QSqlQueryModel*
+    + getAvailableCars(customerId) : std::unique_ptr<QSqlQueryModel>
+    + getBookmarked(customerId) : std::unique_ptr<QSqlQueryModel>
     + getCar(id, customerId) : CarInfo
     + getAvailableQuantity(carId, startDate, endDate) : int
     + setBookmarked(carId, customerId, bookmarked) : bool
@@ -277,52 +263,49 @@ package "Database Layer" #E6F3E6 {
     + createRental(carId, customerId, startDate, endDate, totalPrice) : int
     + updateExpiredRentals()
     + database() : QSqlDatabase&
-    - createSchema() : bool
-    - seedCars()
-    - populateCarSpecs()
-    - ensureRepositories()
   }
 
   class CarsRepository {
     - QSqlDatabase& db_
     + CarsRepository(db)
-    + fetchAvailableCars(customerId) : QSqlQueryModel*
-    + fetchBookmarkedCars(customerId) : QSqlQueryModel*
-    + findCar(id, customerId) : CarInfo
-    + availableQuantity(carId, startDate, endDate) : int
-    + setBookmarked(carId, customerId, bookmarked) : bool
+    + fetchAvailableCars(customerId) : std::unique_ptr<QSqlQueryModel> {const}
+    + fetchBookmarkedCars(customerId) : std::unique_ptr<QSqlQueryModel> {const}
+    + findCar(id, customerId) : CarInfo {const}
+    + availableQuantity(carId, startDate, endDate) : int {const}
+    + setBookmarked(carId, customerId, bookmarked) : bool {const}
   }
 
   class CustomersRepository {
     - QSqlDatabase& db_
     + CustomersRepository(db)
-    + addCustomer(name, phone, passwordHash) : int
-    + findCustomerByPhoneAndPassword(phone, passwordHash) : int
+    + addCustomer(name, phone, passwordHash) : int {const}
+    + findCustomerByPhoneAndPassword(phone, passwordHash) : int {const}
   }
 
   class RentalsRepository {
     - QSqlDatabase& db_
     + RentalsRepository(db)
-    + createRental(carId, customerId, startDate, endDate, totalPrice) : int
-    + updateExpiredRentals()
+    + createRental(carId, customerId, startDate, endDate, totalPrice) : int {const}
+    + updateExpiredRentals() {const}
   }
 
   class SchemaManager {
-    + ensureSchema(db) : bool
-    - createTables(db) : bool
-    - createIndexes(db)
+    + ensureSchema(db) : bool {const}
+    - createTables(db) : bool {const}
+    - createIndexes(db) {const}
   }
 
   class CarSeeder {
-    + seedIfEmpty(db)
-    + populateSpecs(db)
-    - hasCars(db) : bool
-    - insertCar(db, brand, model, year, pricePerDay, quantity, description, imagePath) : bool
+    + seedIfEmpty(db) {const}
+    + populateSpecs(db) {const}
+    - hasCars(db) : bool {const}
+    - insertCar(db, data) : bool {const}
+    - determineSpecs(brand, model, suvKeys) : CarSpecs {const}
   }
 }
 
 ' ============================================
-' UTILITIES (RIGHT BOTTOM)
+' UTILITIES (FAR RIGHT)
 ' ============================================
 package "Utilities" #F0E6FF {
   class CurrencyConverter {
@@ -431,14 +414,14 @@ CarsCatalogController --> Database : uses
 CarsCatalogController --> CarInfo : returns
 CarsCatalogController --> CatalogFilters : uses
 
-Database --> CarsRepository : delegates
+Database --> CarsRepository : delegates (unique_ptr)
 Database --> CustomersRepository : delegates
 Database --> RentalsRepository : delegates
 Database --> SchemaManager : uses
 Database --> CarSeeder : uses
 Database --> DatabaseException : throws
 
-CarsRepository --> QSqlQueryModel : returns
+CarsRepository --> QSqlQueryModel : returns (unique_ptr)
 CarsRepository --> QSqlDatabase : uses
 CarsRepository --> CarInfo : returns
 

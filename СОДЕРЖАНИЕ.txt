@@ -233,25 +233,54 @@ Zipcar — каршеринг с поведением pay-as-you-go. Прило�
 Инкапсулирует подключение к SQLite и операции с данными. Использует паттерн Singleton.
 
 Методы:
-‒ `static Database& instance()` — получение единственного экземпляра.
-‒ `void initialize()` — настройка подключения, создание схемы, заполнение данными.
+‒ `static Database& instance()` — получение единственного экземпляра (Singleton).
+‒ `~Database()` — деструктор.
+‒ `void initialize()` — настройка подключения, создание схемы, заполнение данными. Может выбрасывать `DatabaseException`.
 ‒ `std::unique_ptr<QSqlQueryModel> getAvailableCars(int customerId)` — получение модели доступных автомобилей.
 ‒ `std::unique_ptr<QSqlQueryModel> getBookmarked(int customerId)` — получение модели закладок.
 ‒ `CarInfo getCar(int id, int customerId)` — получение карточки для выбранного клиента.
-‒ `int getAvailableQuantity(int carId, const QDate& startDate, const QDate& endDate)` — проверка доступности.
-‒ `bool setBookmarked(int carId, int customerId, bool bookmarked)` — управление закладками.
-‒ `int createRental(...)`, `int addCustomer(...)`, `int findCustomerByPhoneAndPassword(...)`.
-‒ `void updateExpiredRentals()` — актуализация статусов аренд.
-‒ Приватные `createSchema()`, `seedCars()`, `populateCarSpecs()` автоматически создают БД и добавляют 50 автомобилей с реальными фотографиями.
+‒ `int getAvailableQuantity(int carId, const QDate& startDate, const QDate& endDate)` — проверка доступности автомобиля на указанные даты.
+‒ `bool setBookmarked(int carId, int customerId, bool bookmarked)` — управление закладками (добавление/удаление).
+‒ `int createRental(int carId, int customerId, const QDate& startDate, const QDate& endDate, double totalPrice)` — создание аренды. Может выбрасывать `DatabaseException`.
+‒ `int addCustomer(const QString& name, const QString& phone, const QString& passwordHash)` — добавление нового клиента.
+‒ `int findCustomerByPhoneAndPassword(const QString& phone, const QString& passwordHash)` — поиск клиента для авторизации.
+‒ `void updateExpiredRentals()` — актуализация статусов истекших аренд.
+‒ `QSqlDatabase& database()` — получение ссылки на объект базы данных.
+
+Приватные методы:
+‒ `bool createSchema()` — создание схемы БД через `SchemaManager`.
+‒ `void seedCars()` — заполнение каталога автомобилями через `CarSeeder::seedIfEmpty()`.
+‒ `void populateCarSpecs()` — заполнение характеристик автомобилей через `CarSeeder::populateSpecs()`.
+‒ `void ensureRepositories()` — инициализация репозиториев при необходимости.
+
+Особенности:
 ‒ Использует репозитории: `CarsRepository`, `CustomersRepository`, `RentalsRepository` для инкапсуляции SQL-запросов.
+‒ Автоматически создает БД и добавляет 50 автомобилей с реальными фотографиями при первом запуске.
+‒ Все методы работы с БД делегируются соответствующим репозиториям.
 
 4 Класс: `CarsCatalogController`.
 Применяет фильтры, загружает доступные автомобили и закладки.
 
+Структура `CatalogFilters`:
+‒ `QString searchText` — текст поиска (поиск по марке и модели).
+‒ `QString engineType` — тип двигателя (бензин, дизель, гибрид, электро).
+‒ `int seatsMin` — минимальное количество мест.
+‒ `int powerMin` — минимальная мощность (л.с.).
+‒ `double capacityMin` — минимальный объем двигателя (л).
+
 Методы:
-‒ `void setFilters(const CatalogFilters& filters)`.
-‒ `QList<CarInfo> loadAvailable(int customerId)`.
-‒ `QList<CarInfo> loadBookmarked(int customerId)`.
+‒ `void setFilters(const CatalogFilters& filters)` — установка фильтров.
+‒ `CatalogFilters getFilters() const` — получение текущих фильтров.
+‒ `QList<CarInfo> loadAvailable(int customerId) const` — загрузка доступных автомобилей с применением фильтров.
+‒ `QList<CarInfo> loadBookmarked(int customerId) const` — загрузка закладок.
+
+Приватные методы:
+‒ `QList<CarInfo> mapModelToCars(const QSqlQueryModel* model) const` — преобразование модели в список `CarInfo`.
+‒ `bool passesFilters(const CarInfo& car) const` — проверка, проходит ли автомобиль через установленные фильтры.
+
+Особенности:
+‒ Фильтры применяются в памяти после загрузки данных из БД.
+‒ Поиск выполняется по марке и модели (регистронезависимый).
 
 5 Класс: `CarCardWidget`.
 Виджет, отображающий информацию об автомобиле.
@@ -284,35 +313,84 @@ Zipcar — каршеринг с поведением pay-as-you-go. Прило�
 7 Класс: `MainWindow`.
 Главное окно, объединяющее каталог, закладки, историю аренды и управление валютами.
 
+Структура данных:
+‒ `UIWidgets ui_` — основные виджеты интерфейса (центральный виджет, вкладки, контейнеры).
+‒ `UIFilters filters_` — элементы фильтрации (поиск, тип двигателя, минимальные характеристики).
+‒ `UIButtons buttons_` — кнопки управления (мои аренды, выход).
+‒ `UILabels labels_` — метки (приветствие пользователя).
+‒ `std::unique_ptr<CarCardsView> carsView_` — представление каталога автомобилей.
+‒ `std::unique_ptr<CarCardsView> bookmarksView_` — представление закладок.
+‒ `std::unique_ptr<CarsCatalogController> catalogController_` — контроллер каталога.
+‒ `RentalsModel* rentalsModel_` — модель данных для таблицы аренд.
+
+Методы:
+‒ `void setupUI()` — инициализация интерфейса.
+‒ `void loadCars()` — загрузка каталога с применением фильтров.
+‒ `void loadBookmarks()` — загрузка закладок.
+‒ `void showLogin()` — отображение диалога авторизации.
+‒ `void updateCurrencyForAllCards()` — обновление валюты во всех карточках.
+‒ `void tryAutoLogin()` — попытка автоматического входа через `SessionManager`.
+‒ `void connectFilters()` — подключение сигналов фильтров.
+‒ `CatalogFilters currentFilters() const` — получение текущих значений фильтров.
+
+Слоты:
+‒ `void onCarRentClicked(int carId)` — обработка нажатия кнопки аренды.
+‒ `void onBookmarkToggled(int carId, bool bookmarked)` — обработка переключения закладки.
+‒ `void onShowMyRentals()` — отображение вкладки с историей аренд.
+‒ `void onShowBookmarks()` — отображение вкладки с закладками.
+‒ `void onCurrencyChanged()` — обработка смены валюты.
+‒ `void onLogout()` — выход из учетной записи.
+
 Обязанности:
 ‒ Авторизация пользователя и приветствие.
 ‒ Отображение фильтров поиска и обработка их изменений.
-‒ Загрузка каталога (`loadCars()`), закладок (`loadBookmarks()`), истории аренды (`onShowMyRentals()`).
-‒ Переключение валют (`onCurrencyChanged()`) и синхронизация с `CarCardsView` и `RentalsModel`.
+‒ Загрузка каталога, закладок, истории аренды.
+‒ Переключение валют и синхронизация с `CarCardsView` и `RentalsModel`.
 ‒ Открытие `RentalDialog` при выборе автомобиля.
+‒ Обработка исключений при инициализации базы данных.
 
 8 Класс: `RentalsModel`.
 Наследует `QSqlQueryModel`, выводит таблицу аренд в вкладке «Мои аренды».
 
 Методы:
-‒ `void refresh(int customerId)`.
-‒ `void setCurrency(const QString& currency)`.
+‒ `explicit RentalsModel(QObject* parent = nullptr)` — конструктор.
+‒ `void refresh(int customerId)` — обновление данных для указанного клиента.
+‒ `void setCurrency(const QString& currency)` — установка валюты для отображения цен.
+‒ `QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override` — переопределение для конвертации цен в выбранную валюту.
+‒ `QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override` — заголовки колонок таблицы.
+
+Особенности:
+‒ Использует `CurrencyConverter` для конвертации цен из базовой валюты (USD) в выбранную.
+‒ Автоматически обновляет отображение при смене валюты.
 
 9 Класс: `RentalDialog`.
 Диалог оформления аренды.
 
-Функции:
-‒ Выбор дат через `CustomCalendarWidget`.
-‒ `updatePrice()` пересчитывает стоимость, используя `CurrencyConverter`.
-‒ `onConfirm()` вызывает `Database::createRental`.
+Конструктор и методы:
+‒ `RentalDialog(const CarInfo& car, int customerId, const QString& currency = "USD", QWidget* parent = nullptr)`.
+‒ `void updatePrice()` — нормализация дат через `RentalCalculator::normalizeDates()` и пересчет стоимости.
+‒ `void onRent()` — валидация дат, проверка доступности, создание аренды через `Database::createRental()`.
+‒ Использует `RentalCalculator` для расчета стоимости и нормализации дат.
+‒ Обработка исключений `DatabaseException` при ошибках создания аренды.
 
 10 Класс: `LoginDialog`.
 Комбинирует авторизацию и регистрацию в одном окне.
 
+Методы:
+‒ `explicit LoginDialog(QWidget* parent = nullptr)` — конструктор.
+‒ `QString customerName() const` — получение имени клиента после успешной авторизации.
+‒ `int customerId() const` — получение ID клиента после успешной авторизации.
+
+Слоты:
+‒ `void onLogin()` — обработка входа: проверка данных, хэширование пароля, поиск в БД.
+‒ `void onRegister()` — обработка регистрации: валидация данных, проверка совпадения паролей, создание записи в БД.
+
 Особенности:
-‒ Проверка формата телефона (+375xxxxxxxxx).
-‒ Хэширование паролей (`QCryptographicHash::Sha256`).
-‒ Возврат `customerId` при успешном входе.
+‒ Проверка формата телефона (+375xxxxxxxxx) через регулярное выражение.
+‒ Хэширование паролей через `QCryptographicHash::Sha256`.
+‒ Валидация длины пароля (не менее 6 символов).
+‒ Проверка совпадения паролей при регистрации.
+‒ Сохранение `customerId` и `name_` при успешной авторизации/регистрации.
 
 11 Класс: `SessionManager`.
 Хранит данные последней сессии в локальном файле.
@@ -323,10 +401,88 @@ Zipcar — каршеринг с поведением pay-as-you-go. Прило�
 ‒ `void clearSession()`.
 
 12 Класс: `CustomCalendarWidget`.
-Расширяет календарь Qt для выбора дат, блокирует прошлые даты и подсвечивает период аренды.
+Расширяет `QCalendarWidget` для выбора дат с визуализацией забронированных периодов.
 
-13 Утилита загрузки изображений.
-Проверяет наличие файлов `.jpg`, `.jpeg`, `.png` в `resources/photos/cars`, fallback на placeholder, обеспечивает единый код для `CarCardWidget`.
+Конструктор и методы:
+‒ `explicit CustomCalendarWidget(int carId, QWidget* parent = nullptr)` — конструктор принимает ID автомобиля.
+‒ `void showEvent(QShowEvent* event) override` — обработка события показа календаря.
+‒ `void mouseMoveEvent(QMouseEvent* event) override` — обработка движения мыши для подсказок.
+‒ `bool isDateBooked(const QDate& date) const` — проверка, забронирована ли дата для данного автомобиля.
+
+Особенности:
+‒ Подсвечивает забронированные даты для выбранного автомобиля.
+‒ Используется в `RentalDialog` для визуализации доступности.
+
+13 Класс: `RentalCalculator`.
+Утилита для расчета стоимости аренды и нормализации дат.
+
+Методы:
+‒ `DateNormalization normalizeDates(const QDate& start, const QDate& end, const QDate& current, const QDate& max) const` — нормализация диапазона дат с учетом ограничений.
+‒ `int rentalDays(const QDate& start, const QDate& end) const` — расчет количества дней аренды.
+‒ `double totalBasePrice(const CarInfo& car, int days) const` — расчет общей стоимости в базовой валюте.
+‒ `QString formattedTotal(const CarInfo& car, int days, const QString& currencyCode) const` — форматированная строка с ценой.
+
+14 Класс: `CarDetailsFormatter`.
+Утилита для форматирования информации об автомобиле.
+
+Методы:
+‒ `static QString tooltipText(const CarInfo& car)` — текст всплывающей подсказки с характеристиками.
+‒ `static QString getName(const CarInfo& car)` — форматированное название (марка и модель).
+
+15 Класс: `CarImageLoader`.
+Утилита загрузки и обработки изображений автомобилей.
+
+Методы:
+‒ `static QPixmap loadCardImage(const QString& resourcePath, const QSize& targetSize)` — загрузка изображения с масштабированием.
+‒ Проверяет наличие файлов `.jpg`, `.jpeg`, `.png` в `resources/photos/cars`, fallback на placeholder.
+‒ Обрабатывает ресурсы Qt (`:/`) и внешние файлы.
+
+16 Класс: `PathsConfig`.
+Утилита для управления путями к файлам приложения.
+
+Методы:
+‒ `static QString dataDir()` — директория данных приложения.
+‒ `static QString databaseFile()` — путь к файлу базы данных.
+‒ `static QString sessionFile()` — путь к файлу сессии.
+‒ `static QString photosDir()` — директория с фотографиями.
+‒ `static QString placeholderImage()` — путь к изображению-заглушке.
+
+17 Классы репозиториев (`CarsRepository`, `CustomersRepository`, `RentalsRepository`).
+Инкапсулируют SQL-запросы к соответствующим таблицам базы данных.
+
+`CarsRepository`:
+‒ `fetchAvailableCars(int customerId)` — получение доступных автомобилей с учетом закладок.
+‒ `fetchBookmarkedCars(int customerId)` — получение автомобилей из закладок.
+‒ `findCar(int id, int customerId)` — поиск автомобиля по ID.
+‒ `availableQuantity(int carId, const QDate& startDate, const QDate& endDate)` — проверка доступности.
+‒ `setBookmarked(int carId, int customerId, bool bookmarked)` — управление закладками.
+
+`CustomersRepository`:
+‒ `addCustomer(const QString& name, const QString& phone, const QString& passwordHash)` — добавление клиента.
+‒ `findCustomerByPhoneAndPassword(const QString& phone, const QString& passwordHash)` — поиск клиента для авторизации.
+
+`RentalsRepository`:
+‒ `createRental(int carId, int customerId, const QDate& startDate, const QDate& endDate, double totalPrice)` — создание аренды.
+‒ `updateExpiredRentals()` — обновление статусов истекших аренд.
+
+18 Классы исключений (`AppException`, `DatabaseException`, `FileLoadException`, `ValidationException`).
+Иерархия исключений для обработки ошибок приложения.
+
+`AppException` (базовый класс):
+‒ Наследуется от `std::exception`.
+‒ `QString getMessage() const` — получение сообщения об ошибке.
+
+`DatabaseException`:
+‒ Выбрасывается при ошибках работы с базой данных.
+‒ `QString getOperation() const` — получение названия операции, вызвавшей ошибку.
+
+`FileLoadException`:
+‒ Выбрасывается при ошибках загрузки файлов (например, изображений).
+‒ `QString getFilePath() const` — получение пути к файлу.
+
+`ValidationException`:
+‒ Выбрасывается при ошибках валидации данных.
+‒ `QString getField() const` — получение названия поля с ошибкой.
 
 Совместная работа модулей обеспечивает полный цикл: от загрузки данных в SQLite до визуального отображения каталога и оформления аренды.
 
@@ -358,14 +514,11 @@ void MainWindow::onCurrencyChanged() {
 
 ```
 void CarCardWidget::updatePriceDisplay() {
-    auto &converter = CurrencyConverter::instance();
+    const auto &converter = CurrencyConverter::instance();
     auto currency = CurrencyConverter::fromString(currentCurrency_);
     double price = converter.fromBase(carData_->pricePerDay, currency);
     QString symbol = converter.symbol(currency);
-
-    QString priceText = QString::number(price, 'f', 2)
-                        + " " + symbol + "/день";
-    priceLabel_->setText(priceText);
+    priceLabel_->setText(QString::number(price, 'f', 2) + " " + symbol + "/день");
 }
 ```
 
@@ -419,21 +572,22 @@ void RentalDialog::updatePrice() {
 
 1. Пользователь нажимает «Арендовать» на карточке.  
 2. Открывается `RentalDialog`, в него передаются `CarInfo`, `customerId`, текущая валюта.  
-3. Пользователь выбирает даты начала и окончания через `CustomCalendarWidget`.  
-4. `RentalCalculator` нормализует диапазон, проверяет пересечения и ограничения.  
-5. Рассчитывается длительность аренды в днях и итоговая стоимость в выбранной валюте.  
-6. После подтверждения вызывается `Database::createRental`, статус обновляется.  
-7. `MainWindow` обновляет каталог, закладки и список аренд.  
-8. Отображается уведомление об успешном бронировании.
+3. Пользователь выбирает даты начала и окончания через `QDateEdit` (с календарем).  
+4. При изменении дат вызывается `updatePrice()`, который использует `RentalCalculator::normalizeDates()` для нормализации диапазона с учетом ограничений (не раньше текущей даты, не позже года вперед).  
+5. Рассчитывается длительность аренды в днях через `RentalCalculator::rentalDays()` и итоговая стоимость через `RentalCalculator::formattedTotal()`.  
+6. При нажатии «Оформить аренду» вызывается `onRent()`: проверяется, что дата окончания позже даты начала, проверяется доступность через `Database::getAvailableQuantity()`.  
+7. Вызывается `Database::createRental()`, который делегирует вызов `RentalsRepository::createRental()`.  
+8. При успехе отображается уведомление с номером заказа, диалог закрывается. При ошибке выбрасывается `DatabaseException` и показывается сообщение об ошибке.  
+9. `MainWindow` обновляет каталог, закладки и список аренд.
 
 3.3.3 Алгоритм загрузки изображений
 
-1. Получить `imagePath`, сохраненный в таблице `cars`.  
-2. Если путь начинается с `:/`, загрузить ресурс из `resources.qrc`.  
-3. Иначе проверить наличие файла в `resources/photos/cars`.  
-4. Попробовать расширения `.jpg`, `.jpeg`, `.png` до успешной загрузки.  
-5. Выполнить масштабирование `QPixmap::scaled(..., Qt::KeepAspectRatio, Qt::SmoothTransformation)`.  
-6. При ошибке вернуть placeholder и вывести предупреждение в журнал.
+1. `CarCardWidget` вызывает `CarImageLoader::loadCardImage(imagePath, targetSize)`.  
+2. `CarImageLoader::resolveKey()` определяет ключ ресурса или путь к файлу.  
+3. Если путь начинается с `:/`, загружается ресурс из `resources.qrc` через `QPixmap(":/...")`.  
+4. Иначе проверяется наличие файла в `resources/photos/cars` с расширениями `.jpg`, `.jpeg`, `.png`.  
+5. При успешной загрузке выполняется масштабирование `QPixmap::scaled(..., Qt::KeepAspectRatio, Qt::SmoothTransformation)` и скругление углов через `roundCorners()`.  
+6. При ошибке загрузки выбрасывается `FileLoadException`, `CarCardWidget` обрабатывает исключение и отображает эмодзи-заглушку 🚗.
 
 3.4 Особенности работы с используемыми библиотеками
 
@@ -507,7 +661,7 @@ Qt Resource System:
 Схема алгоритма оформления аренды.  
 
 Приложение В  
-Схема алгоритма пересчета стоимости в выбранной валюте.  
+Схема алгоритма загрузки каталога доступных автомобилей (fetchAvailableCars).  
 
 Приложение Г  
 Фрагменты SQL-запросов для заполнения каталога автомобилей.

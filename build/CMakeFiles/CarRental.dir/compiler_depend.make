@@ -1465,7 +1465,6 @@ CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o: /home/vladius/Desktop/a
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qvarlengtharray.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtGui/QMouseEvent \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/QShowEvent \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/QTextCharFormat \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/QTransform \
@@ -1511,10 +1510,8 @@ CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o: /home/vladius/Desktop/a
   /usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QCalendarWidget \
-  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QToolTip \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcalendarwidget.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtooltip.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
@@ -11736,10 +11733,6 @@ CMakeFiles/CarRental.dir/src/views/CarCardsView.cpp.o: /home/vladius/Desktop/app
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QCryptographicHash:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtooltip.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QToolTip:
-
 /usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlDatabase:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h:
@@ -12505,8 +12498,6 @@ CarRental_autogen/mocs_compilation.cpp:
 /usr/include/x86_64-linux-gnu/bits/string_fortified.h:
 
 /usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/QMouseEvent:
 
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
 

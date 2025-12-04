@@ -2,10 +2,8 @@
 #include "db/Database.h"
 
 #include <QDate>
-#include <QMouseEvent>
 #include <QShowEvent>
 #include <QTextCharFormat>
-#include <QToolTip>
 
 CustomCalendarWidget::CustomCalendarWidget(int carId, QWidget *parent)
     : QCalendarWidget(parent), carId_(carId) {}
@@ -30,39 +28,6 @@ void CustomCalendarWidget::showEvent(QShowEvent *event) {
       setDateTextFormat(date, availableFormat);
     }
   }
-}
-
-void CustomCalendarWidget::mouseMoveEvent(QMouseEvent *event) {
-  QCalendarWidget::mouseMoveEvent(event);
-
-  QPoint pos = event->pos();
-
-  if (QDate monthStart = selectedDate(); monthStart.isValid()) {
-    monthStart = QDate(monthStart.year(), monthStart.month(), 1);
-    QDate monthEnd = monthStart.addMonths(1).addDays(-1);
-
-    for (QDate d = monthStart; d <= monthEnd; d = d.addDays(1)) {
-
-      int dayOfWeek = d.dayOfWeek();
-      int week = (d.day() - 1) / 7;
-      int headerHeight = 30;
-      int cellHeight = (height() - headerHeight) / 6;
-      int cellWidth = width() / 7;
-
-      QRect cellRect(dayOfWeek * cellWidth, headerHeight + week * cellHeight,
-                     cellWidth, cellHeight);
-
-      if (cellRect.contains(pos) && d >= QDate::currentDate() &&
-          isDateBooked(d)) {
-        QToolTip::showText(
-            event->globalPosition().toPoint(),
-            "Автомобиль забронирован другим пользователем в этот день");
-        return;
-      }
-    }
-  }
-
-  QToolTip::hideText();
 }
 
 bool CustomCalendarWidget::isDateBooked(const QDate &date) const {

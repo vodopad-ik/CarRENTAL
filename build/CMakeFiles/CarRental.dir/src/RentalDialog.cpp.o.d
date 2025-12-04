@@ -430,7 +430,6 @@ CMakeFiles/CarRental.dir/src/RentalDialog.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
  /home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.h \
- /home/vladius/Desktop/apps/CarRENTAL/src/utils/CurrencyConverter.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFormLayout \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qformlayout.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLayout \

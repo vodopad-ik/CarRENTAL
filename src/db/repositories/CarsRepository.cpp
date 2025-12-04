@@ -68,11 +68,11 @@ int CarsRepository::availableQuantity(int carId, const QDate &startDate,
                                       const QDate &endDate) const {
   QSqlQuery q(db_);
   q.prepare("SELECT quantity - (SELECT COUNT(*) FROM rentals WHERE car_id = ? "
-            "AND NOT(date(end_date) <= date(?) OR date(start_date) >= date(?)))"
+            "AND date(start_date) <= date(?) AND date(end_date) >= date(?))"
             " FROM cars WHERE id=?");
   q.addBindValue(carId);
-  q.addBindValue(startDate.toString("yyyy-MM-dd"));
   q.addBindValue(endDate.toString("yyyy-MM-dd"));
+  q.addBindValue(startDate.toString("yyyy-MM-dd"));
   q.addBindValue(carId);
   if (q.exec() && q.next())
     return q.value(0).toInt();

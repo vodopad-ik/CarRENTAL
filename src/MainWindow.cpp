@@ -264,8 +264,8 @@ void MainWindow::showLogin() {
   this->hide();
   LoginDialog dialog(this);
   if (dialog.exec() == QDialog::Accepted) {
-    currentCustomerId_ = dialog.customerId();
-    currentCustomerName_ = dialog.customerName();
+    currentCustomerId_ = dialog.getCustomerId();
+    currentCustomerName_ = dialog.getCustomerName();
     labels_.welcomeLabel_->setText(
         QString("Добро пожаловать, %1!").arg(currentCustomerName_));
     SessionManager::instance().saveSession(currentCustomerId_,

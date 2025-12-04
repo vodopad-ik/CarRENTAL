@@ -15,7 +15,8 @@ void RentalsModel::setCurrency(const QString &currency) {
   const int rows = QSqlQueryModel::rowCount();
   if (rows > 0) {
     emit headerDataChanged(Qt::Horizontal, 4, 4);
-    emit dataChanged(QSqlQueryModel::index(0, 4), QSqlQueryModel::index(rows - 1, 4));
+    emit dataChanged(QSqlQueryModel::index(0, 4),
+                     QSqlQueryModel::index(rows - 1, 4));
   }
 }
 
@@ -27,7 +28,6 @@ void RentalsModel::refresh(int customerId) {
                       .arg(customerId);
   setQuery(query, Database::instance().database());
 
-
   setHeaderData(1, Qt::Horizontal, "Автомобиль");
   setHeaderData(2, Qt::Horizontal, "Дата начала");
   setHeaderData(3, Qt::Horizontal, "Дата окончания");
@@ -38,7 +38,6 @@ void RentalsModel::refresh(int customerId) {
 QVariant RentalsModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
-
 
   if (index.column() == 4 && role == Qt::DisplayRole) {
     QVariant baseValue = QSqlQueryModel::data(index, role);
@@ -52,25 +51,22 @@ QVariant RentalsModel::data(const QModelIndex &index, int role) const {
     }
   }
 
-
   if (index.column() == 5 && role == Qt::DisplayRole) {
     QVariant baseValue = QSqlQueryModel::data(index, Qt::EditRole);
     QString status = baseValue.toString();
-
-
     if (status == "active")
       return "Активна";
     if (status == "expired")
       return "Истекла";
     return status;
   }
-
   return QSqlQueryModel::data(index, role);
 }
 
 QVariant RentalsModel::headerData(int section, Qt::Orientation orientation,
                                   int role) const {
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole && section == 4) {
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole &&
+      section == 4) {
     auto currency = CurrencyConverter::fromString(currentCurrency_);
     QString symbol = converter_->symbol(currency);
     QString code = converter_->code(currency);

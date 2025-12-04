@@ -2,7 +2,6 @@
 #include "CustomCalendarWidget.h"
 #include "db/Database.h"
 #include "exceptions/DatabaseException.h"
-#include "utils/CurrencyConverter.h"
 
 #include <QDate>
 #include <QFormLayout>
@@ -18,83 +17,16 @@ RentalDialog::RentalDialog(const CarInfo &car, int customerId,
       currentCurrency_(currency) {
   setWindowTitle("Оформление аренды");
   setModal(true);
-  resize(350, 250);
+  resize(350, 300);
 
   auto *layout = new QVBoxLayout(this);
 
-  auto *carLabel = new QLabel(
-      QString("%1 %2 (%3)")
-          .arg(car_->brand, car_->model, QString::number(car_->year)),
-      this);
-  carLabel->setStyleSheet(
-      "font-size: 18px; font-weight: bold; margin-bottom: 15px;");
-  layout->addWidget(carLabel);
-
-  QString specs;
-  if (!car_->engineType.isEmpty())
-    specs += QString("Тип двигателя: %1\n").arg(car_->engineType);
-  if (car_->engineCapacityL > 0.0)
-    specs += QString("Объем двигателя: %1 л\n")
-                 .arg(QString::number(car_->engineCapacityL, 'f', 1));
-  if (car_->powerHp > 0)
-    specs += QString("Мощность: %1 л.с.\n").arg(car_->powerHp);
-  if (car_->seats > 0)
-    specs += QString("Число мест: %1").arg(car_->seats);
-  if (!specs.isEmpty()) {
-    specsLabel_ = new QLabel(specs, this);
-    specsLabel_->setStyleSheet("color:#555; margin-bottom: 10px;");
-    layout->addWidget(specsLabel_);
-  }
-
-  auto *formLayout = new QFormLayout();
-
-  QDate maxDate = QDate::currentDate().addYears(1);
-
-  startDateEdit_ = new QDateEdit(QDate::currentDate(), this);
-  startDateEdit_->setMinimumDate(QDate::currentDate());
-  startDateEdit_->setMaximumDate(maxDate);
-  startDateEdit_->setCalendarPopup(true);
-  startDateEdit_->setDisplayFormat("dd.MM.yyyy");
-
-  auto *startCalendar = new CustomCalendarWidget(car_->id, this);
-  startDateEdit_->setCalendarWidget(startCalendar);
-  formLayout->addRow("Дата начала:", startDateEdit_);
-
-  endDateEdit_ = new QDateEdit(QDate::currentDate().addDays(1), this);
-  endDateEdit_->setMinimumDate(QDate::currentDate().addDays(1));
-  endDateEdit_->setMaximumDate(maxDate);
-  endDateEdit_->setCalendarPopup(true);
-  endDateEdit_->setDisplayFormat("dd.MM.yyyy");
-
-  auto *endCalendar = new CustomCalendarWidget(car_->id, this);
-  endDateEdit_->setCalendarWidget(endCalendar);
-  formLayout->addRow("Дата окончания:", endDateEdit_);
-
-  layout->addLayout(formLayout);
-
-  totalPriceLabel_ = new QLabel("Итого: 0", this);
-  totalPriceLabel_->setStyleSheet(
-      "font-size: 16px; font-weight: bold; color: #4CAF50;");
-  layout->addWidget(totalPriceLabel_);
-
-  connect(startDateEdit_, &QDateEdit::dateChanged, this,
-          &RentalDialog::updatePrice);
-  connect(endDateEdit_, &QDateEdit::dateChanged, this,
-          &RentalDialog::updatePrice);
-  updatePrice();
-
-  auto *btnLayout = new QHBoxLayout();
-  auto *cancelBtn = new QPushButton("Отмена", this);
-  auto *rentBtn = new QPushButton("Оформить аренду", this);
-  rentBtn->setStyleSheet("QPushButton { background-color: #4CAF50; color: "
-                         "white; padding: 10px; }");
-
-  btnLayout->addWidget(cancelBtn);
-  btnLayout->addWidget(rentBtn);
-  layout->addLayout(btnLayout);
-
-  connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
-  connect(rentBtn, &QPushButton::clicked, this, &RentalDialog::onRent);
+  setupCarHeader(layout);
+  setupCarSpecs(layout);
+  setupDateForm(layout);
+  setupPriceLabel(layout);
+  setupConnections();
+  setupButtons(layout);
 }
 
 void RentalDialog::updatePrice() {
@@ -145,9 +77,9 @@ void RentalDialog::onRent() {
     return;
   }
 
-  if (int availableQty =
+  if (int availableQuantity =
           Database::instance().getAvailableQuantity(car_->id, start, end);
-      availableQty <= 0) {
+      availableQuantity <= 0) {
     QMessageBox::warning(
         this, "Недоступно",
         "Все экземпляры этого автомобиля уже забронированы на выбранные даты");
@@ -169,4 +101,94 @@ void RentalDialog::onRent() {
         this, "Ошибка базы данных",
         QString("Не удалось оформить аренду:\n%1").arg(e.getMessage()));
   }
+}
+
+void RentalDialog::setupCarHeader(QVBoxLayout *layout) {
+  auto *carLabel = new QLabel(
+      QString("%1 %2 (%3)")
+          .arg(car_->brand, car_->model, QString::number(car_->year)),
+      this);
+  carLabel->setStyleSheet(
+      "font-size: 18px; font-weight: bold; margin-bottom: 15px;");
+  layout->addWidget(carLabel);
+}
+
+void RentalDialog::setupCarSpecs(QVBoxLayout *layout) {
+  QString specs;
+  if (!car_->engineType.isEmpty())
+    specs += QString("Тип двигателя: %1\n").arg(car_->engineType);
+  if (car_->engineCapacityL > 0.0)
+    specs += QString("Объем двигателя: %1 л\n")
+                 .arg(QString::number(car_->engineCapacityL, 'f', 1));
+  if (car_->powerHp > 0)
+    specs += QString("Мощность: %1 л.с.\n").arg(car_->powerHp);
+  if (car_->seats > 0)
+    specs += QString("Число мест: %1").arg(car_->seats);
+  if (!specs.isEmpty()) {
+    specsLabel_ = new QLabel(specs, this);
+    specsLabel_->setStyleSheet("color:#ffffff; margin-bottom: 15px;");
+    layout->addWidget(specsLabel_);
+  }
+}
+
+void RentalDialog::setupDateForm(QVBoxLayout *layout) {
+  auto *formLayout = new QFormLayout();
+
+  QDate maxDate = QDate::currentDate().addYears(1);
+
+  startDateEdit_ = new QDateEdit(QDate::currentDate(), this);
+  startDateEdit_->setMinimumDate(QDate::currentDate());
+  startDateEdit_->setMaximumDate(maxDate);
+  startDateEdit_->setCalendarPopup(true);
+  startDateEdit_->setDisplayFormat("dd.MM.yyyy");
+
+  auto *startCalendar = new CustomCalendarWidget(car_->id, this);
+  startDateEdit_->setCalendarWidget(startCalendar);
+  formLayout->addRow("Дата начала:", startDateEdit_);
+
+  endDateEdit_ = new QDateEdit(QDate::currentDate().addDays(1), this);
+  endDateEdit_->setMinimumDate(QDate::currentDate().addDays(1));
+  endDateEdit_->setMaximumDate(maxDate);
+  endDateEdit_->setCalendarPopup(true);
+  endDateEdit_->setDisplayFormat("dd.MM.yyyy");
+
+  auto *endCalendar = new CustomCalendarWidget(car_->id, this);
+  endDateEdit_->setCalendarWidget(endCalendar);
+  formLayout->addRow("Дата окончания:", endDateEdit_);
+
+  layout->addLayout(formLayout);
+}
+
+void RentalDialog::setupPriceLabel(QVBoxLayout *layout) {
+  totalPriceLabel_ = new QLabel("Итого: 0", this);
+  totalPriceLabel_->setStyleSheet(
+      "font-size: 17px; font-weight: bold; color: #1 1c12f; margin: 6 6 6 0;");
+  layout->addWidget(totalPriceLabel_);
+}
+
+void RentalDialog::setupButtons(QVBoxLayout *layout) {
+  auto *btnLayout = new QHBoxLayout();
+  auto *cancelBtn = new QPushButton("Отмена", this);
+  auto *rentBtn = new QPushButton("Оформить аренду", this);
+  cancelBtn->setStyleSheet(
+      "QPushButton { background-color: #105bee; color: "
+      "white; font-weight: bold; padding: 6px; border-radius: 3px; }");
+  rentBtn->setStyleSheet(
+      "QPushButton { background-color: #37c62f; color: "
+      "white; font-weight: bold; padding: 6px; border-radius: 3px; }");
+
+  btnLayout->addWidget(cancelBtn);
+  btnLayout->addWidget(rentBtn);
+  layout->addLayout(btnLayout);
+
+  connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
+  connect(rentBtn, &QPushButton::clicked, this, &RentalDialog::onRent);
+}
+
+void RentalDialog::setupConnections() {
+  connect(startDateEdit_, &QDateEdit::dateChanged, this,
+          &RentalDialog::updatePrice);
+  connect(endDateEdit_, &QDateEdit::dateChanged, this,
+          &RentalDialog::updatePrice);
+  updatePrice();
 }

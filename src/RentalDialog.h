@@ -8,6 +8,7 @@
 #include <QString>
 
 class CustomCalendarWidget;
+class QVBoxLayout;
 
 struct CarInfo;
 
@@ -24,6 +25,13 @@ private slots:
   void updatePrice();
 
 private:
+  void setupCarHeader(QVBoxLayout *layout);
+  void setupCarSpecs(QVBoxLayout *layout);
+  void setupDateForm(QVBoxLayout *layout);
+  void setupPriceLabel(QVBoxLayout *layout);
+  void setupButtons(QVBoxLayout *layout);
+  void setupConnections();
+
   CarInfo *car_;
   int customerId_;
   QString currentCurrency_;

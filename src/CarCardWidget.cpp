@@ -24,7 +24,7 @@ CarCardWidget::CarCardWidget(const CarInfo &car, const QString &currency,
 
   setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
   setStyleSheet("CarCardWidget { background-color: white; border: none; "
-                "border-radius: 10px; } "
+      "border-radius: 10px; } "
                 "CarCardWidget > QLabel { background-color: transparent; "
                 "border: none; }");
 

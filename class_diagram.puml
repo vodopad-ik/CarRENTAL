@@ -87,7 +87,7 @@ package "Data Structures" #DDDDDD {
     + bool endAdjusted
   }
 
-  struct UIWidgets {
+  struct "MainWindowImpl::UIWidgets" as UIWidgets {
     + QWidget* centralWidget_
     + QTabWidget* tabs_
     + QScrollArea* scrollArea_
@@ -96,22 +96,19 @@ package "Data Structures" #DDDDDD {
     + QWidget* bookmarksContainer_
     + QWidget* bmInner_
   }
-  note right of UIWidgets : MainWindowImpl::UIWidgets
 
-  struct UIFilters {
+  struct "MainWindowImpl::UIFilters" as UIFilters {
     + QLineEdit* searchEdit_
     + QComboBox* engineTypeFilter_
     + QSpinBox* seatsMinFilter_
     + QSpinBox* powerMinFilter_
     + QDoubleSpinBox* capacityMinFilter_
   }
-  note right of UIFilters : MainWindowImpl::UIFilters
 
-  struct UIButtons {
+  struct "MainWindowImpl::UIButtons" as UIButtons {
     + QPushButton* myRentalsBtn_
     + QPushButton* logoutBtn_
   }
-  note right of UIButtons : MainWindowImpl::UIButtons
 }
 
 ' ============================================
@@ -429,9 +426,9 @@ ValidationException --|> AppException
 MainWindow *-- CarCardsView
 MainWindow *-- CarsCatalogController
 MainWindow *-- RentalsModel
-MainWindow *-- MainWindowImpl::UIWidgets
-MainWindow *-- MainWindowImpl::UIFilters
-MainWindow *-- MainWindowImpl::UIButtons
+MainWindow *-- UIWidgets
+MainWindow *-- UIFilters
+MainWindow *-- UIButtons
 RentalDialog *-- CustomCalendarWidget
 RentalDialog *-- RentalCalculator
 Database *-- SchemaManager

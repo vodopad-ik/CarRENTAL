@@ -1,6 +1,8 @@
 #include "CustomCalendarWidget.h"
 #include "db/Database.h"
 
+#include <QBrush>
+#include <QColor>
 #include <QDate>
 #include <QShowEvent>
 #include <QTextCharFormat>

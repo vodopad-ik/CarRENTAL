@@ -73,10 +73,10 @@ void MainWindow::setupUI() {
   header->setStyleSheet("background-color: #2196F3; padding: 15px;");
   auto *headerLayout = new QHBoxLayout(header);
 
-  labels_.welcomeLabel_ = new QLabel("Добро пожаловать", header);
-  labels_.welcomeLabel_->setStyleSheet(
+  welcomeLabel_ = new QLabel("Добро пожаловать", header);
+  welcomeLabel_->setStyleSheet(
       "color: white; font-size: 18px; font-weight: bold;");
-  headerLayout->addWidget(labels_.welcomeLabel_);
+  headerLayout->addWidget(welcomeLabel_);
 
   headerLayout->addStretch();
 
@@ -85,10 +85,8 @@ void MainWindow::setupUI() {
   const QString headerBtnStyle =
       "QPushButton { background-color: white; color: #2196F3; padding: 8px "
       "16px; border-radius: 6px; }"
-      "QPushButton:hover { background-color: #F5F5F5; }";
+      "QPushButton:hover { background-color: #F1F1F1; }";
   buttons_.myRentalsBtn_->setStyleSheet(headerBtnStyle);
-  buttons_.myRentalsBtn_->setIcon(
-      style()->standardIcon(QStyle::SP_FileDialogListView));
   buttons_.myRentalsBtn_->setMinimumHeight(36);
   headerLayout->addWidget(buttons_.myRentalsBtn_);
 
@@ -99,8 +97,8 @@ void MainWindow::setupUI() {
   currencyBox_->setMinimumHeight(36);
   currencyBox_->setStyleSheet(
       "QComboBox { background-color: white; color: #2196F3; padding: 6px 12px; "
-      "border-radius: 6px; border: 1px solid #e0e0e0; }"
-      "QComboBox:hover { border-color: #bdbdbd; }"
+      "border-radius: 6px; border: none; }"
+      "QComboBox:hover { background-color: #F1F1F1; }"
       "QComboBox::drop-down { width: 26px; border: none; }"
       "QComboBox QAbstractItemView { background: white; "
       "selection-background-color: #E3F2FD; }");
@@ -236,66 +234,46 @@ void MainWindow::tryAutoLogin() {
       session.customerId > 0) {
     currentCustomerId_ = session.customerId;
     currentCustomerName_ = session.name;
-    labels_.welcomeLabel_->setText(
-        QString("Добро пожаловать, %1!").arg(currentCustomerName_));
-    ui_.tabs_->setVisible(true);
-    buttons_.myRentalsBtn_->setVisible(true);
-    buttons_.logoutBtn_->setVisible(true);
-    loadCars();
-    Database::instance().updateExpiredRentals();
-    if (rentalsModel_) {
-      delete rentalsModel_;
-      rentalsModel_ = nullptr;
-    }
-    rentalsModel_ = new RentalsModel(this);
-    rentalsModel_->setCurrency(currentCurrency_);
-    rentalsModel_->refresh(currentCustomerId_);
-    rentalsTable_->setModel(rentalsModel_);
-    rentalsTable_->resizeColumnsToContents();
-    rentalsTable_->horizontalHeader()->setStretchLastSection(true);
-    ui_.tabs_->setCurrentIndex(0);
-    this->show();
+    initializeUserSession();
   } else {
     showLogin();
   }
 }
 
 void MainWindow::showLogin() {
-  this->hide();
   LoginDialog dialog(this);
   if (dialog.exec() == QDialog::Accepted) {
     currentCustomerId_ = dialog.getCustomerId();
     currentCustomerName_ = dialog.getCustomerName();
-    labels_.welcomeLabel_->setText(
-        QString("Добро пожаловать, %1!").arg(currentCustomerName_));
     SessionManager::instance().saveSession(currentCustomerId_,
                                            currentCustomerName_);
-    ui_.tabs_->setVisible(true);
-    buttons_.myRentalsBtn_->setVisible(true);
-    buttons_.logoutBtn_->setVisible(true);
-    loadCars();
-
-    Database::instance().updateExpiredRentals();
-    if (rentalsModel_) {
-      delete rentalsModel_;
-      rentalsModel_ = nullptr;
-    }
-    rentalsModel_ = new RentalsModel(this);
-    rentalsModel_->setCurrency(currentCurrency_);
-    rentalsModel_->refresh(currentCustomerId_);
-    rentalsTable_->setModel(rentalsModel_);
-    rentalsTable_->resizeColumnsToContents();
-    rentalsTable_->horizontalHeader()->setStretchLastSection(true);
-
-    ui_.tabs_->setCurrentIndex(0);
-    this->show();
+    initializeUserSession();
   } else {
-
     QApplication::quit();
   }
 }
 
-void MainWindow::loadCars() {
+void MainWindow::initializeUserSession() {
+  welcomeLabel_->setText(
+      QString("Добро пожаловать, %1!").arg(currentCustomerName_));
+  loadCars();
+  Database::instance().updateExpiredRentals();
+  if (rentalsModel_) {
+    delete rentalsModel_;
+    rentalsModel_ = nullptr;
+  }
+  rentalsModel_ = new RentalsModel(this);
+  rentalsModel_->setCurrency(currentCurrency_);
+  rentalsModel_->refresh(currentCustomerId_);
+  rentalsTable_->setModel(rentalsModel_);
+  rentalsTable_->resizeColumnsToContents();
+  rentalsTable_->horizontalHeader()->setStretchLastSection(true);
+  ui_.tabs_->setCurrentIndex(0);
+  this->show();
+}
+
+void MainWindow::loadCarsToView(
+    CarCardsView *view, std::function<QList<CarInfo>(int)> loadFunction) {
   if (!catalogController_)
     catalogController_ = std::make_unique<CarsCatalogController>();
 
@@ -303,11 +281,10 @@ void MainWindow::loadCars() {
     return;
 
   catalogController_->setFilters(currentFilters());
-  const QList<CarInfo> cars =
-      catalogController_->loadAvailable(currentCustomerId_);
+  const QList<CarInfo> cars = loadFunction(currentCustomerId_);
 
-  carsView_->setCurrency(currentCurrency_);
-  carsView_->showCars(cars, [this](const CarCardWidget *card) {
+  view->setCurrency(currentCurrency_);
+  view->showCars(cars, [this](const CarCardWidget *card) {
     connect(card, &CarCardWidget::rentClicked, this,
             &MainWindow::onCarRentClicked);
     connect(card, &CarCardWidget::bookmarkToggled, this,
@@ -315,23 +292,15 @@ void MainWindow::loadCars() {
   });
 }
 
+void MainWindow::loadCars() {
+  loadCarsToView(carsView_.get(), [this](int customerId) {
+    return catalogController_->loadAvailable(customerId);
+  });
+}
+
 void MainWindow::loadBookmarks() {
-  if (!catalogController_)
-    catalogController_ = std::make_unique<CarsCatalogController>();
-
-  if (currentCustomerId_ <= 0)
-    return;
-
-  catalogController_->setFilters(currentFilters());
-  const QList<CarInfo> cars =
-      catalogController_->loadBookmarked(currentCustomerId_);
-
-  bookmarksView_->setCurrency(currentCurrency_);
-  bookmarksView_->showCars(cars, [this](const CarCardWidget *card) {
-    connect(card, &CarCardWidget::rentClicked, this,
-            &MainWindow::onCarRentClicked);
-    connect(card, &CarCardWidget::bookmarkToggled, this,
-            &MainWindow::onBookmarkToggled);
+  loadCarsToView(bookmarksView_.get(), [this](int customerId) {
+    return catalogController_->loadBookmarked(customerId);
   });
 }
 
@@ -407,9 +376,6 @@ void MainWindow::updateCurrencyForAllCards() {
 void MainWindow::onLogout() {
   currentCustomerId_ = -1;
   currentCustomerName_.clear();
-  ui_.tabs_->setVisible(false);
-  buttons_.myRentalsBtn_->setVisible(false);
-  buttons_.logoutBtn_->setVisible(false);
   if (rentalsModel_) {
     delete rentalsModel_;
     rentalsModel_ = nullptr;

@@ -162,7 +162,7 @@ void RentalDialog::setupDateForm(QVBoxLayout *layout) {
 void RentalDialog::setupPriceLabel(QVBoxLayout *layout) {
   totalPriceLabel_ = new QLabel("Итого: 0", this);
   totalPriceLabel_->setStyleSheet(
-      "font-size: 17px; font-weight: bold; color: #1 1c12f; margin: 6 6 6 0;");
+      "font-size: 17px; font-weight: bold; color: #111c12f; margin: 6 6 6 0;");
   layout->addWidget(totalPriceLabel_);
 }
 

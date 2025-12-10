@@ -152,7 +152,7 @@ Zipcar — каршеринг с поведением pay-as-you-go. Прило�
 ‒ Реалистичные фотографии и всплывающие подсказки с характеристиками.
 
 Инфраструктура:
-‒ Автоматическое создание и заполнение БД при первом запуске.  
+‒ Автоматическое создание и заполнение БД при первом запуске.
 ‒ Работа в офлайн-режиме за счёт локального SQLite.  
 ‒ Кроссплатформенность (Linux/Windows/macOS) благодаря Qt.
 
@@ -546,7 +546,7 @@ void RentalDialog::updatePrice() {
 
     const int days =
         calculator_.rentalDays(normalized.start, normalized.end);
-    totalPriceLabel_->setText(
+totalPriceLabel_->setText(
         calculator_.formattedTotal(*car_, days, currentCurrency_));
 }
 ```
@@ -560,7 +560,7 @@ void RentalDialog::updatePrice() {
 
 3.3.1 Алгоритм подбора автомобиля
 
-1. Начало.  
+1. Начало.
 2. `CarsCatalogController` получает фильтры (`CatalogFilters`).  
 3. Загружает список доступных автомобилей для текущего клиента через `Database`.  
 4. Применяет фильтры: текст поиска, тип двигателя, минимальное число мест, минимальную мощность и объем двигателя.  

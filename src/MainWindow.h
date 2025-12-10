@@ -7,6 +7,7 @@
 #include <QScrollArea>
 #include <QWidget>
 
+#include <functional>
 #include <memory>
 
 class LoginDialog;
@@ -20,6 +21,31 @@ class QSpinBox;
 class QDoubleSpinBox;
 class RentalsModel;
 class CarCardsView;
+
+namespace MainWindowImpl {
+  struct UIWidgets {
+    QWidget *centralWidget_ = nullptr;
+    QTabWidget *tabs_ = nullptr;
+    QScrollArea *scrollArea_ = nullptr;
+    QWidget *carsContainer_ = nullptr;
+    QWidget *rentalsWidget_ = nullptr;
+    QWidget *bookmarksContainer_ = nullptr;
+    QWidget *bmInner_ = nullptr;
+  };
+
+  struct UIFilters {
+    QLineEdit *searchEdit_ = nullptr;
+    QComboBox *engineTypeFilter_ = nullptr;
+    QSpinBox *seatsMinFilter_ = nullptr;
+    QSpinBox *powerMinFilter_ = nullptr;
+    QDoubleSpinBox *capacityMinFilter_ = nullptr;
+  };
+
+  struct UIButtons {
+    QPushButton *myRentalsBtn_ = nullptr;
+    QPushButton *logoutBtn_ = nullptr;
+  };
+}
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -44,46 +70,20 @@ private:
   void updateCurrencyForAllCards();
   void tryAutoLogin();
   void connectFilters();
+  void initializeUserSession();
   CatalogFilters currentFilters() const;
+  void loadCarsToView(CarCardsView *view,
+                      std::function<QList<CarInfo>(int)> loadFunction);
 
   int currentCustomerId_ = -1;
   QString currentCustomerName_;
   QString currentCurrency_ = "USD";
 
-  struct UIWidgets {
-    QWidget *centralWidget_ = nullptr;
-    QTabWidget *tabs_ = nullptr;
-    QScrollArea *scrollArea_ = nullptr;
-    QWidget *carsContainer_ = nullptr;
-    QWidget *rentalsWidget_ = nullptr;
-    QWidget *bookmarksContainer_ = nullptr;
-    QWidget *bmInner_ = nullptr;
-  };
-  
-  UIWidgets ui_;
+  MainWindowImpl::UIWidgets ui_;
+  MainWindowImpl::UIFilters filters_;
+  MainWindowImpl::UIButtons buttons_;
 
-  struct UIFilters {
-    QLineEdit *searchEdit_ = nullptr;
-    QComboBox *engineTypeFilter_ = nullptr;
-    QSpinBox *seatsMinFilter_ = nullptr;
-    QSpinBox *powerMinFilter_ = nullptr;
-    QDoubleSpinBox *capacityMinFilter_ = nullptr;
-  };
-  
-  UIFilters filters_;
-
-  struct UIButtons {
-    QPushButton *myRentalsBtn_ = nullptr;
-    QPushButton *logoutBtn_ = nullptr;
-  };
-  
-  UIButtons buttons_;
-
-  struct UILabels {
-    QLabel *welcomeLabel_ = nullptr;
-  };
-  
-  UILabels labels_;
+  QLabel *welcomeLabel_ = nullptr;
 
   QComboBox *currencyBox_ = nullptr;
   QTableView *rentalsTable_ = nullptr;

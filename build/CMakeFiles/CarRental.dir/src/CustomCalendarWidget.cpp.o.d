@@ -412,6 +412,10 @@ CMakeFiles/CarRental.dir/src/CustomCalendarWidget.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquerymodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QBrush \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qbrush.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qcolor.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QShowEvent \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qevent.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h \

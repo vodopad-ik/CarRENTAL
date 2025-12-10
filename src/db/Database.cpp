@@ -9,7 +9,6 @@
 #include "exceptions/DatabaseException.h"
 #include "utils/PathsConfig.h"
 
-#include <QDir>
 #include <QSqlError>
 
 Database::Database() = default;
@@ -22,7 +21,6 @@ void Database::initialize() {
     db_ = QSqlDatabase::database("carrental");
   }
 
-  const QString dataDir = PathsConfig::dataDir();
   const QString dbPath = PathsConfig::databaseFile();
   db_.setDatabaseName(dbPath);
 
@@ -50,7 +48,7 @@ void Database::seedCars() {
   if (!carSeeder_)
     carSeeder_ = std::make_unique<CarSeeder>();
   carSeeder_->seedIfEmpty(db_);
-  }
+}
 
 void Database::populateCarSpecs() {
   if (!carSeeder_)

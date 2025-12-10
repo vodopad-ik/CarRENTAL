@@ -86,6 +86,32 @@ package "Data Structures" #DDDDDD {
     + bool endClamped
     + bool endAdjusted
   }
+
+  struct UIWidgets {
+    + QWidget* centralWidget_
+    + QTabWidget* tabs_
+    + QScrollArea* scrollArea_
+    + QWidget* carsContainer_
+    + QWidget* rentalsWidget_
+    + QWidget* bookmarksContainer_
+    + QWidget* bmInner_
+  }
+  note right of UIWidgets : MainWindowImpl::UIWidgets
+
+  struct UIFilters {
+    + QLineEdit* searchEdit_
+    + QComboBox* engineTypeFilter_
+    + QSpinBox* seatsMinFilter_
+    + QSpinBox* powerMinFilter_
+    + QDoubleSpinBox* capacityMinFilter_
+  }
+  note right of UIFilters : MainWindowImpl::UIFilters
+
+  struct UIButtons {
+    + QPushButton* myRentalsBtn_
+    + QPushButton* logoutBtn_
+  }
+  note right of UIButtons : MainWindowImpl::UIButtons
 }
 
 ' ============================================
@@ -112,8 +138,12 @@ package "UI Layer" #E8F4F8 {
     - int currentCustomerId_
     - QString currentCustomerName_
     - QString currentCurrency_
-    - UIWidgets ui_
-    - UIFilters filters_
+    - MainWindowImpl::UIWidgets ui_
+    - MainWindowImpl::UIFilters filters_
+    - MainWindowImpl::UIButtons buttons_
+    - QLabel* welcomeLabel_
+    - QComboBox* currencyBox_
+    - QTableView* rentalsTable_
     - std::unique_ptr<CarCardsView> carsView_
     - std::unique_ptr<CarCardsView> bookmarksView_
     - std::unique_ptr<CarsCatalogController> catalogController_
@@ -123,6 +153,13 @@ package "UI Layer" #E8F4F8 {
     - setupUI()
     - loadCars()
     - loadBookmarks()
+    - showLogin()
+    - updateCurrencyForAllCards()
+    - tryAutoLogin()
+    - connectFilters()
+    - initializeUserSession()
+    - currentFilters() : CatalogFilters
+    - loadCarsToView(view, loadFunction)
     + onCarRentClicked(carId)
     + onBookmarkToggled(carId, bookmarked)
     + onShowMyRentals()
@@ -137,18 +174,26 @@ package "UI Layer" #E8F4F8 {
     - QLabel* imageLabel_
     - QLabel* nameLabel_
     - QLabel* priceLabel_
+    - QLabel* descLabel_
+    - QFrame* detailsPopup_
+    - QLabel* detailsLabel_
     - QPushButton* rentBtn_
     - QToolButton* bookmarkBtn_
     + CarCardWidget(car, currency, parent)
     + updateCurrency(currency)
     + updateBookmarkStatus(bookmarked)
-    + getCarId() : int
+    + getCarId() : int {const}
     + eventFilter(obj, event) : bool
     - setupImageLabel(layout)
     - setupNameLabel(layout)
     - setupPriceLabel(layout)
+    - setupDescLabel(layout)
+    - setupDetailsPopup()
     - setupButtons(layout)
+    - connectSignals()
     - updatePriceDisplay()
+    - showDetailsTooltip()
+    - hideDetailsTooltip()
     - updateBookmarkButton()
     --
     signal rentClicked(carId)
@@ -163,9 +208,9 @@ package "UI Layer" #E8F4F8 {
     - QList<CarCardWidget*> cards_
     + CarCardsView(container, columns)
     + setCurrency(currency)
-    + showCars(cars, binder)
+    + showCars<T>(cars, binder)
     + clear()
-    + forEachCard(visitor)
+    + forEachCard<T>(visitor)
   }
 
   class RentalDialog {
@@ -175,24 +220,42 @@ package "UI Layer" #E8F4F8 {
     - QDateEdit* startDateEdit_
     - QDateEdit* endDateEdit_
     - QLabel* totalPriceLabel_
+    - QLabel* specsLabel_
     - RentalCalculator calculator_
     + RentalDialog(car, customerId, currency, parent)
+    - setupCarHeader(layout)
+    - setupCarSpecs(layout)
+    - setupDateForm(layout)
+    - setupPriceLabel(layout)
+    - setupButtons(layout)
+    - setupConnections()
     - onRent()
     - updatePrice()
   }
 
   class LoginDialog {
+    - QLineEdit* nameEdit_
     - QLineEdit* phoneEdit_
     - QLineEdit* passwordEdit_
+    - QLineEdit* passwordRepeatEdit_
+    - QLabel* nameLabel_
+    - QLabel* passwordRepeatLabel_
     - QPushButton* loginBtn_
     - QPushButton* registerBtn_
+    - QPushButton* tabLogin_
+    - QPushButton* tabRegister_
     - QString name_
     - QString phone_
     - int customerId_
     + LoginDialog(parent)
     + ~LoginDialog()
-    + customerName() : QString
-    + customerId() : int
+    + getCustomerName() : QString {const}
+    + getCustomerId() : int {const}
+    - setupHeader(layout)
+    - setupTabs(layout)
+    - setupForm(layout)
+    - setupActionButtons(layout)
+    - setupConnections()
     - onLogin()
     - onRegister()
   }
@@ -201,8 +264,7 @@ package "UI Layer" #E8F4F8 {
     - int carId_
     + CustomCalendarWidget(carId, parent)
     # showEvent(event)
-    # mouseMoveEvent(event)
-    - isDateBooked(date) : bool
+    - isDateBooked(date) : bool {const}
   }
 
   class RentalsModel {
@@ -211,8 +273,8 @@ package "UI Layer" #E8F4F8 {
     + RentalsModel(parent)
     + setCurrency(currency)
     + refresh(customerId)
-    + data(index, role) : QVariant
-    + headerData(section, orientation, role) : QVariant
+    + data(index, role) : QVariant {const}
+    + headerData(section, orientation, role) : QVariant {const}
   }
 }
 
@@ -224,18 +286,18 @@ package "Business Logic" #FFF4E6 {
     - CatalogFilters filters_
     + setFilters(filters)
     + getFilters() : CatalogFilters
-    + loadAvailable(customerId) : QList<CarInfo>
-    + loadBookmarked(customerId) : QList<CarInfo>
-    - mapModelToCars(model) : QList<CarInfo>
-    - passesFilters(car) : bool
+    + loadAvailable(customerId) : QList<CarInfo> {const}
+    + loadBookmarked(customerId) : QList<CarInfo> {const}
+    - mapModelToCars(model) : QList<CarInfo> {const}
+    - passesFilters(car) : bool {const}
   }
 
   class RentalCalculator {
-    + normalizeDates(start, end, current, max) : DateNormalization
-    + rentalDays(start, end) : int
-    + totalBasePrice(car, days) : double
-    + formattedTotal(car, days, currency) : QString
-    - dayLabel(days) : QString
+    + normalizeDates(start, end, current, max) : DateNormalization {const}
+    + rentalDays(start, end) : int {const}
+    + totalBasePrice(car, days) : double {const}
+    + formattedTotal(car, days, currency) : QString {const}
+    - dayLabel(days) : QString {const}
   }
 }
 
@@ -312,19 +374,19 @@ package "Utilities" #F0E6FF {
     - double usdToEur_
     - double usdToByn_
     + {static} instance() : CurrencyConverter&
-    + fromBase(usdAmount, to) : double
-    + toBase(amount, from) : double
-    + symbol(currency) : QString
-    + code(currency) : QString
+    + fromBase(usdAmount, to) : double {const}
+    + toBase(amount, from) : double {const}
+    + symbol(currency) : QString {const}
+    + code(currency) : QString {const}
     + {static} fromString(str) : Currency
   }
 
   class SessionManager {
     + {static} instance() : SessionManager&
-    + loadSession(data) : bool
-    + saveSession(customerId, name)
-    + clearSession()
-    - sessionFilePath() : QString
+    + loadSession(data) : bool {const}
+    + saveSession(customerId, name) {const}
+    + clearSession() {const}
+    - sessionFilePath() : QString {const}
   }
 
   class CarImageLoader {
@@ -367,6 +429,9 @@ ValidationException --|> AppException
 MainWindow *-- CarCardsView
 MainWindow *-- CarsCatalogController
 MainWindow *-- RentalsModel
+MainWindow *-- MainWindowImpl::UIWidgets
+MainWindow *-- MainWindowImpl::UIFilters
+MainWindow *-- MainWindowImpl::UIButtons
 RentalDialog *-- CustomCalendarWidget
 RentalDialog *-- RentalCalculator
 Database *-- SchemaManager

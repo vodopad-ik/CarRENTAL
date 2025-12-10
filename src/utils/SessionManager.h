@@ -24,16 +24,3 @@ inline SessionManager &SessionManager::instance() {
   static SessionManager inst;
   return inst;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -7,6 +7,7 @@ int main(int argc, char *argv[]) {
   QApplication::setOrganizationName("CarRental");
 
   MainWindow w;
+  w.show();
 
-  return QApplication::exec();
+  return app.exec();
 }

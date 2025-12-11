@@ -118,13 +118,28 @@ package "Exceptions" #FFE6E6 {
   class AppException {
     - QString message_
     - QByteArray utf8Message_
+    + AppException(message)
     + getMessage() : QString
     + what() : const char*
   }
 
-  class DatabaseException
-  class FileLoadException
-  class ValidationException
+  class DatabaseException {
+    - QString operation_
+    + DatabaseException(operation, details)
+    + getOperation() : QString
+  }
+
+  class FileLoadException {
+    - QString filePath_
+    + FileLoadException(filePath, reason)
+    + getFilePath() : QString
+  }
+
+  class ValidationException {
+    - QString field_
+    + ValidationException(field, reason)
+    + getField() : QString
+  }
 }
 
 ' ============================================

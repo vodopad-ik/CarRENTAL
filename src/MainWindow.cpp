@@ -272,25 +272,6 @@ void MainWindow::initializeUserSession() {
   this->show();
 }
 
-void MainWindow::loadCarsToView(
-    CarCardsView *view, std::function<QList<CarInfo>(int)> loadFunction) {
-  if (!catalogController_)
-    catalogController_ = std::make_unique<CarsCatalogController>();
-
-  if (currentCustomerId_ <= 0)
-    return;
-
-  catalogController_->setFilters(currentFilters());
-  const QList<CarInfo> cars = loadFunction(currentCustomerId_);
-
-  view->setCurrency(currentCurrency_);
-  view->showCars(cars, [this](const CarCardWidget *card) {
-    connect(card, &CarCardWidget::rentClicked, this,
-            &MainWindow::onCarRentClicked);
-    connect(card, &CarCardWidget::bookmarkToggled, this,
-            &MainWindow::onBookmarkToggled);
-  });
-}
 
 void MainWindow::loadCars() {
   loadCarsToView(carsView_.get(), [this](int customerId) {

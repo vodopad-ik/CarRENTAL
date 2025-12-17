@@ -38,8 +38,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/CarRental.dir/src/exceptions/DatabaseException.cpp.o.d"
   "CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.o"
   "CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.o.d"
-  "CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.o"
-  "CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.o.d"
   "CMakeFiles/CarRental.dir/src/main.cpp.o"
   "CMakeFiles/CarRental.dir/src/main.cpp.o.d"
   "CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.o"

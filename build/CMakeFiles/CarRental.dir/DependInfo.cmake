@@ -26,7 +26,6 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/AppException.cpp" "CMakeFiles/CarRental.dir/src/exceptions/AppException.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/exceptions/AppException.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.cpp" "CMakeFiles/CarRental.dir/src/exceptions/DatabaseException.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/exceptions/DatabaseException.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/FileLoadException.cpp" "CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.o.d"
-  "/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/ValidationException.cpp" "CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/main.cpp" "CMakeFiles/CarRental.dir/src/main.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/main.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.cpp" "CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/utils/CarDetailsFormatter.cpp.o.d"
   "/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarImageLoader.cpp" "CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.o" "gcc" "CMakeFiles/CarRental.dir/src/utils/CarImageLoader.cpp.o.d"

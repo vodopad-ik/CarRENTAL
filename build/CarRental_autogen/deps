@@ -37,8 +37,6 @@ CarRental_autogen/timestamp: \
 	/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/DatabaseException.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/FileLoadException.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/FileLoadException.h \
-	/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/ValidationException.cpp \
-	/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/ValidationException.h \
 	/home/vladius/Desktop/apps/CarRENTAL/src/main.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.cpp \
 	/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.h \

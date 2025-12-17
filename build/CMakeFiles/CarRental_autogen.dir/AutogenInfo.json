@@ -294,12 +294,6 @@
 			null
 		],
 		[
-			"/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/ValidationException.h",
-			"MU",
-			"P2QHMNIPOG/moc_ValidationException.cpp",
-			null
-		],
-		[
 			"/home/vladius/Desktop/apps/CarRENTAL/src/utils/CarDetailsFormatter.h",
 			"MU",
 			"VSCBVMNR7M/moc_CarDetailsFormatter.cpp",
@@ -482,11 +476,6 @@
 		],
 		[
 			"/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/FileLoadException.cpp",
-			"MU",
-			null
-		],
-		[
-			"/home/vladius/Desktop/apps/CarRENTAL/src/exceptions/ValidationException.cpp",
 			"MU",
 			null
 		],

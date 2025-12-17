@@ -587,30 +587,6 @@ src/exceptions/FileLoadException.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/FileLoadException.cpp.s
 .PHONY : src/exceptions/FileLoadException.cpp.s
 
-src/exceptions/ValidationException.o: src/exceptions/ValidationException.cpp.o
-.PHONY : src/exceptions/ValidationException.o
-
-# target to build an object file
-src/exceptions/ValidationException.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.o
-.PHONY : src/exceptions/ValidationException.cpp.o
-
-src/exceptions/ValidationException.i: src/exceptions/ValidationException.cpp.i
-.PHONY : src/exceptions/ValidationException.i
-
-# target to preprocess a source file
-src/exceptions/ValidationException.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.i
-.PHONY : src/exceptions/ValidationException.cpp.i
-
-src/exceptions/ValidationException.s: src/exceptions/ValidationException.cpp.s
-.PHONY : src/exceptions/ValidationException.s
-
-# target to generate assembly for a file
-src/exceptions/ValidationException.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CarRental.dir/build.make CMakeFiles/CarRental.dir/src/exceptions/ValidationException.cpp.s
-.PHONY : src/exceptions/ValidationException.cpp.s
-
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -868,9 +844,6 @@ help:
 	@echo "... src/exceptions/FileLoadException.o"
 	@echo "... src/exceptions/FileLoadException.i"
 	@echo "... src/exceptions/FileLoadException.s"
-	@echo "... src/exceptions/ValidationException.o"
-	@echo "... src/exceptions/ValidationException.i"
-	@echo "... src/exceptions/ValidationException.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
